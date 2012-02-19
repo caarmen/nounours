@@ -35,18 +35,24 @@ void nncsv_free(NNCSVLine *line) {
 	free(line->cells);
 	free(line);
 }
+
+static void nncsv_split_line(char *input, NNCSVLine *line, const char *sep) {
+	char *ptr;
+	char *cell;
+	line->num_cells = 0;
+	for (cell = strtok_r(input, sep, &ptr); cell != NULL;
+			cell = strtok_r(NULL, sep, &ptr)) {
+		line->cells = nnresize_if_needed(line->cells, line->num_cells);
+		line->cells[line->num_cells++] = strdup(cell);
+		// TODO need to free unused cells!
+	}
+}
+
 int nncsv_read_line(FILE *file, NNCSVLine *line){
 	char buf[1024];
 	if(!fgets(buf, sizeof(buf), file))
 		return 0;
-	char *ptr;
-	char *cell;
-	line->num_cells = 0;
-	for (cell = strtok_r(buf, CSV_SEP, &ptr); cell != NULL;
-			cell = strtok_r(NULL, CSV_SEP, &ptr)) {
-		line->cells = nnresize_if_needed(line->cells, line->num_cells);
-		line->cells[line->num_cells++] = strdup(cell);
-	}
+	nncsv_split_line(buf, line, CSV_SEP);
 	return 1;
 }
 
@@ -74,14 +80,30 @@ void nnread_animation_file(NNTheme *theme, const char *filename) {
 	NNCSVLine *header = nncsv_line_new();
 	nncsv_read_line(file, header);
 	NNCSVLine *line = nncsv_line_new();
+	NNCSVLine *image_ids = nncsv_line_new();
 	while(nncsv_read_line(file, line)) {
 		char *id = nncsv_get_value(header, line, "Id");
 		char *label = nncsv_get_value(header, line, "Label");
 		char *interval = nncsv_get_value(header, line, "Interval");
 		char *repeat = nncsv_get_value(header, line, "Repeat");
 		NNAnimation *animation = nnanimation_new(id, label, atoi(interval), atoi(repeat));
+		char *sequence = nncsv_get_value(header, line, "Sequence");
+		nncsv_split_line(sequence, image_ids, ";");
+		int i;
+		float duration = 1.0f;
+		for(i=0; i < image_ids->num_cells; i++) {
+			const char *cell = image_ids->cells[i];
+			if(strnstr(cell, "d=", 2)) {
+				duration = strtof(&cell[2], NULL);
+			} else {
+				NNImage *image = nntheme_find_image(theme, image_ids->cells[i]);
+				nnanimation_add_image(animation, image, duration);
+			}
+		}
 		nntheme_add_animation(theme, animation);
-		//TODO image seq
+		free(interval);
+		free(repeat);
+		free(sequence);
 	}
 	nncsv_free(header);
 	nncsv_free(line);

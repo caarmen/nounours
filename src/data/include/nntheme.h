@@ -20,6 +20,7 @@ typedef struct NNTheme {
 NNTheme * nntheme_new(char *id);
 void nntheme_add_animation(NNTheme *theme, NNAnimation *animation);
 void nntheme_add_image(NNTheme *theme, NNImage *image);
+NNImage *nntheme_find_image(NNTheme *theme, const char *id);
 void nntheme_free(NNTheme *theme);
 
 #endif /* NNTHEME_H_ */

@@ -26,6 +26,15 @@ void nntheme_add_image(NNTheme *theme, NNImage *image) {
 	theme->images = nnresize_if_needed(theme->images, theme->num_images);
 	theme->images[theme->num_images++] = image;
 }
+NNImage *nntheme_find_image(NNTheme *theme, const char *id) {
+	int i;
+	for(i=0; i < theme->num_images; i++) {
+		if(!strcmp(theme->images[i]->id, id))
+			return theme->images[i];
+	}
+	return NULL;
+}
+
 void nntheme_free(NNTheme *theme) {
 	free(theme->id);
 	int i;
