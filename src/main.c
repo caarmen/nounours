@@ -25,6 +25,7 @@ int main(int argc, char **argv) {
 	nnread_feature_file(theme, "data/themes/1/feature.csv");
 	nnread_image_file(theme, "data/themes/1/image.csv");
 	nnread_animation_file(theme, "data/themes/1/animation.csv");
+	nnread_image_feature_file(theme, "data/themes/1/imagefeatureassoc.csv");
 
 	int i;
 
@@ -39,12 +40,7 @@ int main(int argc, char **argv) {
 			NNImage *image = animation_image->image;
 			printf("Image %s with duration %.2f\n", image->filename,
 					animation_image->duration);
-
-			printf("  Features:\n");
 			int k;
-			for (k = 0; k < image->num_features; k++) {
-				printf("   feature %s\n", image->features[k]->id);
-			}
 			printf("  Image Features:\n");
 			for (k = 0; k < image->num_image_features; k++) {
 				NNImageFeature *image_feature = image->image_features[k];

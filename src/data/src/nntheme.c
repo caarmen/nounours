@@ -42,6 +42,14 @@ NNImage *nntheme_find_image(NNTheme *theme, const char *id) {
 	}
 	return NULL;
 }
+NNFeature *nntheme_find_feature(NNTheme *theme, const char *id) {
+	int i;
+	for(i=0; i < theme->num_features; i++) {
+		if(!strcmp(theme->features[i]->id, id))
+			return theme->features[i];
+	}
+	return NULL;
+}
 
 void nntheme_free(NNTheme *theme) {
 	free(theme->id);

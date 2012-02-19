@@ -25,6 +25,7 @@ void nntheme_add_feature(NNTheme *theme, NNFeature *feature);
 void nntheme_add_animation(NNTheme *theme, NNAnimation *animation);
 void nntheme_add_image(NNTheme *theme, NNImage *image);
 NNImage *nntheme_find_image(NNTheme *theme, const char *id);
+NNFeature *nntheme_find_feature(NNTheme *theme, const char *id);
 void nntheme_free(NNTheme *theme);
 
 #endif /* NNTHEME_H_ */
