@@ -3,3 +3,4 @@ automake -a &&
 autoconf &&
 ./configure &&
 make
+./nounours

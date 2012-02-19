@@ -9,7 +9,9 @@
 #include <stdlib.h>
 
 NNFeature * nnfeature_new(const char *id) {
-	return malloc(sizeof(NNFeature*));
+	NNFeature *feature = malloc(sizeof(NNFeature*));
+	feature->id = id;
+	return feature;
 }
 void nnfeature_free(NNFeature * nfeature) {
 	free(nfeature);
