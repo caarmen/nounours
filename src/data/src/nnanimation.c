@@ -27,6 +27,18 @@ NNAnimationImage * nnanimation_image_new(NNImage *image, float duration) {
 	return animation_image;
 }
 
+NNAnimationFling * nnanimation_fling_new(int x, int y, int width, int height, float min_vel_x, float min_vel_y, NNAnimation *animation) {
+	NNAnimationFling *animation_fling = malloc(sizeof(NNAnimationFling));
+	animation_fling->x = x;
+	animation_fling->y = y;
+	animation_fling->width = width;
+	animation_fling->height = height;
+	animation_fling->min_vel_x = min_vel_x;
+	animation_fling->min_vel_y = min_vel_y;
+	animation_fling->animation = animation;
+	return animation_fling;
+}
+
 void nnanimation_add_image(NNAnimation *animation, NNImage *image, float duration) {
 	NNAnimationImage *animation_image = nnanimation_image_new(image, duration);
 	nnresize_if_needed(animation->images, animation->num_images);

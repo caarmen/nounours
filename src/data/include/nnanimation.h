@@ -24,8 +24,19 @@ typedef struct NNAnimation {
 	int repeat;
 } NNAnimation;
 
+typedef struct NNAnimationFling {
+	int x;
+	int y;
+	int width;
+	int height;
+	float min_vel_x;
+	float min_vel_y;
+	NNAnimation *animation;
+} NNAnimationFling;
+
 NNAnimation * nnanimation_new(const char *id, const char *label, int interval, int repeat);
 NNAnimationImage * nnanimation_image_new(NNImage *image, float duration);
+NNAnimationFling * nnanimation_fling_new(int x, int y, int width, int height, float min_vel_x, float min_vel_y, NNAnimation *animation);
 void nnanimation_add_image(NNAnimation *animation, NNImage *image, float duration);
 void nnanimation_free(NNAnimation *animation);
 
