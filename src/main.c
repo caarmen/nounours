@@ -22,6 +22,7 @@ int main(int argc, char **argv) {
 	nnanimation_add_image(animation1, image2, 1.5f);
 	NNTheme *theme = nntheme_new("theme1");
 	nntheme_add_animation(theme, animation1);
+	nnread_feature_file(theme, "data/themes/1/feature.csv");
 	nnread_image_file(theme, "data/themes/1/image.csv");
 	nnread_animation_file(theme, "data/themes/1/animation.csv");
 

@@ -45,6 +45,16 @@ void nnimage_add_feature(NNImage *image, NNFeature *feature, int x, int y) {
 	image->image_features[image->num_image_features++] = image_feature;
 }
 
+NNFeature * nnimage_find_feature(NNImage *image, const char *id) {
+	int i;
+	for(i=0; i < image->num_features; i++) {
+		if(!strcmp(image->features[i]->id, id)) {
+			return image->features[i];
+		}
+	}
+	return NULL;
+}
+
 void nnimage_free(NNImage *image) {
 	free(image->id);
 	free(image->filename);

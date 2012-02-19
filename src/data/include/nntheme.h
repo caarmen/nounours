@@ -7,6 +7,7 @@
 
 #ifndef NNTHEME_H_
 #define NNTHEME_H_
+#include "nnfeature.h"
 #include "nnimage.h"
 #include "nnanimation.h"
 typedef struct NNTheme {
@@ -15,9 +16,12 @@ typedef struct NNTheme {
 	NNImage **images;
 	int num_animations;
 	NNAnimation **animations;
+	int num_features;
+	NNFeature **features;
 } NNTheme;
 
 NNTheme * nntheme_new(char *id);
+void nntheme_add_feature(NNTheme *theme, NNFeature *feature);
 void nntheme_add_animation(NNTheme *theme, NNAnimation *animation);
 void nntheme_add_image(NNTheme *theme, NNImage *image);
 NNImage *nntheme_find_image(NNTheme *theme, const char *id);

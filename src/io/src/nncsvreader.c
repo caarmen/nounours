@@ -15,11 +15,11 @@
 
 static const char *CSV_SEP = ",\r\n";
 
-
-char *nncsv_get_value(NNCSVLine *header, NNCSVLine *line, const char *field_name) {
+char *nncsv_get_value(NNCSVLine *header, NNCSVLine *line,
+		const char *field_name) {
 	int i;
-	for(i=0; i < header->num_cells; i++){
-		if(!strcmp(field_name, header->cells[i]))
+	for (i = 0; i < header->num_cells; i++) {
+		if (!strcmp(field_name, header->cells[i]))
 			return line->cells[i];
 	}
 	return "";
@@ -28,7 +28,7 @@ char *nncsv_get_value(NNCSVLine *header, NNCSVLine *line, const char *field_name
 NNCSVLine *nncsv_line_new() {
 	NNCSVLine *line = malloc(sizeof(NNCSVLine));
 	line->num_cells = 0;
-	line->cells = malloc(sizeof(char*)*NN_INITIAL_LIST_CAPACITY);
+	line->cells = malloc(sizeof(char*) * NN_INITIAL_LIST_CAPACITY);
 	return line;
 }
 void nncsv_free(NNCSVLine *line) {
@@ -36,7 +36,7 @@ void nncsv_free(NNCSVLine *line) {
 	free(line);
 }
 
-static void nncsv_split_line(char *input, NNCSVLine *line, const char *sep) {
+void nncsv_split_line(char *input, NNCSVLine *line, const char *sep) {
 	char *ptr;
 	char *cell;
 	line->num_cells = 0;
@@ -48,52 +48,58 @@ static void nncsv_split_line(char *input, NNCSVLine *line, const char *sep) {
 	}
 }
 
-int nncsv_read_line(FILE *file, NNCSVLine *line){
+int nncsv_read_line(FILE *file, NNCSVLine *line) {
 	char buf[1024];
-	if(!fgets(buf, sizeof(buf), file))
+	if (!fgets(buf, sizeof(buf), file))
 		return 0;
 	nncsv_split_line(buf, line, CSV_SEP);
 	return 1;
 }
 
-
-void nnread_image_file(NNTheme *theme, const char *filename) {
+FILE *nncsv_pre_read_file(const char *filename, NNCSVLine **header, NNCSVLine **line) {
 	FILE *file = fopen(filename, "r");
-	char buf[200];
-	NNCSVLine *header = nncsv_line_new();
-	nncsv_read_line(file, header);
-	NNCSVLine *line = nncsv_line_new();
-	while(nncsv_read_line(file, line)) {
-		char *id = nncsv_get_value(header, line, "Id");
-		char *image_filename = nncsv_get_value(header, line, "Filename");
-		NNImage *image = nnimage_new(id, image_filename);
-		nntheme_add_image(theme, image);
-	}
+	*header = nncsv_line_new();
+	nncsv_read_line(file, *header);
+	*line = nncsv_line_new();
+	return file;
+}
+
+void nncsv_post_read_file(FILE *file, NNCSVLine *header, NNCSVLine *line) {
 	nncsv_free(header);
 	nncsv_free(line);
 	fclose(file);
 }
 
+void nnread_image_file(NNTheme *theme, const char *filename) {
+	NNCSVLine *header, *line;
+	FILE *file = nncsv_pre_read_file(filename, &header, &line);
+	while (nncsv_read_line(file, line)) {
+		char *id = nncsv_get_value(header, line, "Id");
+		char *image_filename = nncsv_get_value(header, line, "Filename");
+		NNImage *image = nnimage_new(id, image_filename);
+		nntheme_add_image(theme, image);
+	}
+	nncsv_post_read_file(file, header, line);
+}
+
 void nnread_animation_file(NNTheme *theme, const char *filename) {
-	FILE *file = fopen(filename, "r");
-	char buf[200];
-	NNCSVLine *header = nncsv_line_new();
-	nncsv_read_line(file, header);
-	NNCSVLine *line = nncsv_line_new();
+	NNCSVLine *header, *line;
+	FILE *file = nncsv_pre_read_file(filename, &header, &line);
 	NNCSVLine *image_ids = nncsv_line_new();
-	while(nncsv_read_line(file, line)) {
+	while (nncsv_read_line(file, line)) {
 		char *id = nncsv_get_value(header, line, "Id");
 		char *label = nncsv_get_value(header, line, "Label");
 		char *interval = nncsv_get_value(header, line, "Interval");
 		char *repeat = nncsv_get_value(header, line, "Repeat");
-		NNAnimation *animation = nnanimation_new(id, label, atoi(interval), atoi(repeat));
+		NNAnimation *animation = nnanimation_new(id, label, atoi(interval),
+				atoi(repeat));
 		char *sequence = nncsv_get_value(header, line, "Sequence");
 		nncsv_split_line(sequence, image_ids, ";");
 		int i;
 		float duration = 1.0f;
-		for(i=0; i < image_ids->num_cells; i++) {
+		for (i = 0; i < image_ids->num_cells; i++) {
 			const char *cell = image_ids->cells[i];
-			if(strnstr(cell, "d=", 2)) {
+			if (strnstr(cell, "d=", 2)) {
 				duration = strtof(&cell[2], NULL);
 			} else {
 				NNImage *image = nntheme_find_image(theme, image_ids->cells[i]);
@@ -105,7 +111,16 @@ void nnread_animation_file(NNTheme *theme, const char *filename) {
 		free(repeat);
 		free(sequence);
 	}
-	nncsv_free(header);
-	nncsv_free(line);
-	fclose(file);
+	nncsv_post_read_file(file, header, line);
+}
+
+void nnread_feature_file(NNTheme *theme, const char *filename) {
+	NNCSVLine *header, *line;
+	FILE *file = nncsv_pre_read_file(filename, &header, &line);
+	while (nncsv_read_line(file, line)) {
+		char *id = nncsv_get_value(header, line, "Id");
+		NNFeature *feature = nnfeature_new(id);
+		nntheme_add_feature(theme, feature);
+	}
+	nncsv_post_read_file(file, header, line);
 }
