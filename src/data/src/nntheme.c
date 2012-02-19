@@ -8,9 +8,10 @@
 #include "nntheme.h"
 #include "nnanimation.h"
 #include "nnimage.h"
-#include "nndatacommon.h"
+#include "nncommon.h"
 NNTheme * nntheme_new(const char *id) {
 	NNTheme *theme = malloc(sizeof(NNTheme));
+	theme->id = id;
 	theme->num_images = 0;
 	theme->images = malloc(sizeof(NNImage*) *  NN_INITIAL_LIST_CAPACITY);
 	theme->num_animations = 0;
@@ -18,11 +19,11 @@ NNTheme * nntheme_new(const char *id) {
 	return theme;
 }
 void nntheme_add_animation(NNTheme *theme, NNAnimation *animation) {
-	nnresize_if_needed(theme->animations, theme->num_animations);
+	theme->animations = nnresize_if_needed(theme->animations, theme->num_animations);
 	theme->animations[theme->num_animations++] = animation;
 }
 void nntheme_add_image(NNTheme *theme, NNImage *image) {
-	nnresize_if_needed(theme->images, theme->num_images);
+	theme->images = nnresize_if_needed(theme->images, theme->num_images);
 	theme->images[theme->num_images++] = image;
 }
 void nntheme_free(NNTheme *theme) {

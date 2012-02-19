@@ -7,7 +7,7 @@
 
 #include <stdlib.h>
 #include "nnimage.h"
-#include "nndatacommon.h"
+#include "nncommon.h"
 
 NNImage * nnimage_new(const char *id, const char *filename) {
 	NNImage *result = malloc(sizeof(NNImage));
@@ -32,15 +32,15 @@ NNImageFeature * nnimage_feature_new(NNFeature *feature, int x, int y) {
 }
 
 void nnimage_add_adjacent_image(NNImage *image, NNImage *adjacent_image) {
-	nnresize_if_needed(image->adjacent_images, image->num_adjacent_images);
+	image->adjacent_images = nnresize_if_needed(image->adjacent_images, image->num_adjacent_images);
 	image->adjacent_images[image->num_adjacent_images++] = adjacent_image;
 }
 
 void nnimage_add_feature(NNImage *image, NNFeature *feature, int x, int y) {
-	nnresize_if_needed(image->features, image->num_features);
+	image->features = nnresize_if_needed(image->features, image->num_features);
 	image->features[image->num_features++] = feature;
 
-	nnresize_if_needed(image->image_features, image->num_image_features);
+	image->image_features = nnresize_if_needed(image->image_features, image->num_image_features);
 	NNImageFeature *image_feature = nnimage_feature_new(feature, x, y);
 	image->image_features[image->num_image_features++] = image_feature;
 }

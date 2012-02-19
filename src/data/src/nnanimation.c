@@ -7,7 +7,7 @@
 
 #include <stdlib.h>
 #include "nnanimation.h"
-#include "nndatacommon.h"
+#include "nncommon.h"
 
 NNAnimation * nnanimation_new(const char *id, const char *label, int interval, int repeat) {
 	NNAnimation *animation = malloc(sizeof(NNAnimation));
@@ -41,7 +41,7 @@ NNAnimationFling * nnanimation_fling_new(int x, int y, int width, int height, fl
 
 void nnanimation_add_image(NNAnimation *animation, NNImage *image, float duration) {
 	NNAnimationImage *animation_image = nnanimation_image_new(image, duration);
-	nnresize_if_needed(animation->images, animation->num_images);
+	animation->images = nnresize_if_needed(animation->images, animation->num_images);
 	animation->images[animation->num_images++] = animation_image;
 }
 

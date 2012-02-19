@@ -9,6 +9,7 @@
 #include "nnfeature.h"
 #include "nnanimation.h"
 #include "nntheme.h"
+#include "nncsvreader.h"
 int main(int argc, char **argv) {
 	NNImage *image1 = nnimage_new("123", "sittingdown.jpg");
 	NNImage *image2 = nnimage_new("124", "lookingup.jpg");
@@ -21,6 +22,9 @@ int main(int argc, char **argv) {
 	nnanimation_add_image(animation1, image2, 1.5f);
 	NNTheme *theme = nntheme_new("theme1");
 	nntheme_add_animation(theme, animation1);
+	nnread_image_file(theme, "data/themes/1/image.csv");
+	nnread_animation_file(theme, "data/themes/1/animation.csv");
+
 	int i;
 
 	printf("Theme %s\n", theme->id);
