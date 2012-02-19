@@ -174,7 +174,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_LDFLAGS = $(X11_LIBS) 
-AM_CFLAGS = -Isrc/data/include
+AM_CFLAGS = -Isrc/data/include -g
 nounours_SOURCES = src/main.c src/data/src/nnimage.c src/data/src/nnfeature.c src/data/src/nnanimation.c src/data/src/nndatacommon.c
 all: all-am
 

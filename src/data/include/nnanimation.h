@@ -18,12 +18,15 @@ typedef struct NNAnimationImage {
 typedef struct NNAnimation {
 	const char *id;
 	const char *label;
+	int num_images;
 	NNAnimationImage **images;
 	int interval;
 	int repeat;
 } NNAnimation;
 
 NNAnimation * nnanimation_new(const char *id, const char *label, int interval, int repeat);
+NNAnimationImage * nnanimation_image_new(NNImage *image, float duration);
+void nnanimation_add_image(NNAnimation *animation, NNImage *image, float duration);
 void nnanimation_free(NNAnimation *animation);
 
 #endif /* NNANIMATION_H_ */
