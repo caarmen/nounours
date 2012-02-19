@@ -141,3 +141,19 @@ void nnread_image_feature_file(NNTheme *theme, const char *filename) {
 	}
 	nncsv_post_read_file(file, header, line);
 }
+
+void nnread_adjacent_image_file(NNTheme *theme, const char *filename) {
+	NNCSVLine *header, *line;
+	FILE *file = nncsv_pre_read_file(filename, &header, &line);
+	while (nncsv_read_line(file, line)) {
+		char *image_id = nncsv_get_value(header, line, "ImageId");
+		char *feature_id = nncsv_get_value(header, line, "FeatureId");
+		char *adjacent_image_id = nncsv_get_value(header, line, "AdjacentImageId");
+		NNImage *image = nntheme_find_image(theme, image_id);
+		NNFeature *feature = nntheme_find_feature(theme, feature_id);
+		NNImage *adjacent_image = nntheme_find_image(theme, adjacent_image_id);
+		nnimage_add_adjacent_image(image, adjacent_image);
+		//TODO adjacent image needs feature
+	}
+	nncsv_post_read_file(file, header, line);
+}

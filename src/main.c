@@ -26,6 +26,7 @@ int main(int argc, char **argv) {
 	nnread_image_file(theme, "data/themes/1/image.csv");
 	nnread_animation_file(theme, "data/themes/1/animation.csv");
 	nnread_image_feature_file(theme, "data/themes/1/imagefeatureassoc.csv");
+	nnread_adjacent_image_file(theme, "data/themes/1/adjacentimage.csv");
 
 	int i;
 

@@ -27,5 +27,6 @@ void nnread_image_file(NNTheme *theme, const char *filename);
 void nnread_animation_file(NNTheme *theme, const char *filename);
 void nnread_feature_file(NNTheme *theme, const char *filename);
 void nnread_image_feature_file(NNTheme *theme, const char *filename);
+void nnread_adjacent_image_file(NNTheme *theme, const char *filename);
 
 #endif /* NNCSVREADER_H_ */
