@@ -10,6 +10,12 @@
 
 #include "nnfeature.h"
 
+typedef struct NNImageFeature {
+	NNFeature *feature;
+	int x;
+	int y;
+} NNImageFeature;
+
 typedef struct NNImage {
 	const char *id;
 	const char *filename;
@@ -17,17 +23,15 @@ typedef struct NNImage {
 	struct NNImage **adjacent_images;
 	int num_features;
 	NNFeature **features;
+	int num_image_features;
+	NNImageFeature **image_features;
 } NNImage;
 
-typedef struct NNImageFeature {
-	NNImage *image;
-	NNFeature *feature;
-	int x;
-	int y;
-} NNImageFeature;
+
 
 
 NNImage * nnimage_new(const char *id, const char *filename);
+NNImageFeature * nnimage_feature_new(NNFeature *feature, int x, int y);
 void nnimage_add_adjacent_image(NNImage *image, NNImage *adjacent_image);
 void nnimage_add_feature(NNImage *image, NNFeature *feature, int x, int y);
 void nnimage_free(NNImage *image);
