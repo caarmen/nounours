@@ -52,11 +52,12 @@ am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am__dirstamp = $(am__leading_dot)dirstamp
 am_nounours_OBJECTS = src/main.$(OBJEXT) \
+	src/common/src/nncommon.$(OBJEXT) \
 	src/data/src/nnimage.$(OBJEXT) \
 	src/data/src/nnfeature.$(OBJEXT) \
 	src/data/src/nnanimation.$(OBJEXT) \
-	src/data/src/nndatacommon.$(OBJEXT) \
-	src/data/src/nntheme.$(OBJEXT)
+	src/data/src/nntheme.$(OBJEXT) \
+	src/io/src/nncsvreader.$(OBJEXT)
 nounours_OBJECTS = $(am_nounours_OBJECTS)
 nounours_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)/config
@@ -90,7 +91,7 @@ AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
-CFLAGS = @CFLAGS@
+CFLAGS = -g -O0
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CYGPATH_W = @CYGPATH_W@
@@ -175,8 +176,8 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_LDFLAGS = $(X11_LIBS) 
-AM_CFLAGS = -Isrc/data/include -g
-nounours_SOURCES = src/main.c src/data/src/nnimage.c src/data/src/nnfeature.c src/data/src/nnanimation.c src/data/src/nndatacommon.c src/data/src/nntheme.c
+AM_CFLAGS = -Isrc/data/include -Isrc/io/include -Isrc/common/include
+nounours_SOURCES = src/main.c src/common/src/nncommon.c src/data/src/nnimage.c src/data/src/nnfeature.c src/data/src/nnanimation.c src/data/src/nntheme.c src/io/src/nncsvreader.c
 all: all-am
 
 .SUFFIXES:
@@ -276,6 +277,14 @@ src/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) src/$(DEPDIR)
 	@: > src/$(DEPDIR)/$(am__dirstamp)
 src/main.$(OBJEXT): src/$(am__dirstamp) src/$(DEPDIR)/$(am__dirstamp)
+src/common/src/$(am__dirstamp):
+	@$(MKDIR_P) src/common/src
+	@: > src/common/src/$(am__dirstamp)
+src/common/src/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) src/common/src/$(DEPDIR)
+	@: > src/common/src/$(DEPDIR)/$(am__dirstamp)
+src/common/src/nncommon.$(OBJEXT): src/common/src/$(am__dirstamp) \
+	src/common/src/$(DEPDIR)/$(am__dirstamp)
 src/data/src/$(am__dirstamp):
 	@$(MKDIR_P) src/data/src
 	@: > src/data/src/$(am__dirstamp)
@@ -288,32 +297,40 @@ src/data/src/nnfeature.$(OBJEXT): src/data/src/$(am__dirstamp) \
 	src/data/src/$(DEPDIR)/$(am__dirstamp)
 src/data/src/nnanimation.$(OBJEXT): src/data/src/$(am__dirstamp) \
 	src/data/src/$(DEPDIR)/$(am__dirstamp)
-src/data/src/nndatacommon.$(OBJEXT): src/data/src/$(am__dirstamp) \
-	src/data/src/$(DEPDIR)/$(am__dirstamp)
 src/data/src/nntheme.$(OBJEXT): src/data/src/$(am__dirstamp) \
 	src/data/src/$(DEPDIR)/$(am__dirstamp)
+src/io/src/$(am__dirstamp):
+	@$(MKDIR_P) src/io/src
+	@: > src/io/src/$(am__dirstamp)
+src/io/src/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) src/io/src/$(DEPDIR)
+	@: > src/io/src/$(DEPDIR)/$(am__dirstamp)
+src/io/src/nncsvreader.$(OBJEXT): src/io/src/$(am__dirstamp) \
+	src/io/src/$(DEPDIR)/$(am__dirstamp)
 nounours$(EXEEXT): $(nounours_OBJECTS) $(nounours_DEPENDENCIES) 
 	@rm -f nounours$(EXEEXT)
 	$(LINK) $(nounours_OBJECTS) $(nounours_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
+	-rm -f src/common/src/nncommon.$(OBJEXT)
 	-rm -f src/data/src/nnanimation.$(OBJEXT)
-	-rm -f src/data/src/nndatacommon.$(OBJEXT)
 	-rm -f src/data/src/nnfeature.$(OBJEXT)
 	-rm -f src/data/src/nnimage.$(OBJEXT)
 	-rm -f src/data/src/nntheme.$(OBJEXT)
+	-rm -f src/io/src/nncsvreader.$(OBJEXT)
 	-rm -f src/main.$(OBJEXT)
 
 distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/common/src/$(DEPDIR)/nncommon.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/data/src/$(DEPDIR)/nnanimation.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/data/src/$(DEPDIR)/nndatacommon.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/data/src/$(DEPDIR)/nnfeature.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/data/src/$(DEPDIR)/nnimage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/data/src/$(DEPDIR)/nntheme.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/io/src/$(DEPDIR)/nncsvreader.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
@@ -560,8 +577,12 @@ distclean-generic:
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
 	-rm -f src/$(DEPDIR)/$(am__dirstamp)
 	-rm -f src/$(am__dirstamp)
+	-rm -f src/common/src/$(DEPDIR)/$(am__dirstamp)
+	-rm -f src/common/src/$(am__dirstamp)
 	-rm -f src/data/src/$(DEPDIR)/$(am__dirstamp)
 	-rm -f src/data/src/$(am__dirstamp)
+	-rm -f src/io/src/$(DEPDIR)/$(am__dirstamp)
+	-rm -f src/io/src/$(am__dirstamp)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
@@ -572,7 +593,7 @@ clean-am: clean-binPROGRAMS clean-generic mostlyclean-am
 
 distclean: distclean-am
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
-	-rm -rf src/$(DEPDIR) src/data/src/$(DEPDIR)
+	-rm -rf src/$(DEPDIR) src/common/src/$(DEPDIR) src/data/src/$(DEPDIR) src/io/src/$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-hdr distclean-tags
@@ -620,7 +641,7 @@ installcheck-am:
 maintainer-clean: maintainer-clean-am
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
 	-rm -rf $(top_srcdir)/autom4te.cache
-	-rm -rf src/$(DEPDIR) src/data/src/$(DEPDIR)
+	-rm -rf src/$(DEPDIR) src/common/src/$(DEPDIR) src/data/src/$(DEPDIR) src/io/src/$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
