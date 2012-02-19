@@ -16,6 +16,10 @@ NNImage * nnimage_new(const char *id, const char *filename) {
 	result->image_features = malloc(sizeof(NNImageFeature*)*NN_INITIAL_LIST_CAPACITY);
 	result->id = id;
 	result->filename = filename;
+	result->num_features = 0;
+	result->num_adjacent_images = 0;
+	result->num_image_features = 0;
+
 	return result;
 }
 
