@@ -9,7 +9,7 @@
 #include "nnanimation.h"
 #include "nncommon.h"
 
-NNAnimation * nnanimation_new(const char *id, const char *label, int interval, int repeat) {
+NNAnimation * nnanimation_new(char *id, char *label, int interval, int repeat) {
 	NNAnimation *animation = malloc(sizeof(NNAnimation));
 	animation->images = malloc(sizeof(NNAnimationImage*)*NN_INITIAL_LIST_CAPACITY);
 	animation->id = id;
@@ -47,6 +47,8 @@ void nnanimation_add_image(NNAnimation *animation, NNImage *image, float duratio
 
 void nnanimation_free(NNAnimation *animation) {
 	int i;
+	free(animation->id);
+	free(animation->label);
 	for(i=0; i < animation->num_images; i++) {
 		free(animation->images[i]);
 	}

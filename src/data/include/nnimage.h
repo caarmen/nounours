@@ -17,8 +17,8 @@ typedef struct NNImageFeature {
 } NNImageFeature;
 
 typedef struct NNImage {
-	const char *id;
-	const char *filename;
+	char *id;
+	char *filename;
 	int num_adjacent_images;
 	struct NNImage **adjacent_images;
 	int num_features;
@@ -30,7 +30,7 @@ typedef struct NNImage {
 
 
 
-NNImage * nnimage_new(const char *id, const char *filename);
+NNImage * nnimage_new(char *id, char *filename);
 NNImageFeature * nnimage_feature_new(NNFeature *feature, int x, int y);
 void nnimage_add_adjacent_image(NNImage *image, NNImage *adjacent_image);
 void nnimage_add_feature(NNImage *image, NNFeature *feature, int x, int y);

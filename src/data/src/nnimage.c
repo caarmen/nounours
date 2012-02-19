@@ -9,7 +9,7 @@
 #include "nnimage.h"
 #include "nncommon.h"
 
-NNImage * nnimage_new(const char *id, const char *filename) {
+NNImage * nnimage_new(char *id, char *filename) {
 	NNImage *result = malloc(sizeof(NNImage));
 	result->adjacent_images = malloc(sizeof(NNImage*)*NN_INITIAL_LIST_CAPACITY);
 	result->features = malloc(sizeof(NNFeature*)*NN_INITIAL_LIST_CAPACITY);
@@ -46,6 +46,8 @@ void nnimage_add_feature(NNImage *image, NNFeature *feature, int x, int y) {
 }
 
 void nnimage_free(NNImage *image) {
+	free(image->id);
+	free(image->filename);
 	free(image->adjacent_images);
 	int i;
 	for(i=0; i < image->num_image_features; i++)

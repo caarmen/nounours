@@ -9,7 +9,7 @@
 #include "nnanimation.h"
 #include "nnimage.h"
 #include "nncommon.h"
-NNTheme * nntheme_new(const char *id) {
+NNTheme * nntheme_new(char *id) {
 	NNTheme *theme = malloc(sizeof(NNTheme));
 	theme->id = id;
 	theme->num_images = 0;
@@ -27,6 +27,7 @@ void nntheme_add_image(NNTheme *theme, NNImage *image) {
 	theme->images[theme->num_images++] = image;
 }
 void nntheme_free(NNTheme *theme) {
+	free(theme->id);
 	int i;
 	for(i=0; i < theme->num_animations; i++)
 		nnanimation_free(theme->animations[i]);

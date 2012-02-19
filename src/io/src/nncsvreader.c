@@ -16,7 +16,7 @@
 static const char *CSV_SEP = ",\r\n";
 
 
-const char *nncsv_get_value(NNCSVLine *header, NNCSVLine *line, const char *field_name) {
+char *nncsv_get_value(NNCSVLine *header, NNCSVLine *line, const char *field_name) {
 	int i;
 	for(i=0; i < header->num_cells; i++){
 		if(!strcmp(field_name, header->cells[i]))
@@ -58,8 +58,8 @@ void nnread_image_file(NNTheme *theme, const char *filename) {
 	nncsv_read_line(file, header);
 	NNCSVLine *line = nncsv_line_new();
 	while(nncsv_read_line(file, line)) {
-		const char *id = nncsv_get_value(header, line, "Id");
-		const char *image_filename = nncsv_get_value(header, line, "Filename");
+		char *id = nncsv_get_value(header, line, "Id");
+		char *image_filename = nncsv_get_value(header, line, "Filename");
 		NNImage *image = nnimage_new(id, image_filename);
 		nntheme_add_image(theme, image);
 	}
@@ -75,10 +75,10 @@ void nnread_animation_file(NNTheme *theme, const char *filename) {
 	nncsv_read_line(file, header);
 	NNCSVLine *line = nncsv_line_new();
 	while(nncsv_read_line(file, line)) {
-		const char *id = nncsv_get_value(header, line, "Id");
-		const char *label = nncsv_get_value(header, line, "Label");
-		const char *interval = nncsv_get_value(header, line, "Interval");
-		const char *repeat = nncsv_get_value(header, line, "Repeat");
+		char *id = nncsv_get_value(header, line, "Id");
+		char *label = nncsv_get_value(header, line, "Label");
+		char *interval = nncsv_get_value(header, line, "Interval");
+		char *repeat = nncsv_get_value(header, line, "Repeat");
 		NNAnimation *animation = nnanimation_new(id, label, atoi(interval), atoi(repeat));
 		nntheme_add_animation(theme, animation);
 		//TODO image seq

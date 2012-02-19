@@ -9,10 +9,10 @@
 #define NNFEATURE_H_
 
 typedef struct NNFeature {
-	const char *id;
+	char *id;
 } NNFeature;
 
-NNFeature * nnfeature_new(const char *id);
+NNFeature * nnfeature_new(char *id);
 void nnfeature_free(NNFeature * nfeature);
 
 #endif /* NNFEATURE_H_ */
