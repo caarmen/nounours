@@ -27,6 +27,7 @@ int main(int argc, char **argv) {
 	nnread_animation_file(theme, "data/themes/1/animation.csv");
 	nnread_image_feature_file(theme, "data/themes/1/imagefeatureassoc.csv");
 	nnread_adjacent_image_file(theme, "data/themes/1/adjacentimage.csv");
+	nnread_fling_animation_file(theme, "data/themes/1/flinganimation.csv");
 
 	int i;
 
@@ -54,6 +55,11 @@ int main(int argc, char **argv) {
 			}
 
 		}
+	}
+	printf("Flings\n");
+	for(i=0; i < theme->num_animation_flings; i++) {
+		NNAnimationFling *fling = theme->animation_flings[i];
+		printf("%s velx=%f, vely=%f\n", fling->animation->label, fling->min_vel_x, fling->min_vel_y);
 	}
 
 	return 0;

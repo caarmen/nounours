@@ -56,7 +56,8 @@ int nncsv_read_line(FILE *file, NNCSVLine *line) {
 	return 1;
 }
 
-FILE *nncsv_pre_read_file(const char *filename, NNCSVLine **header, NNCSVLine **line) {
+FILE *nncsv_pre_read_file(const char *filename, NNCSVLine **header,
+		NNCSVLine **line) {
 	FILE *file = fopen(filename, "r");
 	*header = nncsv_line_new();
 	nncsv_read_line(file, *header);
@@ -148,12 +149,34 @@ void nnread_adjacent_image_file(NNTheme *theme, const char *filename) {
 	while (nncsv_read_line(file, line)) {
 		char *image_id = nncsv_get_value(header, line, "ImageId");
 		char *feature_id = nncsv_get_value(header, line, "FeatureId");
-		char *adjacent_image_id = nncsv_get_value(header, line, "AdjacentImageId");
+		char *adjacent_image_id = nncsv_get_value(header, line,
+				"AdjacentImageId");
 		NNImage *image = nntheme_find_image(theme, image_id);
 		NNFeature *feature = nntheme_find_feature(theme, feature_id);
 		NNImage *adjacent_image = nntheme_find_image(theme, adjacent_image_id);
 		nnimage_add_adjacent_image(image, adjacent_image);
 		//TODO adjacent image needs feature
+	}
+	nncsv_post_read_file(file, header, line);
+}
+
+void nnread_fling_animation_file(NNTheme *theme, const char *filename) {
+	NNCSVLine *header, *line;
+	FILE *file = nncsv_pre_read_file(filename, &header, &line);
+	while (nncsv_read_line(file, line)) {
+		char *id = nncsv_get_value(header, line, "Id");
+		char *x = nncsv_get_value(header, line, "X");
+		char *y = nncsv_get_value(header, line, "Y");
+		char *width = nncsv_get_value(header, line, "Width");
+		char *height = nncsv_get_value(header, line, "Height");
+		char *min_vel_x = nncsv_get_value(header, line, "MinVelX");
+		char *min_vel_y = nncsv_get_value(header, line, "MinVelY");
+		char *animation_id = nncsv_get_value(header, line, "AnimationId");
+		NNAnimation *animation = nntheme_find_animation(theme, animation_id);
+		NNAnimationFling *fling = nnanimation_fling_new(atoi(x), atoi(y),
+				atoi(width), atoi(height), strtof(min_vel_x, NULL),
+				strtof(min_vel_y, NULL), animation);
+		nntheme_add_animation_fling(theme, fling);
 	}
 	nncsv_post_read_file(file, header, line);
 }

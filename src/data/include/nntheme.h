@@ -18,13 +18,17 @@ typedef struct NNTheme {
 	NNAnimation **animations;
 	int num_features;
 	NNFeature **features;
+	int num_animation_flings;
+	NNAnimationFling **animation_flings;
 } NNTheme;
 
 NNTheme * nntheme_new(char *id);
 void nntheme_add_feature(NNTheme *theme, NNFeature *feature);
 void nntheme_add_animation(NNTheme *theme, NNAnimation *animation);
+void nntheme_add_animation_fling(NNTheme *theme, NNAnimationFling *animation_fling);
 void nntheme_add_image(NNTheme *theme, NNImage *image);
 NNImage *nntheme_find_image(NNTheme *theme, const char *id);
+NNAnimation *nntheme_find_animation(NNTheme *theme, const char *id);
 NNFeature *nntheme_find_feature(NNTheme *theme, const char *id);
 void nntheme_free(NNTheme *theme);
 

@@ -18,6 +18,8 @@ NNTheme * nntheme_new(char *id) {
 	theme->images = malloc(sizeof(NNImage*) *  NN_INITIAL_LIST_CAPACITY);
 	theme->num_animations = 0;
 	theme->animations = malloc(sizeof(NNAnimation*) * NN_INITIAL_LIST_CAPACITY);
+	theme->num_animation_flings = 0;
+	theme->animation_flings = malloc(sizeof(NNAnimationFling*) * NN_INITIAL_LIST_CAPACITY);
 	return theme;
 }
 
@@ -30,6 +32,12 @@ void nntheme_add_animation(NNTheme *theme, NNAnimation *animation) {
 	theme->animations = nnresize_if_needed(theme->animations, theme->num_animations);
 	theme->animations[theme->num_animations++] = animation;
 }
+
+void nntheme_add_animation_fling(NNTheme *theme, NNAnimationFling *animation_fling) {
+	theme->animation_flings = nnresize_if_needed(theme->animation_flings, theme->num_animation_flings);
+	theme->animation_flings[theme->num_animation_flings++] = animation_fling;
+}
+
 void nntheme_add_image(NNTheme *theme, NNImage *image) {
 	theme->images = nnresize_if_needed(theme->images, theme->num_images);
 	theme->images[theme->num_images++] = image;
@@ -42,6 +50,14 @@ NNImage *nntheme_find_image(NNTheme *theme, const char *id) {
 	}
 	return NULL;
 }
+NNAnimation *nntheme_find_animation(NNTheme *theme, const char *id) {
+	int i;
+	for(i=0; i < theme->num_animations; i++)
+		if(!strcmp(theme->animations[i]->id, id))
+			return theme->animations[i];
+	return NULL;
+}
+
 NNFeature *nntheme_find_feature(NNTheme *theme, const char *id) {
 	int i;
 	for(i=0; i < theme->num_features; i++) {
