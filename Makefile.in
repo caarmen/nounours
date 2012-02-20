@@ -71,7 +71,7 @@ am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
-LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@ 
 SOURCES = $(nounours_SOURCES)
 DIST_SOURCES = $(nounours_SOURCES)
 ETAGS = etags
@@ -329,7 +329,7 @@ src/ui/src/nnuiimage.$(OBJEXT): src/ui/src/$(am__dirstamp) \
 	src/ui/src/$(DEPDIR)/$(am__dirstamp)
 nounours$(EXEEXT): $(nounours_OBJECTS) $(nounours_DEPENDENCIES) 
 	@rm -f nounours$(EXEEXT)
-	$(LINK) $(nounours_OBJECTS) $(nounours_LDADD) $(LIBS)
+	$(LINK) $(nounours_OBJECTS) $(nounours_LDADD) $(LIBS) $(AM_LDFLAGS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
