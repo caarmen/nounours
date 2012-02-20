@@ -63,7 +63,8 @@ am_nounours_OBJECTS = src/main.$(OBJEXT) \
 	src/ui/src/nnuinounours.$(OBJEXT) \
 	src/ui/src/nnuiimage.$(OBJEXT)
 nounours_OBJECTS = $(am_nounours_OBJECTS)
-nounours_LDADD = $(LDADD)
+am__DEPENDENCIES_1 =
+nounours_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)/config
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
@@ -71,7 +72,7 @@ am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
-LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@ 
+LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 SOURCES = $(nounours_SOURCES)
 DIST_SOURCES = $(nounours_SOURCES)
 ETAGS = etags
@@ -181,8 +182,8 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-AM_LDFLAGS = $(X11_LIBS) $(JPEG_LIBS)
 AM_CFLAGS = $(JPEG_CFLAGS) -Isrc/data/include -Isrc/io/include -Isrc/common/include -Isrc/ui/include
+nounours_LDADD = $(X11_LIBS) $(JPEG_LIBS)
 nounours_SOURCES = src/main.c src/common/src/nnnounours.c src/common/src/nncommon.c src/data/src/nnimage.c src/data/src/nnfeature.c src/data/src/nnanimation.c src/data/src/nntheme.c src/io/src/nncsvreader.c src/io/src/nnpropertiesreader.c src/ui/src/nnuinounours.c src/ui/src/nnuiimage.c
 all: all-am
 
@@ -329,7 +330,7 @@ src/ui/src/nnuiimage.$(OBJEXT): src/ui/src/$(am__dirstamp) \
 	src/ui/src/$(DEPDIR)/$(am__dirstamp)
 nounours$(EXEEXT): $(nounours_OBJECTS) $(nounours_DEPENDENCIES) 
 	@rm -f nounours$(EXEEXT)
-	$(LINK) $(nounours_OBJECTS) $(nounours_LDADD) $(LIBS) $(AM_LDFLAGS)
+	$(LINK) $(nounours_OBJECTS) $(nounours_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
