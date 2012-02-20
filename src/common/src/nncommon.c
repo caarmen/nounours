@@ -7,6 +7,7 @@
 
 #include <errno.h>
 #include <stdlib.h>
+#include <malloc/malloc.h>
 #include "nncommon.h"
 void * nnresize_if_needed(void *ptr, int current_size) {
 	if(malloc_size(ptr) <= current_size * sizeof(void*)) {
