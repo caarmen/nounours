@@ -5,12 +5,10 @@
  *      Author: calvarez
  */
 
-#include <errno.h>
 #include <stdlib.h>
-#include <malloc/malloc.h>
 #include "nncommon.h"
 void * nnresize_if_needed(void *ptr, int current_size) {
-	if(malloc_size(ptr) <= current_size * sizeof(void*)) {
+	if((current_size +1) % NN_INITIAL_LIST_CAPACITY == 0) {
 		ptr = realloc(ptr, (current_size + NN_INITIAL_LIST_CAPACITY)* sizeof(void*));
 	}
 	return ptr;
