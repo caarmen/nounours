@@ -5,6 +5,7 @@
  *      Author: calvarez
  */
 #include <stdio.h>
+#include "nnnounours.h"
 #include "nnimage.h"
 #include "nnfeature.h"
 #include "nnanimation.h"
@@ -66,7 +67,8 @@ int main(int argc, char **argv) {
 	}
 
 	printf("Properties:\n");
-	nnread_theme_file(theme, "data/themes/1/nounoursdeftheme.properties");
-
+	nnread_theme_properties_file(theme, "data/themes/1/nounoursdeftheme.properties");
+	NNNounours *nounours = nnnounours_new();
+	nnread_nounours_properties_file(nounours, "data/themes/1/nounours.properties");
 	return 0;
 }

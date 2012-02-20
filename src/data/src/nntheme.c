@@ -23,12 +23,12 @@ NNTheme * nntheme_new(char *id) {
 	theme->animation_flings = malloc(sizeof(NNAnimationFling*) * NN_INITIAL_LIST_CAPACITY);
 	theme->shake_animation = 0;
 	theme->resume_animation= 0;
+	theme->animation_idle = 0;
+	theme->animation_idle_end = 0;
 	theme->default_image = 0;
 	theme->help_image= 0;
 	theme->height = 0;
 	theme->width = 0;
-	theme->animation_idle = 0;
-	theme->animation_idle_end = 0;
 	return theme;
 }
 

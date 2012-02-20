@@ -22,12 +22,12 @@ typedef struct NNTheme {
 	NNAnimationFling **animation_flings;
 	NNAnimation *shake_animation;
 	NNAnimation *resume_animation;
+	NNAnimation *animation_idle;
+	NNAnimation *animation_idle_end;
 	NNImage *default_image;
 	NNImage *help_image;
 	int height;
 	int width;
-	int animation_idle;
-	int animation_idle_end;
 } NNTheme;
 
 NNTheme * nntheme_new(char *id);

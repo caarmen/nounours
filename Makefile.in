@@ -52,6 +52,7 @@ am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am__dirstamp = $(am__leading_dot)dirstamp
 am_nounours_OBJECTS = src/main.$(OBJEXT) \
+	src/common/src/nnnounours.$(OBJEXT) \
 	src/common/src/nncommon.$(OBJEXT) \
 	src/data/src/nnimage.$(OBJEXT) \
 	src/data/src/nnfeature.$(OBJEXT) \
@@ -178,7 +179,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_LDFLAGS = $(X11_LIBS) 
 AM_CFLAGS = -Isrc/data/include -Isrc/io/include -Isrc/common/include
-nounours_SOURCES = src/main.c src/common/src/nncommon.c src/data/src/nnimage.c src/data/src/nnfeature.c src/data/src/nnanimation.c src/data/src/nntheme.c src/io/src/nncsvreader.c src/io/src/nnpropertiesreader.c
+nounours_SOURCES = src/main.c src/common/src/nnnounours.c src/common/src/nncommon.c src/data/src/nnimage.c src/data/src/nnfeature.c src/data/src/nnanimation.c src/data/src/nntheme.c src/io/src/nncsvreader.c src/io/src/nnpropertiesreader.c
 all: all-am
 
 .SUFFIXES:
@@ -284,6 +285,8 @@ src/common/src/$(am__dirstamp):
 src/common/src/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) src/common/src/$(DEPDIR)
 	@: > src/common/src/$(DEPDIR)/$(am__dirstamp)
+src/common/src/nnnounours.$(OBJEXT): src/common/src/$(am__dirstamp) \
+	src/common/src/$(DEPDIR)/$(am__dirstamp)
 src/common/src/nncommon.$(OBJEXT): src/common/src/$(am__dirstamp) \
 	src/common/src/$(DEPDIR)/$(am__dirstamp)
 src/data/src/$(am__dirstamp):
@@ -317,6 +320,7 @@ nounours$(EXEEXT): $(nounours_OBJECTS) $(nounours_DEPENDENCIES)
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
 	-rm -f src/common/src/nncommon.$(OBJEXT)
+	-rm -f src/common/src/nnnounours.$(OBJEXT)
 	-rm -f src/data/src/nnanimation.$(OBJEXT)
 	-rm -f src/data/src/nnfeature.$(OBJEXT)
 	-rm -f src/data/src/nnimage.$(OBJEXT)
@@ -330,6 +334,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/common/src/$(DEPDIR)/nncommon.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/common/src/$(DEPDIR)/nnnounours.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/data/src/$(DEPDIR)/nnanimation.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/data/src/$(DEPDIR)/nnfeature.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/data/src/$(DEPDIR)/nnimage.Po@am__quote@
