@@ -31,28 +31,30 @@ int main(int argc, char **argv) {
 		for (j = 0; j < animation->num_images; j++) {
 			NNAnimationImage *animation_image = animation->images[j];
 			NNImage *image = animation_image->image;
-			printf("Image %s with duration %.2f\n", image->filename,
+			printf("  Image %s with duration %.2f\n", image->filename,
 					animation_image->duration);
-			int k;
-			printf("  Image Features:\n");
-			for (k = 0; k < image->num_image_features; k++) {
-				NNImageFeature *image_feature = image->image_features[k];
-				printf("   feature %s at %d x %d\n", image_feature->feature->id,
-						image_feature->x, image_feature->y);
+		}
+	}
+	for (i=0; i < theme->num_images; i++) {
+		NNImage *image = theme->images[i];
+		int k;
+		printf("  Image Features:\n");
+		for (k = 0; k < image->num_image_features; k++) {
+			NNImageFeature *image_feature = image->image_features[k];
+			printf("   feature %s at %d x %d\n", image_feature->feature->id,
+					image_feature->x, image_feature->y);
+		}
+		printf("  Adjacent images:\n");
+		for (k = 0; k < image->num_adjacent_images; k++) {
+			NNAdjacentImages *adjacent_images = image->adjacent_images[k];
+			NNFeature *feature = adjacent_images->feature;
+			int l;
+			for(l=0; l < adjacent_images->num_adjacent_images; l++) {
+				NNImage *adjacent_image = adjacent_images->adjacent_images[l];
+				printf("   adjacent image %s->%s\n",
+						feature->id,
+						adjacent_image->id);
 			}
-			printf("  Adjacent images:\n");
-			for (k = 0; k < image->num_adjacent_images; k++) {
-				NNAdjacentImages *adjacent_images = image->adjacent_images[k];
-				NNFeature *feature = adjacent_images->feature;
-				int l;
-				for(l=0; l < adjacent_images->num_adjacent_images; l++) {
-					NNImage *adjacent_image = adjacent_images->adjacent_images[l];
-					printf("   adjacent image %s->%s\n",
-							feature->id,
-							adjacent_image->id);
-				}
-			}
-
 		}
 	}
 	printf("Flings\n");
