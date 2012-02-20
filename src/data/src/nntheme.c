@@ -10,8 +10,9 @@
 #include "nnanimation.h"
 #include "nnimage.h"
 #include "nncommon.h"
-NNTheme * nntheme_new(char *id) {
+NNTheme * nntheme_new(NNNounours *nounours, char *id) {
 	NNTheme *theme = malloc(sizeof(NNTheme));
+	theme->nounours = nounours;
 	theme->id = strdup(id);
 	theme->num_features = 0;
 	theme->features = malloc(sizeof(NNFeature*) * NN_INITIAL_LIST_CAPACITY);

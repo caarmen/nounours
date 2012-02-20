@@ -17,9 +17,9 @@ int main(int argc, char **argv) {
 
 	NNNounours *nounours = nnnounours_new();
 
-	NNTheme *theme = nntheme_new("1");
+	NNTheme *theme = nntheme_new(nounours, "1");
 	nnread_feature_file(theme, "data/themes/1/feature.csv");
-	nnread_image_file(nounours, theme, "data/themes/1/image.csv");
+	nnread_image_file(theme, "data/themes/1/image.csv");
 	nnread_animation_file(theme, "data/themes/1/animation.csv");
 	nnread_image_feature_file(theme, "data/themes/1/imagefeatureassoc.csv");
 	nnread_adjacent_image_file(theme, "data/themes/1/adjacentimage.csv");

@@ -69,8 +69,6 @@ static XImage * nnuiimage_jpeg_to_Ximage(Display *display, int screen_number,
 			* cinfo.output_height;
 	char *data = (char*) malloc(image_size);
 	Visual *visual = DefaultVisual(display, screen_number);
-	printf("depth: %d, red:%lu, green: %lu, blue: %lu\n", depth,
-			visual->red_mask, visual->green_mask, visual->blue_mask);
 	int max_byte_value = 255;
 	int i;
 	int ptr = 0;

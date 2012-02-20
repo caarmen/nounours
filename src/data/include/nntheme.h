@@ -10,7 +10,9 @@
 #include "nnfeature.h"
 #include "nnimage.h"
 #include "nnanimation.h"
+#include "nnnounours.h"
 typedef struct NNTheme {
+	NNNounours *nounours;
 	char *id;
 	int num_images;
 	NNImage **images;
@@ -30,7 +32,7 @@ typedef struct NNTheme {
 	int width;
 } NNTheme;
 
-NNTheme * nntheme_new(char *id);
+NNTheme * nntheme_new(NNNounours *nounours, char *id);
 void nntheme_add_feature(NNTheme *theme, NNFeature *feature);
 void nntheme_add_animation(NNTheme *theme, NNAnimation *animation);
 void nntheme_add_animation_fling(NNTheme *theme, NNAnimationFling *animation_fling);
