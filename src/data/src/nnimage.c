@@ -11,16 +11,17 @@
 #include "nncommon.h"
 
 
-NNImage * nnimage_new(char *id, char *filename) {
+NNImage * nnimage_new(NNNounours *nounours, char *id, char *filename) {
 	NNImage *result = malloc(sizeof(NNImage));
 	result->adjacent_images = malloc(sizeof(NNImage*)*NN_INITIAL_LIST_CAPACITY);
 	result->features = malloc(sizeof(NNFeature*)*NN_INITIAL_LIST_CAPACITY);
 	result->image_features = malloc(sizeof(NNImageFeature*)*NN_INITIAL_LIST_CAPACITY);
 	result->id = strdup(id);
-	result->filename = strdup(filename);
+	result->filename = filename;
 	result->num_features = 0;
 	result->num_adjacent_images = 0;
 	result->num_image_features = 0;
+	result->uiimage = nnuiimage_new(nounours->uinounours, filename);
 
 	return result;
 }

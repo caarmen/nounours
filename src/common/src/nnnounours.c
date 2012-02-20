@@ -15,6 +15,7 @@ NNNounours * nnnounours_new() {
 	nounours->fling_precision = 0;
 	nounours->idle_time = 0;
 	nounours->idle_ping_interval = 0;
+	nounours->uinounours = nnuinounours_new();
 	return nounours;
 }
 void nnnounours_free(NNNounours *nounours) {

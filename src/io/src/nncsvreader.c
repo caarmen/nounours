@@ -73,13 +73,16 @@ void nncsv_post_read_file(FILE *file, NNCSVLine *header, NNCSVLine *line) {
 	fclose(file);
 }
 
-void nnread_image_file(NNTheme *theme, const char *filename) {
+void nnread_image_file(NNNounours *nounours, NNTheme *theme, const char *filename) {
 	NNCSVLine *header, *line;
 	FILE *file = nncsv_pre_read_file(filename, &header, &line);
 	while (nncsv_read_line(file, line)) {
 		char *id = nncsv_get_value(header, line, "Id");
 		char *image_filename = nncsv_get_value(header, line, "Filename");
-		NNImage *image = nnimage_new(id, image_filename);
+		char location[128];
+		sprintf(location, "data/themes/%s/images/%s", theme->id, image_filename);
+
+		NNImage *image = nnimage_new(nounours, id, strdup(location));
 		nntheme_add_image(theme, image);
 	}
 	nncsv_post_read_file(file, header, line);

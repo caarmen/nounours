@@ -8,12 +8,15 @@
 #ifndef NNNOUNOURS_H_
 #define NNNOUNOURS_H_
 
+#include "nnuinounours.h"
+
 typedef struct NNNounours {
 	int fling_factor;
 	int fling_precision;
 	int shake_factor;
 	int idle_time;
 	int idle_ping_interval;
+	NNUINounours *uinounours;
 } NNNounours;
 
 NNNounours * nnnounours_new();

@@ -606,6 +606,8 @@ ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
+JPEG_LIBS
+JPEG_CFLAGS
 X11_LIBS
 X11_CFLAGS
 PKG_CONFIG_LIBDIR
@@ -697,6 +699,8 @@ ac_user_opts='
 enable_option_checking
 enable_dependency_tracking
 with_x
+with_jpeg_include_path
+with_jpeg_lib_path
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1341,6 +1345,9 @@ Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --with-x                use the X Window System
+  --with-jpeg-include-path
+                          location of the jpeglib.h, defaults to /usr/include/
+  --with-jpeg-lib-path    location of the libjpeg library
 
 Some influential environment variables:
   CC          C compiler command
@@ -4290,7 +4297,7 @@ fi
 done
 
 
-for ac_header in string.h Xlib.h
+for ac_header in string.h Xlib.h jpeglib.h
 do :
   as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
 ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
@@ -4513,6 +4520,26 @@ else
 $as_echo "yes" >&6; }
 
 fi
+
+# Check whether --with-jpeg-include-path was given.
+if test "${with_jpeg_include_path+set}" = set; then :
+  withval=$with_jpeg_include_path; JPEG_CFLAGS="-I$withval"
+else
+  JPEG_CFLAGS='-I/usr/include/'
+fi
+
+
+
+
+# Check whether --with-jpeg-lib-path was given.
+if test "${with_jpeg_lib_path+set}" = set; then :
+  withval=$with_jpeg_lib_path; JPEG_LIBS="-L$withval -ljpeg"
+else
+  JPEG_LIBS='-ljpeg'
+fi
+
+
+
 
 # Checks for library functions.
 

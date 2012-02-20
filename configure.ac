@@ -18,10 +18,23 @@ AM_PROG_CC_C_O
 # Checks for header files.
 AC_PATH_X
 AC_HEADER_STDC
-AC_CHECK_HEADERS([string.h Xlib.h])
+AC_CHECK_HEADERS([string.h Xlib.h jpeglib.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 PKG_CHECK_MODULES([X11], x11)
+AC_ARG_WITH([jpeg-include-path],
+  [AS_HELP_STRING([--with-jpeg-include-path],
+    [location of the jpeglib.h, defaults to /usr/include/])],
+  [JPEG_CFLAGS="-I$withval"],
+  [JPEG_CFLAGS='-I/usr/include/'])
+AC_SUBST([JPEG_CFLAGS])
+
+AC_ARG_WITH([jpeg-lib-path],
+  [AS_HELP_STRING([--with-jpeg-lib-path], [location of the libjpeg library])],
+  [JPEG_LIBS="-L$withval -ljpeg"],
+  [JPEG_LIBS='-ljpeg'])
+AC_SUBST([JPEG_LIBS])
+
 
 # Checks for library functions.
 

@@ -9,6 +9,8 @@
 #define NNIMAGE_H_
 
 #include "nnfeature.h"
+#include "nnuiimage.h"
+#include "nnnounours.h"
 
 struct NNImage;
 
@@ -33,12 +35,13 @@ typedef struct NNImage {
 	NNFeature **features;
 	int num_image_features;
 	NNImageFeature **image_features;
+	NNUIImage *uiimage;
 } NNImage;
 
 
 
 
-NNImage * nnimage_new(char *id, char *filename);
+NNImage * nnimage_new(NNNounours *nounours, char *id, char *filename);
 NNImageFeature * nnimage_feature_new(NNFeature *feature, int x, int y);
 NNAdjacentImages *nnimage_adjacent_images_new(NNFeature *feature);
 void nnimage_add_adjacent_image(NNImage *image, NNFeature *feature, NNImage *adjacent_image);

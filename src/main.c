@@ -5,6 +5,7 @@
  *      Author: calvarez
  */
 #include <stdio.h>
+#include <X11/Xlib.h>
 #include "nnnounours.h"
 #include "nnimage.h"
 #include "nnfeature.h"
@@ -14,9 +15,11 @@
 #include "nnpropertiesreader.h"
 int main(int argc, char **argv) {
 
-	NNTheme *theme = nntheme_new("theme1");
+	NNNounours *nounours = nnnounours_new();
+
+	NNTheme *theme = nntheme_new("1");
 	nnread_feature_file(theme, "data/themes/1/feature.csv");
-	nnread_image_file(theme, "data/themes/1/image.csv");
+	nnread_image_file(nounours, theme, "data/themes/1/image.csv");
 	nnread_animation_file(theme, "data/themes/1/animation.csv");
 	nnread_image_feature_file(theme, "data/themes/1/imagefeatureassoc.csv");
 	nnread_adjacent_image_file(theme, "data/themes/1/adjacentimage.csv");
@@ -68,7 +71,22 @@ int main(int argc, char **argv) {
 
 	printf("Properties:\n");
 	nnread_theme_properties_file(theme, "data/themes/1/nounoursdeftheme.properties");
-	NNNounours *nounours = nnnounours_new();
 	nnread_nounours_properties_file(nounours, "data/themes/1/nounours.properties");
+
+	Window root = DefaultRootWindow(nounours->uinounours->display);
+	int black_color = BlackPixel(nounours->uinounours->display, nounours->uinounours->screen_number);
+	Window w = XCreateSimpleWindow(nounours->uinounours->display, root, 0, 0,
+		theme->width, theme->height, 0, black_color, black_color);
+	XMapWindow(nounours->uinounours->display, w);
+	GC gc = XCreateGC(nounours->uinounours->display, w, 0, NULL);
+
+	for (i=0; i < theme->num_images; i++) {
+		NNImage *image = theme->images[i];
+		XImage *ximage = image->uiimage->ximage;
+		XPutImage(nounours->uinounours->display, w, gc, ximage, 0, 0, 0, 0, ximage->width, ximage->height);
+		XFlush(nounours->uinounours->display);
+			usleep(250000);
+
+	}
 	return 0;
 }

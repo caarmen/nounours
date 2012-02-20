@@ -8,6 +8,7 @@
 #ifndef NNCSVREADER_H_
 #define NNCSVREADER_H_
 #include "nntheme.h"
+#include "nnnounours.h"
 
 typedef struct NNCSVLine {
 	int num_cells;
@@ -23,7 +24,7 @@ char *nncsv_get_value(NNCSVLine *header, NNCSVLine *line,
 		const char *field_name);
 void nncsv_post_read_file(FILE *file, NNCSVLine *header, NNCSVLine *line);
 
-void nnread_image_file(NNTheme *theme, const char *filename);
+void nnread_image_file(NNNounours *nounours, NNTheme *theme, const char *filename);
 void nnread_animation_file(NNTheme *theme, const char *filename);
 void nnread_feature_file(NNTheme *theme, const char *filename);
 void nnread_image_feature_file(NNTheme *theme, const char *filename);
