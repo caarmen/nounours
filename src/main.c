@@ -11,17 +11,8 @@
 #include "nntheme.h"
 #include "nncsvreader.h"
 int main(int argc, char **argv) {
-	NNImage *image1 = nnimage_new("123", "sittingdown.jpg");
-	NNImage *image2 = nnimage_new("124", "lookingup.jpg");
 
-	NNFeature *feature = nnfeature_new("1");
-	nnimage_add_feature(image1, feature, 34, 23);
-	nnimage_add_adjacent_image(image1, image2);
-	NNAnimation *animation1 = nnanimation_new("anim1", "jumping", 20, 0);
-	nnanimation_add_image(animation1, image1, 1.0f);
-	nnanimation_add_image(animation1, image2, 1.5f);
 	NNTheme *theme = nntheme_new("theme1");
-	nntheme_add_animation(theme, animation1);
 	nnread_feature_file(theme, "data/themes/1/feature.csv");
 	nnread_image_file(theme, "data/themes/1/image.csv");
 	nnread_animation_file(theme, "data/themes/1/animation.csv");
@@ -51,7 +42,15 @@ int main(int argc, char **argv) {
 			}
 			printf("  Adjacent images:\n");
 			for (k = 0; k < image->num_adjacent_images; k++) {
-				printf("   adjacent image %s\n", image->adjacent_images[k]->id);
+				NNAdjacentImages *adjacent_images = image->adjacent_images[k];
+				NNFeature *feature = adjacent_images->feature;
+				int l;
+				for(l=0; l < adjacent_images->num_adjacent_images; l++) {
+					NNImage *adjacent_image = adjacent_images->adjacent_images[l];
+					printf("   adjacent image %s->%s\n",
+							feature->id,
+							adjacent_image->id);
+				}
 			}
 
 		}
