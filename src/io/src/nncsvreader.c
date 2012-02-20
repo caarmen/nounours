@@ -31,7 +31,10 @@ NNCSVLine *nncsv_line_new() {
 	line->cells = malloc(sizeof(char*) * NN_INITIAL_LIST_CAPACITY);
 	return line;
 }
-void nncsv_free(NNCSVLine *line) {
+void nncsv_line_free(NNCSVLine *line) {
+	int i;
+	for(i=0; i < line->num_cells; i++)
+		free(line->cells[i]);
 	free(line->cells);
 	free(line);
 }
@@ -44,7 +47,6 @@ void nncsv_split_line(char *input, NNCSVLine *line, const char *sep) {
 			cell = strtok_r(NULL, sep, &ptr)) {
 		line->cells = nnresize_if_needed(line->cells, line->num_cells);
 		line->cells[line->num_cells++] = strdup(cell);
-		// TODO need to free unused cells!
 	}
 }
 
@@ -66,8 +68,8 @@ FILE *nncsv_pre_read_file(const char *filename, NNCSVLine **header,
 }
 
 void nncsv_post_read_file(FILE *file, NNCSVLine *header, NNCSVLine *line) {
-	nncsv_free(header);
-	nncsv_free(line);
+	nncsv_line_free(header);
+	nncsv_line_free(line);
 	fclose(file);
 }
 
@@ -108,10 +110,8 @@ void nnread_animation_file(NNTheme *theme, const char *filename) {
 			}
 		}
 		nntheme_add_animation(theme, animation);
-		free(interval);
-		free(repeat);
-		free(sequence);
 	}
+	free(image_ids);
 	nncsv_post_read_file(file, header, line);
 }
 
@@ -137,8 +137,6 @@ void nnread_image_feature_file(NNTheme *theme, const char *filename) {
 		NNImage *image = nntheme_find_image(theme, image_id);
 		NNFeature *feature = nntheme_find_feature(theme, feature_id);
 		nnimage_add_feature(image, feature, atoi(x), atoi(y));
-		free(x);
-		free(y);
 	}
 	nncsv_post_read_file(file, header, line);
 }

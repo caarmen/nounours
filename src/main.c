@@ -38,6 +38,7 @@ int main(int argc, char **argv) {
 	for (i=0; i < theme->num_images; i++) {
 		NNImage *image = theme->images[i];
 		int k;
+		printf(" %s:\n", image->id);
 		printf("  Image Features:\n");
 		for (k = 0; k < image->num_image_features; k++) {
 			NNImageFeature *image_feature = image->image_features[k];

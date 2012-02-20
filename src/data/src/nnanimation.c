@@ -12,8 +12,8 @@
 NNAnimation * nnanimation_new(char *id, char *label, int interval, int repeat) {
 	NNAnimation *animation = malloc(sizeof(NNAnimation));
 	animation->images = malloc(sizeof(NNAnimationImage*)*NN_INITIAL_LIST_CAPACITY);
-	animation->id = id;
-	animation->label = label;
+	animation->id = strdup(id);
+	animation->label = strdup(label);
 	animation->interval = interval;
 	animation->repeat = repeat;
 	animation->num_images = 0;

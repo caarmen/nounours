@@ -11,7 +11,7 @@
 #include "nncommon.h"
 NNTheme * nntheme_new(char *id) {
 	NNTheme *theme = malloc(sizeof(NNTheme));
-	theme->id = id;
+	theme->id = strdup(id);
 	theme->num_features = 0;
 	theme->features = malloc(sizeof(NNFeature*) * NN_INITIAL_LIST_CAPACITY);
 	theme->num_images = 0;

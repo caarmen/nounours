@@ -10,7 +10,7 @@
 
 NNFeature * nnfeature_new(char *id) {
 	NNFeature *feature = malloc(sizeof(NNFeature*));
-	feature->id = id;
+	feature->id = strdup(id);
 	return feature;
 }
 void nnfeature_free(NNFeature * nfeature) {

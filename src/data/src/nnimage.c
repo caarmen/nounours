@@ -6,16 +6,18 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 #include "nnimage.h"
 #include "nncommon.h"
+
 
 NNImage * nnimage_new(char *id, char *filename) {
 	NNImage *result = malloc(sizeof(NNImage));
 	result->adjacent_images = malloc(sizeof(NNImage*)*NN_INITIAL_LIST_CAPACITY);
 	result->features = malloc(sizeof(NNFeature*)*NN_INITIAL_LIST_CAPACITY);
 	result->image_features = malloc(sizeof(NNImageFeature*)*NN_INITIAL_LIST_CAPACITY);
-	result->id = id;
-	result->filename = filename;
+	result->id = strdup(id);
+	result->filename = strdup(filename);
 	result->num_features = 0;
 	result->num_adjacent_images = 0;
 	result->num_image_features = 0;
@@ -34,6 +36,7 @@ NNImageFeature * nnimage_feature_new(NNFeature *feature, int x, int y) {
 NNAdjacentImages *nnimage_adjacent_images_new(NNFeature *feature) {
 	NNAdjacentImages * adjacent_images = malloc(sizeof(NNAdjacentImages));
 	adjacent_images->adjacent_images = malloc(sizeof(NNImage*) * NN_INITIAL_LIST_CAPACITY);
+	adjacent_images->num_adjacent_images = 0;
 	adjacent_images->feature = feature;
 	return adjacent_images;
 }
