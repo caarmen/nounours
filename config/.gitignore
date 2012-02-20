@@ -1,6 +1,4 @@
-compile
 config.h
-missing
 stamp-h1
 depcomp
 install-sh
