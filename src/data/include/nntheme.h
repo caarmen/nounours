@@ -20,6 +20,14 @@ typedef struct NNTheme {
 	NNFeature **features;
 	int num_animation_flings;
 	NNAnimationFling **animation_flings;
+	NNAnimation *shake_animation;
+	NNAnimation *resume_animation;
+	NNImage *default_image;
+	NNImage *help_image;
+	int height;
+	int width;
+	int animation_idle;
+	int animation_idle_end;
 } NNTheme;
 
 NNTheme * nntheme_new(char *id);

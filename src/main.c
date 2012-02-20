@@ -10,6 +10,7 @@
 #include "nnanimation.h"
 #include "nntheme.h"
 #include "nncsvreader.h"
+#include "nnpropertiesreader.h"
 int main(int argc, char **argv) {
 
 	NNTheme *theme = nntheme_new("theme1");
@@ -63,6 +64,9 @@ int main(int argc, char **argv) {
 		NNAnimationFling *fling = theme->animation_flings[i];
 		printf("%s velx=%f, vely=%f\n", fling->animation->label, fling->min_vel_x, fling->min_vel_y);
 	}
+
+	printf("Properties:\n");
+	nnread_theme_file(theme, "data/themes/1/nounoursdeftheme.properties");
 
 	return 0;
 }
