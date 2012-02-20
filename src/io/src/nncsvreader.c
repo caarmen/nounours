@@ -102,7 +102,7 @@ void nnread_animation_file(NNTheme *theme, const char *filename) {
 		float duration = 1.0f;
 		for (i = 0; i < image_ids->num_cells; i++) {
 			const char *cell = image_ids->cells[i];
-			if (strnstr(cell, "d=", 2)) {
+			if (strstr(cell, "d=")) {
 				duration = strtof(&cell[2], NULL);
 			} else {
 				NNImage *image = nntheme_find_image(theme, image_ids->cells[i]);
