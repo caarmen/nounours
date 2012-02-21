@@ -64,7 +64,7 @@ int main(int argc, char **argv) {
 	}
 
 	printf("Properties:\n");
-	printf("  idle ping interval=%d", nounours->idle_ping_interval);
+	printf("  idle ping interval=%d\n", nounours->idle_ping_interval);
 	nnnounours_use_theme(nounours, theme);
 
 
