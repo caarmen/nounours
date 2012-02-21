@@ -10,6 +10,8 @@
 
 #include "nnuinounours.h"
 
+struct NNTheme;
+
 typedef struct NNNounours {
 	int fling_factor;
 	int fling_precision;
@@ -17,9 +19,11 @@ typedef struct NNNounours {
 	int idle_time;
 	int idle_ping_interval;
 	NNUINounours *uinounours;
+	struct NNTheme *cur_theme;
 } NNNounours;
 
 NNNounours * nnnounours_new();
+void nnnounours_use_theme(NNNounours *nounours, struct NNTheme *theme);
 void nnnounours_free(NNNounours *nounours);
 
 #endif /* NNNOUNOURS_H_ */

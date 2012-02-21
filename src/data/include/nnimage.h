@@ -13,6 +13,7 @@
 #include "nnnounours.h"
 
 struct NNImage;
+struct NNNounours;
 
 typedef struct NNImageFeature {
 	NNFeature *feature;

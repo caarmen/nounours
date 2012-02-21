@@ -72,18 +72,13 @@ int main(int argc, char **argv) {
 	printf("Properties:\n");
 	nnread_theme_properties_file(theme, "data/themes/1/nounoursdeftheme.properties");
 	nnread_nounours_properties_file(nounours, "data/themes/1/nounours.properties");
+	nnnounours_use_theme(nounours, theme);
 
-	Window root = DefaultRootWindow(nounours->uinounours->display);
-	int black_color = BlackPixel(nounours->uinounours->display, nounours->uinounours->screen_number);
-	Window w = XCreateSimpleWindow(nounours->uinounours->display, root, 0, 0,
-		theme->width, theme->height, 0, black_color, black_color);
-	XMapWindow(nounours->uinounours->display, w);
-	GC gc = XCreateGC(nounours->uinounours->display, w, 0, NULL);
 
 	for (i=0; i < theme->num_images; i++) {
 		NNImage *image = theme->images[i];
 		XImage *ximage = image->uiimage->ximage;
-		XPutImage(nounours->uinounours->display, w, gc, ximage, 0, 0, 0, 0, ximage->width, ximage->height);
+		XPutImage(nounours->uinounours->display, nounours->uinounours->window, nounours->uinounours->gc, ximage, 0, 0, 0, 0, ximage->width, ximage->height);
 		XFlush(nounours->uinounours->display);
 			usleep(250000);
 
