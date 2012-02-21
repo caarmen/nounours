@@ -14,7 +14,7 @@ typedef struct NNUIImage {
 } NNUIImage;
 
 NNUIImage *nnuiimage_new(NNUINounours *uinounours, const char *filename);
-
+void nnuiimage_show(NNUINounours *uinounours, NNUIImage *image);
 void nnuiimage_free(NNUIImage *uiimage);
 
 #endif /* NNUIIMAGE_H_ */

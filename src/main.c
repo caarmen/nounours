@@ -70,10 +70,8 @@ int main(int argc, char **argv) {
 
 	for (i=0; i < theme->num_images; i++) {
 		NNImage *image = theme->images[i];
-		XImage *ximage = image->uiimage->ximage;
-		XPutImage(nounours->uinounours->display, nounours->uinounours->window, nounours->uinounours->gc, ximage, 0, 0, 0, 0, ximage->width, ximage->height);
-		XFlush(nounours->uinounours->display);
-			usleep(250000);
+		nnuiimage_show(nounours->uinounours, image->uiimage);
+		usleep(250000);
 
 	}
 	return 0;

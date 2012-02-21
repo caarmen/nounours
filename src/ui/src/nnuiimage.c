@@ -126,6 +126,11 @@ static XImage * nnuiimage_jpeg_to_Ximage(Display *display, int screen_number,
 	return image;
 }
 
+void nnuiimage_show(NNUINounours *uinounours, NNUIImage *image) {
+	XPutImage(uinounours->display, uinounours->window, uinounours->gc, image->ximage, 0, 0, 0, 0, image->ximage->width, image->ximage->height);
+	XFlush(uinounours->display);
+}
+
 void nnuiimage_free(NNUIImage *uiimage) {
 	XDestroyImage(uiimage->ximage);
 	free(uiimage);
