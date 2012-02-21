@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include "nnnounours.h"
 #include "nntheme.h"
+#include "nnpropertiesreader.h"
 
 NNNounours * nnnounours_new() {
 	NNNounours *nounours = malloc(sizeof(NNNounours));
@@ -18,6 +19,8 @@ NNNounours * nnnounours_new() {
 	nounours->idle_ping_interval = 0;
 	nounours->uinounours = nnuinounours_new();
 	nounours->cur_theme = 0;
+	nnread_nounours_properties_file(nounours);
+
 	return nounours;
 }
 void nnnounours_use_theme(NNNounours *nounours, NNTheme *theme) {

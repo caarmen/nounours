@@ -33,7 +33,7 @@ NNCSVLine *nncsv_line_new() {
 }
 void nncsv_line_free(NNCSVLine *line) {
 	int i;
-	for(i=0; i < line->num_cells; i++)
+	for (i = 0; i < line->num_cells; i++)
 		free(line->cells[i]);
 	free(line->cells);
 	free(line);
@@ -58,9 +58,12 @@ int nncsv_read_line(FILE *file, NNCSVLine *line) {
 	return 1;
 }
 
-FILE *nncsv_pre_read_file(const char *filename, NNCSVLine **header,
-		NNCSVLine **line) {
-	FILE *file = fopen(filename, "r");
+FILE *nncsv_pre_read_file(NNTheme *theme, const char *filename,
+		NNCSVLine **header, NNCSVLine **line) {
+	char full_filename[512];
+	sprintf(full_filename, "data/themes/%s/%s", theme->id, filename);
+
+	FILE *file = fopen(full_filename, "r");
 	*header = nncsv_line_new();
 	nncsv_read_line(file, *header);
 	*line = nncsv_line_new();
@@ -73,14 +76,15 @@ void nncsv_post_read_file(FILE *file, NNCSVLine *header, NNCSVLine *line) {
 	fclose(file);
 }
 
-void nnread_image_file(NNTheme *theme, const char *filename) {
+void nnread_image_file(NNTheme *theme) {
 	NNCSVLine *header, *line;
-	FILE *file = nncsv_pre_read_file(filename, &header, &line);
+	FILE *file = nncsv_pre_read_file(theme, "image.csv", &header, &line);
 	while (nncsv_read_line(file, line)) {
 		char *id = nncsv_get_value(header, line, "Id");
 		char *image_filename = nncsv_get_value(header, line, "Filename");
 		char location[128];
-		sprintf(location, "data/themes/%s/images/%s", theme->id, image_filename);
+		sprintf(location,
+				"data/themes/%s/images/%s", theme->id, image_filename);
 
 		NNImage *image = nnimage_new(theme->nounours, id, strdup(location));
 		nntheme_add_image(theme, image);
@@ -88,9 +92,9 @@ void nnread_image_file(NNTheme *theme, const char *filename) {
 	nncsv_post_read_file(file, header, line);
 }
 
-void nnread_animation_file(NNTheme *theme, const char *filename) {
+void nnread_animation_file(NNTheme *theme) {
 	NNCSVLine *header, *line;
-	FILE *file = nncsv_pre_read_file(filename, &header, &line);
+	FILE *file = nncsv_pre_read_file(theme, "animation.csv", &header, &line);
 	NNCSVLine *image_ids = nncsv_line_new();
 	while (nncsv_read_line(file, line)) {
 		char *id = nncsv_get_value(header, line, "Id");
@@ -118,9 +122,9 @@ void nnread_animation_file(NNTheme *theme, const char *filename) {
 	nncsv_post_read_file(file, header, line);
 }
 
-void nnread_feature_file(NNTheme *theme, const char *filename) {
+void nnread_feature_file(NNTheme *theme) {
 	NNCSVLine *header, *line;
-	FILE *file = nncsv_pre_read_file(filename, &header, &line);
+	FILE *file = nncsv_pre_read_file(theme, "feature.csv", &header, &line);
 	while (nncsv_read_line(file, line)) {
 		char *id = nncsv_get_value(header, line, "Id");
 		NNFeature *feature = nnfeature_new(id);
@@ -129,9 +133,9 @@ void nnread_feature_file(NNTheme *theme, const char *filename) {
 	nncsv_post_read_file(file, header, line);
 }
 
-void nnread_image_feature_file(NNTheme *theme, const char *filename) {
+void nnread_image_feature_file(NNTheme *theme) {
 	NNCSVLine *header, *line;
-	FILE *file = nncsv_pre_read_file(filename, &header, &line);
+	FILE *file = nncsv_pre_read_file(theme, "imagefeatureassoc.csv", &header, &line);
 	while (nncsv_read_line(file, line)) {
 		char *image_id = nncsv_get_value(header, line, "ImageId");
 		char *feature_id = nncsv_get_value(header, line, "FeatureId");
@@ -144,9 +148,9 @@ void nnread_image_feature_file(NNTheme *theme, const char *filename) {
 	nncsv_post_read_file(file, header, line);
 }
 
-void nnread_adjacent_image_file(NNTheme *theme, const char *filename) {
+void nnread_adjacent_image_file(NNTheme *theme) {
 	NNCSVLine *header, *line;
-	FILE *file = nncsv_pre_read_file(filename, &header, &line);
+	FILE *file = nncsv_pre_read_file(theme, "adjacentimage.csv", &header, &line);
 	while (nncsv_read_line(file, line)) {
 		char *image_id = nncsv_get_value(header, line, "ImageId");
 		char *feature_id = nncsv_get_value(header, line, "FeatureId");
@@ -160,9 +164,9 @@ void nnread_adjacent_image_file(NNTheme *theme, const char *filename) {
 	nncsv_post_read_file(file, header, line);
 }
 
-void nnread_fling_animation_file(NNTheme *theme, const char *filename) {
+void nnread_fling_animation_file(NNTheme *theme) {
 	NNCSVLine *header, *line;
-	FILE *file = nncsv_pre_read_file(filename, &header, &line);
+	FILE *file = nncsv_pre_read_file(theme, "flinganimation.csv", &header, &line);
 	while (nncsv_read_line(file, line)) {
 		char *id = nncsv_get_value(header, line, "Id");
 		char *x = nncsv_get_value(header, line, "X");

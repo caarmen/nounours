@@ -20,7 +20,10 @@ int nnproperties_read_line(FILE *file, char **key, char **val) {
 	*val = strsep(val, "\r\n");
 	return 1;
 }
-void nnread_theme_properties_file(NNTheme *theme, const char *filename) {
+void nnread_theme_properties_file(NNTheme *theme) {
+	char filename[512];
+	sprintf(filename, "data/themes/%s/theme.properties", theme->id);
+
 	FILE *file = fopen(filename, "r");
 	char *key, *val;
 	while (nnproperties_read_line(file, &key, &val)) {
@@ -53,8 +56,8 @@ void nnread_theme_properties_file(NNTheme *theme, const char *filename) {
 	fclose(file);
 }
 
-void nnread_nounours_properties_file(NNNounours *nounours, const char *filename) {
-	FILE *file = fopen(filename, "r");
+void nnread_nounours_properties_file(NNNounours *nounours) {
+	FILE *file = fopen("data/nounours.properties", "r");
 	char *key, *val;
 	while (nnproperties_read_line(file, &key, &val)) {
 		if (key[0] == '#')

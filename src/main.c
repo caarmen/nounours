@@ -18,12 +18,6 @@ int main(int argc, char **argv) {
 	NNNounours *nounours = nnnounours_new();
 
 	NNTheme *theme = nntheme_new(nounours, "1");
-	nnread_feature_file(theme, "data/themes/1/feature.csv");
-	nnread_image_file(theme, "data/themes/1/image.csv");
-	nnread_animation_file(theme, "data/themes/1/animation.csv");
-	nnread_image_feature_file(theme, "data/themes/1/imagefeatureassoc.csv");
-	nnread_adjacent_image_file(theme, "data/themes/1/adjacentimage.csv");
-	nnread_fling_animation_file(theme, "data/themes/1/flinganimation.csv");
 
 	int i;
 
@@ -70,8 +64,7 @@ int main(int argc, char **argv) {
 	}
 
 	printf("Properties:\n");
-	nnread_theme_properties_file(theme, "data/themes/1/nounoursdeftheme.properties");
-	nnread_nounours_properties_file(nounours, "data/themes/1/nounours.properties");
+	printf("  idle ping interval=%d", nounours->idle_ping_interval);
 	nnnounours_use_theme(nounours, theme);
 
 
