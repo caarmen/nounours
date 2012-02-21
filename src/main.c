@@ -5,7 +5,6 @@
  *      Author: calvarez
  */
 #include <stdio.h>
-#include <X11/Xlib.h>
 #include "nnnounours.h"
 #include "nnimage.h"
 #include "nnfeature.h"
