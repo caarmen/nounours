@@ -38,13 +38,14 @@ void nnuinounours_free(NNUINounours *uinounours) {
 	free(uinounours);
 }
 void nnuinounours_notify(NNUINounours *uinounours) {
+	Display *display = XOpenDisplay(0);
 	XClientMessageEvent notify_message_event;
 	memset(&notify_message_event, 0, sizeof(XClientMessageEvent));
 	notify_message_event.type = ClientMessage;
 	notify_message_event.window = uinounours->window;
 	notify_message_event.format = 32;
-	XSendEvent(uinounours->display, uinounours->window, 0, 0, (XEvent*)&notify_message_event);
-	XFlush(uinounours->display);
+	XSendEvent(display, uinounours->window, 0, 0, (XEvent*)&notify_message_event);
+	XFlush(display);
 }
 
 static void *nnuinounours_loop(void *data) {
