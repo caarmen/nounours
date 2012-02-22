@@ -9,12 +9,14 @@
 #define NNUIIMAGE_H_
 #include "nnuinounours.h"
 
+struct NNUINounours;
+
 typedef struct NNUIImage {
 	XImage *ximage;
 } NNUIImage;
 
-NNUIImage *nnuiimage_new(NNUINounours *uinounours, const char *filename);
-void nnuiimage_show(NNUINounours *uinounours, NNUIImage *image);
+NNUIImage *nnuiimage_new(struct NNUINounours *uinounours, const char *filename);
+void nnuiimage_show(struct NNUINounours *uinounours, NNUIImage *image);
 void nnuiimage_free(NNUIImage *uiimage);
 
 #endif /* NNUIIMAGE_H_ */

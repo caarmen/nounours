@@ -9,6 +9,7 @@
 #define NNNOUNOURS_H_
 
 #include "nnuinounours.h"
+#include "nnimage.h"
 
 struct NNTheme;
 
@@ -18,12 +19,15 @@ typedef struct NNNounours {
 	int shake_factor;
 	int idle_time;
 	int idle_ping_interval;
-	NNUINounours *uinounours;
+	struct NNUINounours *uinounours;
 	struct NNTheme *cur_theme;
+	struct NNImage *cur_image;
+
 } NNNounours;
 
 NNNounours * nnnounours_new();
 void nnnounours_use_theme(NNNounours *nounours, struct NNTheme *theme);
+void nnnounours_show_image(NNNounours *nounours, struct NNImage *image);
 void nnnounours_free(NNNounours *nounours);
 
 #endif /* NNNOUNOURS_H_ */

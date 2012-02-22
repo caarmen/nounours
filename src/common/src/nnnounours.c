@@ -17,8 +17,9 @@ NNNounours * nnnounours_new() {
 	nounours->fling_precision = 0;
 	nounours->idle_time = 0;
 	nounours->idle_ping_interval = 0;
-	nounours->uinounours = nnuinounours_new();
+	nounours->uinounours = nnuinounours_new(nounours);
 	nounours->cur_theme = 0;
+	nounours->cur_image = 0;
 	nnread_nounours_properties_file(nounours);
 
 	return nounours;
@@ -28,6 +29,10 @@ void nnnounours_use_theme(NNNounours *nounours, NNTheme *theme) {
 	nnuinounours_resize(nounours->uinounours, theme->width, theme->height);
 }
 
+void nnnounours_show_image(NNNounours *nounours, NNImage *image) {
+	nounours->cur_image = image;
+	nnuinounours_notify(nounours->uinounours);
+}
 void nnnounours_free(NNNounours *nounours) {
 	free(nounours);
 }

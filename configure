@@ -4297,7 +4297,7 @@ fi
 done
 
 
-for ac_header in string.h Xlib.h jpeglib.h
+for ac_header in string.h Xlib.h jpeglib.h pthread.h
 do :
   as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
 ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
@@ -4311,7 +4311,11 @@ fi
 done
 
 
+
+
 # Checks for typedefs, structures, and compiler characteristics.
+
+
 
 
 

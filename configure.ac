@@ -18,9 +18,13 @@ AM_PROG_CC_C_O
 # Checks for header files.
 AC_PATH_X
 AC_HEADER_STDC
-AC_CHECK_HEADERS([string.h Xlib.h jpeglib.h])
+AC_CHECK_HEADERS([string.h Xlib.h jpeglib.h pthread.h])
+
+
 
 # Checks for typedefs, structures, and compiler characteristics.
+ 	    
+ 	    
 PKG_CHECK_MODULES([X11], x11)
 AC_ARG_WITH([jpeg-include-path],
   [AS_HELP_STRING([--with-jpeg-include-path],

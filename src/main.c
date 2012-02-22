@@ -67,11 +67,12 @@ int main(int argc, char **argv) {
 	nnnounours_use_theme(nounours, theme);
 
 
+	nnuinounours_start_loop(nounours->uinounours);
 	for (i=0; i < theme->num_images; i++) {
 		NNImage *image = theme->images[i];
-		nnuiimage_show(nounours->uinounours, image->uiimage);
-		usleep(250000);
-
+		nnnounours_show_image(nounours, image);
+		usleep(2500000);
 	}
+
 	return 0;
 }
