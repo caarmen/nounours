@@ -37,13 +37,14 @@ void nnuinounours_resize(NNUINounours *uinounours, int width, int height) {
 void nnuinounours_free(NNUINounours *uinounours) {
 	free(uinounours);
 }
-void nnuinounours_notify(NNUINounours *uinounours) {
+void nnuinounours_notify(NNUINounours *uinounours, NNUIImage *image) {
 	Display *display = XOpenDisplay(0);
 	XClientMessageEvent notify_message_event;
 	memset(&notify_message_event, 0, sizeof(XClientMessageEvent));
 	notify_message_event.type = ClientMessage;
 	notify_message_event.window = uinounours->window;
-	notify_message_event.format = 32;
+	notify_message_event.format = 8;// doesn't really matter since we use memcpy to pass the pointer
+	memcpy(notify_message_event.data.l, &image, sizeof(image));
 	XSendEvent(display, uinounours->window, 0, 0, (XEvent*)&notify_message_event);
 	XFlush(display);
 }
@@ -54,16 +55,18 @@ static void *nnuinounours_loop(void *data) {
 	long event_mask = ExposureMask | ClientMessage;
 	XSelectInput(uinounours->display, uinounours->window, event_mask);
 	nnuinounours_running = 1;
-	NNImage *last_image = uinounours->nounours->cur_image;
 	while (nnuinounours_running) {
 		XNextEvent(uinounours->display, &xevent);
-		NNImage *cur_image = uinounours->nounours->cur_image;
-		if(cur_image != last_image) {
-			nnuiimage_show(uinounours, cur_image->uiimage);
-		}
 		printf("got event %d\n", xevent.type);
-		if (xevent.type == Expose) {
+		if(xevent.type == ClientMessage) {
+			XClientMessageEvent client_message_event = xevent.xclient;
+			NNUIImage *uiimage;
+			memcpy(&uiimage, client_message_event.data.l, sizeof(NNUIImage*));
+			nnuiimage_show(uinounours, uiimage);
+		} else if (xevent.type == Expose) {
 			printf("expose\n");
+			nnuiimage_show(uinounours, uinounours->nounours->cur_image->uiimage);
+
 		}
 	}
 	return (void*) 0;

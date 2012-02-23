@@ -31,7 +31,7 @@ void nnnounours_use_theme(NNNounours *nounours, NNTheme *theme) {
 
 void nnnounours_show_image(NNNounours *nounours, NNImage *image) {
 	nounours->cur_image = image;
-	nnuinounours_notify(nounours->uinounours);
+	nnuinounours_notify(nounours->uinounours, image->uiimage);
 }
 void nnnounours_free(NNNounours *nounours) {
 	free(nounours);
