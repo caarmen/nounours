@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <X11/X.h>
 #include <X11/Xlib.h>
+#include <X11/Xutil.h>
 #include <string.h>
 #include <pthread.h>
 #include "nnuinounours.h"
@@ -32,6 +33,14 @@ NNUINounours *nnuinounours_new(NNNounours *nounours) {
 void nnuinounours_resize(NNUINounours *uinounours, int width, int height) {
 	XMoveResizeWindow(uinounours->display, uinounours->window, 0, 0, width,
 			height);
+	XSizeHints* size_hints = XAllocSizeHints();
+	size_hints->flags = PMinSize |PMaxSize;
+	size_hints->min_width = width;
+	size_hints->min_height = height;
+	size_hints->max_width = width;
+	size_hints->max_height = height;
+	XSetWMNormalHints(uinounours->display, uinounours->window, size_hints);
+	XFree(size_hints);
 }
 
 void nnuinounours_free(NNUINounours *uinounours) {

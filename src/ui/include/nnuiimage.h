@@ -8,6 +8,7 @@
 #ifndef NNUIIMAGE_H_
 #define NNUIIMAGE_H_
 #include "nnuinounours.h"
+#include <X11/Xlib.h>
 
 struct NNUINounours;
 
