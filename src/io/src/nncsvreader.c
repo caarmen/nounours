@@ -101,7 +101,7 @@ void nnread_animation_file(NNTheme *theme) {
 		char *label = nncsv_get_value(header, line, "Label");
 		char *interval = nncsv_get_value(header, line, "Interval");
 		char *repeat = nncsv_get_value(header, line, "Repeat");
-		NNAnimation *animation = nnanimation_new(id, label, atoi(interval),
+		NNAnimation *animation = nnanimation_new(theme->nounours, id, label, atoi(interval),
 				atoi(repeat));
 		char *sequence = nncsv_get_value(header, line, "Sequence");
 		nncsv_split_line(sequence, image_ids, ";");

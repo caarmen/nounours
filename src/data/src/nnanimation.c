@@ -7,11 +7,13 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include "nnanimation.h"
 #include "nncommon.h"
 
-NNAnimation * nnanimation_new(char *id, char *label, int interval, int repeat) {
+NNAnimation * nnanimation_new(NNNounours *nounours, char *id, char *label, int interval, int repeat) {
 	NNAnimation *animation = malloc(sizeof(NNAnimation));
+	animation->nounours = nounours;
 	animation->images = malloc(sizeof(NNAnimationImage*)*NN_INITIAL_LIST_CAPACITY);
 	animation->id = strdup(id);
 	animation->label = strdup(label);
@@ -20,7 +22,17 @@ NNAnimation * nnanimation_new(char *id, char *label, int interval, int repeat) {
 	animation->num_images = 0;
 	return animation;
 }
-
+void nnanimation_show(NNAnimation *animation) {
+	int i;
+	for(i=0; i < animation->repeat; i++) {
+		int j;
+		for(j=0; j < animation->num_images; j++) {
+			nnnounours_show_image(animation->nounours, animation->images[j]->image);
+			long sleep_duration = animation->images[j]->duration * animation->interval * 1000;
+			usleep(sleep_duration);
+		}
+	}
+}
 NNAnimationImage * nnanimation_image_new(NNImage *image, float duration) {
 	NNAnimationImage *animation_image = malloc(sizeof(NNAnimationImage));
 	animation_image->duration = duration;

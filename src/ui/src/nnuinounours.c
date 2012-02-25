@@ -25,6 +25,14 @@ NNUINounours *nnuinounours_new(NNNounours *nounours) {
 	uinounours->window = XCreateSimpleWindow(uinounours->display,
 			uinounours->root_window, 0, 0, 50, 50, 0, black_color, black_color);
 	XMapWindow(uinounours->display, uinounours->window);
+
+	// wait for the notify event.
+	long structure_mask = StructureNotifyMask;
+	XSelectInput(uinounours->display, uinounours->window, structure_mask);
+	XEvent event;
+	do {
+		XNextEvent(uinounours->display, &event);
+	} while (event.type != MapNotify);
 	uinounours->gc = XCreateGC(uinounours->display, uinounours->window, 0,
 			NULL);
 	uinounours->nounours = nounours;
@@ -34,7 +42,7 @@ void nnuinounours_resize(NNUINounours *uinounours, int width, int height) {
 	XMoveResizeWindow(uinounours->display, uinounours->window, 0, 0, width,
 			height);
 	XSizeHints* size_hints = XAllocSizeHints();
-	size_hints->flags = PMinSize |PMaxSize;
+	size_hints->flags = PMinSize | PMaxSize;
 	size_hints->min_width = width;
 	size_hints->min_height = height;
 	size_hints->max_width = width;
@@ -52,9 +60,10 @@ void nnuinounours_notify(NNUINounours *uinounours, NNUIImage *image) {
 	memset(&notify_message_event, 0, sizeof(XClientMessageEvent));
 	notify_message_event.type = ClientMessage;
 	notify_message_event.window = uinounours->window;
-	notify_message_event.format = 8;// doesn't really matter since we use memcpy to pass the pointer
+	notify_message_event.format = 8; // doesn't really matter since we use memcpy to pass the pointer
 	memcpy(notify_message_event.data.l, &image, sizeof(image));
-	XSendEvent(display, uinounours->window, 0, 0, (XEvent*)&notify_message_event);
+	XSendEvent(display, uinounours->window, 0, 0,
+			(XEvent*) &notify_message_event);
 	XFlush(display);
 }
 
@@ -67,14 +76,15 @@ static void *nnuinounours_loop(void *data) {
 	while (nnuinounours_running) {
 		XNextEvent(uinounours->display, &xevent);
 		printf("got event %d\n", xevent.type);
-		if(xevent.type == ClientMessage) {
+		if (xevent.type == ClientMessage) {
 			XClientMessageEvent client_message_event = xevent.xclient;
 			NNUIImage *uiimage;
 			memcpy(&uiimage, client_message_event.data.l, sizeof(NNUIImage*));
 			nnuiimage_show(uinounours, uiimage);
 		} else if (xevent.type == Expose) {
 			printf("expose\n");
-			nnuiimage_show(uinounours, uinounours->nounours->cur_image->uiimage);
+			nnuiimage_show(uinounours,
+					uinounours->nounours->cur_image->uiimage);
 
 		}
 	}
