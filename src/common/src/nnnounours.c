@@ -21,6 +21,9 @@ NNNounours * nnnounours_new() {
 	nounours->cur_theme = 0;
 	nounours->cur_image = 0;
 	nounours->cur_feature = 0;
+	nounours->last_x = -1;
+	nounours->last_y = -1;
+	nounours->last_motion_event_time_us = 0;
 	nnread_nounours_properties_file(nounours);
 	nnuinounours_start_loop(nounours->uinounours);
 
@@ -50,10 +53,25 @@ void nnnounours_on_press(NNNounours *nounours, int x, int y) {
 void nnnounours_on_move(NNNounours *nounours, int x, int y) {
 	NNImage *image = nnimage_find_adjacent_image(nounours->cur_image, nounours->cur_feature, x, y);
 	nnnounours_show_image(nounours, image);
+	struct timeval now_tv;
+	gettimeofday(&now_tv, NULL);
+	long now_us = now_tv.tv_sec * 1000000 + now_tv.tv_usec;
+	if(nounours->last_x >=0) {
+		long time_diff = now_us - nounours->last_motion_event_time_us;
+		float vel_x = 1000000*(x - nounours->last_x) / time_diff;
+		float vel_y = 1000000*(y - nounours->last_y) / time_diff;
+		nnnounours_on_fling(nounours, x, y, vel_x, vel_y);
+	}
+	nounours->last_motion_event_time_us = now_us;
+	nounours->last_x = x;
+	nounours->last_y = y;
 }
 void nnnounours_on_release(NNNounours *nounours, int x, int y) {
 	if(nounours->cur_image->release != 0)
 		nnnounours_show_image(nounours, nounours->cur_image->release);
+}
+void nnnounours_on_fling(NNNounours *nounours, int x, int y, float vel_x, float vel_y) {
+	printf("fling %dx%d, %f %f\n", x, y, vel_x, vel_y);
 }
 
 void nnnounours_free(NNNounours *nounours) {
