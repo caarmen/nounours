@@ -160,6 +160,7 @@ void nnread_adjacent_image_file(NNTheme *theme) {
 		NNFeature *feature = nntheme_find_feature(theme, feature_id);
 		NNImage *adjacent_image = nntheme_find_image(theme, adjacent_image_id);
 		nnimage_add_adjacent_image(image, feature, adjacent_image);
+		nnimage_add_adjacent_image(adjacent_image, feature, image);
 	}
 	nncsv_post_read_file(file, header, line);
 }

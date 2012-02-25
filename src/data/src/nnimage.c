@@ -101,11 +101,28 @@ int nnimage_get_distance(NNImage *image, NNFeature *feature, int x, int y) {
 NNAdjacentImages * nnimage_find_adjacent_images(NNImage *image, NNFeature *feature) {
 	int i;
 	for(i=0; i < image->num_adjacent_images; i++) {
-		if(image->adjacent_images[i]->feature == feature)
+		if(image->adjacent_images[i]->feature->id == feature->id)
 			return image->adjacent_images[i];
 	}
 	return NULL;
 }
+NNImage * nnimage_find_adjacent_image(NNImage *image, NNFeature *feature, int x, int y) {
+	NNImage *result = image;
+	int min_distance = nnimage_get_distance(image, feature, x, y);
+	NNAdjacentImages *adjacent_images = nnimage_find_adjacent_images(image, feature);
+	if(adjacent_images == NULL)
+		return result;
+	int i;
+	for(i=0; i < adjacent_images->num_adjacent_images; i++) {
+		int distance = nnimage_get_distance(adjacent_images->adjacent_images[i], feature, x, y);
+		if(distance < min_distance) {
+			min_distance = distance;
+			result = adjacent_images->adjacent_images[i];
+		}
+	}
+	return result;
+}
+
 void nnimage_adjacent_images_free(NNAdjacentImages *adjacent_images) {
 	free(adjacent_images->adjacent_images);
 	free(adjacent_images);

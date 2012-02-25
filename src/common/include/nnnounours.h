@@ -22,6 +22,7 @@ typedef struct NNNounours {
 	struct NNUINounours *uinounours;
 	struct NNTheme *cur_theme;
 	struct NNImage *cur_image;
+	struct NNFeature *cur_feature;
 
 } NNNounours;
 
