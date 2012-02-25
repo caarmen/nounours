@@ -73,15 +73,14 @@ static void *nnuinounours_loop(void *data) {
 	uinounours->gc = XCreateGC(uinounours->ui_display, uinounours->window, 0,
 			NULL);
 
-
 	XEvent xevent;
-	event_mask = ExposureMask | ClientMessage;
+	event_mask = ExposureMask | ClientMessage | ButtonPressMask
+			| ButtonReleaseMask | ButtonMotionMask;
 	XSelectInput(uinounours->ui_display, uinounours->window, event_mask);
 	uinounours->is_running = 1;
 	pthread_cond_signal(&uinounours->cond);
 	while (uinounours->is_running) {
 		XNextEvent(uinounours->ui_display, &xevent);
-		printf("got event %d\n", xevent.type);
 		if (xevent.type == ClientMessage) {
 			XClientMessageEvent client_message_event = xevent.xclient;
 			NNUIImage *uiimage;
@@ -92,14 +91,27 @@ static void *nnuinounours_loop(void *data) {
 			if (uinounours->nounours->cur_image != 0)
 				nnuiimage_show(uinounours,
 						uinounours->nounours->cur_image->uiimage);
+		} else if (xevent.type == ButtonPress) {
+			XButtonPressedEvent bp_event = xevent.xbutton;
+			nnnounours_on_press(uinounours->nounours, bp_event.x, bp_event.y);
+
+		} else if (xevent.type == MotionNotify) {
+			XMotionEvent motion_event = xevent.xmotion;
+			nnnounours_on_move(uinounours->nounours, motion_event.x, motion_event.y);
+
+		} else if (xevent.type == ButtonRelease) {
+			XButtonReleasedEvent bp_event = xevent.xbutton;
+			nnnounours_on_release(uinounours->nounours, bp_event.x,
+					bp_event.y);
 		}
+
 	}
 	return (void*) 0;
 }
 
 void nnuinounours_start_loop(NNUINounours *uinounours) {
 	pthread_create(&uinounours->ui_thread, NULL, nnuinounours_loop, uinounours);
-	while(!uinounours->is_running)
+	while (!uinounours->is_running)
 		pthread_cond_wait(&uinounours->cond, &uinounours->mutex);
 }
 
@@ -112,7 +124,7 @@ int nnuinounours_error_handler(Display *display, XErrorEvent *error_event) {
 	fprintf(
 			stderr,
 			"Error on display %p: type=%d, resourceid=%lu, serial=%lu, error_code=%d, request_code=%d, minor_code=%d\n",
-			display, error_event->type, error_event->resourceid, error_event->serial,
-			error_event->error_code, error_event->request_code,
-			error_event->minor_code);
+			display, error_event->type, error_event->resourceid,
+			error_event->serial, error_event->error_code,
+			error_event->request_code, error_event->minor_code);
 }

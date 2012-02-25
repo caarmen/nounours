@@ -34,6 +34,18 @@ void nnnounours_show_image(NNNounours *nounours, NNImage *image) {
 	nounours->cur_image = image;
 	nnuinounours_notify(nounours->uinounours, image->uiimage);
 }
+void nnnounours_on_press(NNNounours *nounours, int x, int y) {
+	printf("on press %dx%d\n", x, y);
+}
+void nnnounours_on_move(NNNounours *nounours, int x, int y) {
+	printf("on move %dx%d\n", x, y);
+
+}
+void nnnounours_on_release(NNNounours *nounours, int x, int y) {
+	printf("on release %dx%d\n", x, y);
+
+}
+
 void nnnounours_free(NNNounours *nounours) {
 	free(nounours);
 }
