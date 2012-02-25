@@ -28,6 +28,7 @@ NNNounours * nnnounours_new() {
 void nnnounours_use_theme(NNNounours *nounours, NNTheme *theme) {
 	nounours->cur_theme = theme;
 	nnuinounours_resize(nounours->uinounours, theme->width, theme->height);
+	nnnounours_show_image(nounours, theme->default_image);
 }
 
 void nnnounours_show_image(NNNounours *nounours, NNImage *image) {

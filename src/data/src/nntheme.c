@@ -32,13 +32,13 @@ NNTheme * nntheme_new(NNNounours *nounours, char *id) {
 	theme->help_image= 0;
 	theme->height = 0;
 	theme->width = 0;
-	nnread_theme_properties_file(theme);
 	nnread_feature_file(theme);
 	nnread_image_file(theme);
 	nnread_animation_file(theme);
 	nnread_image_feature_file(theme);
 	nnread_adjacent_image_file(theme);
 	nnread_fling_animation_file(theme);
+	nnread_theme_properties_file(theme);
 
 	return theme;
 }

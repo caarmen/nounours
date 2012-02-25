@@ -15,21 +15,10 @@
 int main(int argc, char **argv) {
 
 	NNNounours *nounours = nnnounours_new();
-
 	NNTheme *theme = nntheme_new(nounours, "1");
 	nnnounours_use_theme(nounours, theme);
-	int i;
-	for (i = 0; i < theme->num_animations; i++) {
-		NNAnimation *animation = theme->animations[i];
-		printf("Animation: %s, %s, interval=%d, repeat=%d\n", animation->id,
-				animation->label, animation->interval, animation->repeat);
-		nnanimation_show(animation);
+	while(1) {
+		sleep(1000000);
 	}
-	for (i = 0; i < theme->num_images; i++) {
-		NNImage *image = theme->images[i];
-		nnnounours_show_image(nounours, image);
-		usleep(2500000);
-	}
-
 	return 0;
 }
