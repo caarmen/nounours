@@ -24,6 +24,7 @@ NNAnimation * nnanimation_new(NNNounours *nounours, char *id, char *label, int i
 }
 void nnanimation_show(NNAnimation *animation) {
 	int i;
+	printf("Show animation %s\n", animation->label);
 	for(i=0; i < animation->repeat; i++) {
 		int j;
 		for(j=0; j < animation->num_images; j++) {

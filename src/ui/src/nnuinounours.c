@@ -40,16 +40,21 @@ void nnuinounours_free(NNUINounours *uinounours) {
 	XCloseDisplay(uinounours->ui_display);
 	free(uinounours);
 }
-void nnuinounours_notify(NNUINounours *uinounours, NNUIImage *image) {
-	XClientMessageEvent notify_message_event;
-	memset(&notify_message_event, 0, sizeof(XClientMessageEvent));
-	notify_message_event.type = ClientMessage;
-	notify_message_event.window = uinounours->window;
-	notify_message_event.format = 8; // doesn't really matter since we use memcpy to pass the pointer
-	memcpy(notify_message_event.data.l, &image, sizeof(image));
-	XSendEvent(uinounours->background_display, uinounours->window, 0, 0,
-			(XEvent*) &notify_message_event);
-	XFlush(uinounours->background_display);
+void nnuinounours_show_image(NNUINounours *uinounours, NNUIImage *uiimage) {
+	pthread_t mythread = pthread_self();
+	if (mythread == uinounours->ui_thread) {
+		nnuiimage_show(uinounours, uiimage);
+	} else {
+		XClientMessageEvent notify_message_event;
+		memset(&notify_message_event, 0, sizeof(XClientMessageEvent));
+		notify_message_event.type = ClientMessage;
+		notify_message_event.window = uinounours->window;
+		notify_message_event.format = 8; // doesn't really matter since we use memcpy to pass the pointer
+		memcpy(notify_message_event.data.l, &uiimage, sizeof(uiimage));
+		XSendEvent(uinounours->background_display, uinounours->window, 0, 0,
+				(XEvent*) &notify_message_event);
+		XFlush(uinounours->background_display);
+	}
 }
 
 static void *nnuinounours_loop(void *data) {
@@ -97,12 +102,12 @@ static void *nnuinounours_loop(void *data) {
 
 		} else if (xevent.type == MotionNotify) {
 			XMotionEvent motion_event = xevent.xmotion;
-			nnnounours_on_move(uinounours->nounours, motion_event.x, motion_event.y);
+			nnnounours_on_move(uinounours->nounours, motion_event.x,
+					motion_event.y);
 
 		} else if (xevent.type == ButtonRelease) {
 			XButtonReleasedEvent bp_event = xevent.xbutton;
-			nnnounours_on_release(uinounours->nounours, bp_event.x,
-					bp_event.y);
+			nnnounours_on_release(uinounours->nounours, bp_event.x, bp_event.y);
 		}
 
 	}
