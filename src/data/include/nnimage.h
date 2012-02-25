@@ -49,6 +49,8 @@ NNAdjacentImages *nnimage_adjacent_images_new(NNFeature *feature);
 void nnimage_add_adjacent_image(NNImage *image, NNFeature *feature, NNImage *adjacent_image);
 void nnimage_add_feature(NNImage *image, NNFeature *feature, int x, int y);
 NNFeature * nnimage_find_feature(NNImage *image, const char *id);
+NNFeature * nnimage_find_closest_feature(NNImage *image, int x, int y);
+int nnimage_get_distance(NNImage *image, NNFeature *feature, int x, int y);
 NNAdjacentImages * nnimage_find_adjacent_images(NNImage *image, NNFeature *feature);
 void nnimage_adjacent_images_free(NNAdjacentImages *adjacent_images);
 void nnimage_free(NNImage *image);

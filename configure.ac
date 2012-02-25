@@ -18,7 +18,7 @@ AM_PROG_CC_C_O
 # Checks for header files.
 AC_PATH_X
 AC_HEADER_STDC
-AC_CHECK_HEADERS([string.h Xlib.h jpeglib.h pthread.h])
+AC_CHECK_HEADERS([string.h Xlib.h jpeglib.h pthread.h unistd.h math.h])
 
 
 

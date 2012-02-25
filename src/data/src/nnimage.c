@@ -7,8 +7,10 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
 #include "nnimage.h"
 #include "nncommon.h"
+#include "nnmath.h"
 
 
 NNImage * nnimage_new(NNNounours *nounours, char *id, char *filename) {
@@ -71,6 +73,31 @@ NNFeature * nnimage_find_feature(NNImage *image, const char *id) {
 	}
 	return NULL;
 }
+NNFeature * nnimage_find_closest_feature(NNImage *image, int x, int y) {
+	int min_distance = INT_MAX;
+	NNFeature *feature = 0;
+	int i;
+	for(i=0; i < image->num_image_features; i++) {
+		NNImageFeature *image_feature = image->image_features[i];
+		int distance = nnmath_get_distance(image_feature->x, image_feature->y, x, y);
+		if(distance < min_distance) {
+			min_distance = distance;
+			feature = image_feature->feature;
+		}
+	}
+	return feature;
+}
+int nnimage_get_distance(NNImage *image, NNFeature *feature, int x, int y) {
+	int i;
+	for(i=0; i < image->num_image_features; i++) {
+		if(image->image_features[i]->feature == feature) {
+			NNImageFeature *image_feature = image->image_features[i];
+			return nnmath_get_distance(image_feature->x, image_feature->y, x, y);
+		}
+	}
+	return INT_MAX;
+}
+
 NNAdjacentImages * nnimage_find_adjacent_images(NNImage *image, NNFeature *feature) {
 	int i;
 	for(i=0; i < image->num_adjacent_images; i++) {

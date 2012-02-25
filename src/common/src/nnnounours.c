@@ -37,6 +37,8 @@ void nnnounours_show_image(NNNounours *nounours, NNImage *image) {
 }
 void nnnounours_on_press(NNNounours *nounours, int x, int y) {
 	printf("on press %dx%d\n", x, y);
+	NNFeature *feature = nnimage_find_closest_feature(nounours->cur_image, x, y);
+	printf("%s\n", feature->id);
 }
 void nnnounours_on_move(NNNounours *nounours, int x, int y) {
 	printf("on move %dx%d\n", x, y);
