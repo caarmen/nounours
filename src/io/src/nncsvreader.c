@@ -18,7 +18,7 @@ static const char *CSV_SEP = ",\r\n";
 char *nncsv_get_value(NNCSVLine *header, NNCSVLine *line,
 		const char *field_name) {
 	int i;
-	for (i = 0; i < header->num_cells; i++) {
+	for (i = 0; i < line->num_cells; i++) {
 		if (!strcmp(field_name, header->cells[i]))
 			return line->cells[i];
 	}
