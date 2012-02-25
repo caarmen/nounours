@@ -21,6 +21,7 @@ NNNounours * nnnounours_new() {
 	nounours->cur_theme = 0;
 	nounours->cur_image = 0;
 	nnread_nounours_properties_file(nounours);
+	nnuinounours_start_loop(nounours->uinounours);
 
 	return nounours;
 }

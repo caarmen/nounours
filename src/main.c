@@ -17,11 +17,8 @@ int main(int argc, char **argv) {
 	NNNounours *nounours = nnnounours_new();
 
 	NNTheme *theme = nntheme_new(nounours, "1");
-
-	int i;
 	nnnounours_use_theme(nounours, theme);
-
-	nnuinounours_start_loop(nounours->uinounours);
+	int i;
 	for (i = 0; i < theme->num_animations; i++) {
 		NNAnimation *animation = theme->animations[i];
 		printf("Animation: %s, %s, interval=%d, repeat=%d\n", animation->id,

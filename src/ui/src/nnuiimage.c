@@ -15,7 +15,7 @@ static XImage * nnuiimage_jpeg_to_Ximage(Display *display, int screen_number, co
 
 NNUIImage *nnuiimage_new(NNUINounours *uinounours, const char *filename) {
 	NNUIImage *uiimage = malloc(sizeof(NNUIImage));
-	uiimage->ximage = nnuiimage_jpeg_to_Ximage(uinounours->display, uinounours->screen_number, filename);
+	uiimage->ximage = nnuiimage_jpeg_to_Ximage(uinounours->background_display, uinounours->screen_number, filename);
 	return uiimage;
 }
 
@@ -128,10 +128,10 @@ static XImage * nnuiimage_jpeg_to_Ximage(Display *display, int screen_number,
 void nnuiimage_show(NNUINounours *uinounours, NNUIImage *image) {
 	//int depth = DefaultDepth(uinounours->display, uinounours->screen_number);
 	//Pixmap pixmap = XCreatePixmap(uinounours->display, uinounours->window, image->ximage->width, image->ximage->height, depth);
-	XPutImage(uinounours->display, uinounours->window, uinounours->gc, image->ximage, 0, 0, 0, 0, image->ximage->width, image->ximage->height);
+	XPutImage(uinounours->ui_display, uinounours->window, uinounours->gc, image->ximage, 0, 0, 0, 0, image->ximage->width, image->ximage->height);
 	//XPutImage(uinounours->display, pixmap, uinounours->gc, image->ximage, 0, 0, 0, 0, image->ximage->width, image->ximage->height);
 	//XCopyArea(uinounours->display, pixmap, uinounours->window, uinounours->gc, 0, 0, image->ximage->width, image->ximage->height, 0, 0);
-	XFlush(uinounours->display);
+	XFlush(uinounours->ui_display);
 }
 
 void nnuiimage_free(NNUIImage *uiimage) {
