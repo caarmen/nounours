@@ -8,8 +8,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <stdio.h>
 #include "nnanimation.h"
 #include "nncommon.h"
+#include "nntheme.h"
 
 NNAnimation * nnanimation_new(NNNounours *nounours, char *id, char *label, int interval, int repeat) {
 	NNAnimation *animation = malloc(sizeof(NNAnimation));
@@ -24,7 +26,6 @@ NNAnimation * nnanimation_new(NNNounours *nounours, char *id, char *label, int i
 }
 void nnanimation_show(NNAnimation *animation) {
 	int i;
-	printf("Show animation %s\n", animation->label);
 	for(i=0; i < animation->repeat; i++) {
 		int j;
 		for(j=0; j < animation->num_images; j++) {
@@ -33,6 +34,7 @@ void nnanimation_show(NNAnimation *animation) {
 			usleep(sleep_duration);
 		}
 	}
+	nnnounours_show_image(animation->nounours, animation->nounours->cur_theme->default_image);
 }
 NNAnimationImage * nnanimation_image_new(NNImage *image, float duration) {
 	NNAnimationImage *animation_image = malloc(sizeof(NNAnimationImage));

@@ -6,6 +6,7 @@
  */
 
 #include <stdlib.h>
+#include <pthread.h>
 #include "nnnounours.h"
 #include "nntheme.h"
 #include "nnpropertiesreader.h"
@@ -43,12 +44,19 @@ void nnnounours_show_image(NNNounours *nounours, NNImage *image) {
 	nounours->cur_image = image;
 	nnuinounours_show_image(nounours->uinounours, image->uiimage);
 }
-void nnnounours_show_animation(NNNounours *nounours, NNAnimation *animation) {
+static void *nnnounours_animation_thread(void *data) {
+	NNAnimation *animation = (NNAnimation*) data;
+	NNNounours *nounours = animation->nounours;
 	if (nounours->is_doing_animation)
 		return;
 	nounours->is_doing_animation = 1;
 	nnanimation_show(animation);
 	nounours->is_doing_animation = 0;
+}
+void nnnounours_show_animation(NNNounours *nounours, NNAnimation *animation) {
+	pthread_t animation_thread;
+	pthread_create(&animation_thread, NULL, nnnounours_animation_thread,
+			animation);
 }
 
 void nnnounours_on_press(NNNounours *nounours, int x, int y) {
@@ -93,7 +101,6 @@ void nnnounours_on_release(NNNounours *nounours, int x, int y) {
 }
 void nnnounours_on_fling(NNNounours *nounours, int x, int y, float vel_x,
 		float vel_y) {
-	printf("fling %dx%d, %f %f\n", x, y, vel_x, vel_y);
 	int i;
 	NNTheme *theme = nounours->cur_theme;
 	for (i = 0; i < theme->num_animation_flings; i++) {

@@ -14,6 +14,7 @@
 #include "nnanimation.h"
 
 struct NNTheme;
+struct NNAnimation;
 
 typedef struct NNNounours {
 	int is_doing_animation;
