@@ -87,6 +87,9 @@ void nnread_image_file(NNTheme *theme) {
 				"data/themes/%s/images/%s", theme->id, image_filename);
 
 		NNImage *image = nnimage_new(theme->nounours, id, strdup(location));
+		char *release_image_id = nncsv_get_value(header, line, "OnRelease");
+		NNImage *release = nntheme_find_image(theme, release_image_id);
+		image->release = release;
 		nntheme_add_image(theme, image);
 	}
 	nncsv_post_read_file(file, header, line);

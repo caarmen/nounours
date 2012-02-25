@@ -52,6 +52,8 @@ void nnnounours_on_move(NNNounours *nounours, int x, int y) {
 	nnnounours_show_image(nounours, image);
 }
 void nnnounours_on_release(NNNounours *nounours, int x, int y) {
+	if(nounours->cur_image->release != 0)
+		nnnounours_show_image(nounours, nounours->cur_image->release);
 }
 
 void nnnounours_free(NNNounours *nounours) {

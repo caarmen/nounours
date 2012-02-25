@@ -37,6 +37,7 @@ typedef struct NNImage {
 	NNFeature **features;
 	int num_image_features;
 	NNImageFeature **image_features;
+	struct NNImage *release;
 	struct NNUIImage *uiimage;
 } NNImage;
 
