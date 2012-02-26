@@ -18,12 +18,12 @@
 
 void help(char *prog_name) {
 	printf("Usage:\n");
-	printf("%s [-theme <path/to/theme>] [-screensaver]\n", prog_name);
+	printf("%s [-theme <path/to/theme>] [-screensaver] [-window-id <window id>]\n", prog_name);
 }
 int main(int argc, char **argv) {
 	const char *theme_path = "data/themes/1";
 	int screensaver_mode = 0;
-
+	int window_id = -1;
 	int i;
 	for(i = 1; i < argc; i++) {
 		if(!strcmp(argv[i], "-theme")) {
@@ -35,6 +35,13 @@ int main(int argc, char **argv) {
 			}
 		} else if(!strcmp(argv[i], "-screensaver")) {
 			screensaver_mode = 1;
+		} else if(!strcmp(argv[i], "-window-id")) {
+			if(i == argc) {
+				printf("Missing window id.\n");
+				help(argv[0]);
+			} else {
+				window_id = atoi(argv[++i]);
+			}
 		} else {
 			printf("Unknown option %s\n", argv[i]);
 			help(argv[0]);
@@ -43,7 +50,7 @@ int main(int argc, char **argv) {
 	srandom(time(NULL));
 
 
-	NNNounours *nounours = nnnounours_new(screensaver_mode);
+	NNNounours *nounours = nnnounours_new(screensaver_mode, window_id);
 	NNTheme *theme = nntheme_new(nounours, strdup(theme_path));
 	nnnounours_use_theme(nounours, theme);
 	while(1) {

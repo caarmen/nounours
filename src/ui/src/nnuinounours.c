@@ -13,9 +13,10 @@
 #include <stdio.h>
 #include "nnuinounours.h"
 
-NNUINounours *nnuinounours_new(NNNounours *nounours) {
+NNUINounours *nnuinounours_new(NNNounours *nounours, int window_id) {
 	NNUINounours *uinounours = malloc(sizeof(NNUINounours));
 	uinounours->background_display = XOpenDisplay(0);
+	uinounours->window = window_id;
 	uinounours->nounours = nounours;
 	uinounours->is_running = 0;
 	XSetErrorHandler(nnuinounours_error_handler);
@@ -78,12 +79,14 @@ static void *nnuinounours_loop(void *data) {
 	uinounours->root_window = DefaultRootWindow(uinounours->ui_display);
 	int black_color =
 			BlackPixel(uinounours->ui_display, uinounours->screen_number);
-	if (uinounours->nounours->screensaver_mode) {
-		uinounours->window = uinounours->root_window;
-	} else {
-		uinounours->window = XCreateSimpleWindow(uinounours->ui_display,
-				uinounours->root_window, 0, 0, 1, 1, 0, black_color,
-				black_color);
+	if (uinounours->window == -1) {
+		if (uinounours->nounours->screensaver_mode) {
+			uinounours->window = uinounours->root_window;
+		} else {
+			uinounours->window = XCreateSimpleWindow(uinounours->ui_display,
+					uinounours->root_window, 0, 0, 1, 1, 0, black_color,
+					black_color);
+		}
 	}
 	XMapWindow(uinounours->ui_display, uinounours->window);
 

@@ -20,7 +20,7 @@ static void * nnnounours_ping_thread(void *data) {
 	}
 }
 
-NNNounours * nnnounours_new(int screensaver_mode) {
+NNNounours * nnnounours_new(int screensaver_mode, int window_id) {
 	NNNounours *nounours = malloc(sizeof(NNNounours));
 	nounours->screensaver_mode = screensaver_mode;
 	nounours->is_doing_animation = 0;
@@ -29,7 +29,7 @@ NNNounours * nnnounours_new(int screensaver_mode) {
 	nounours->fling_precision = 0;
 	nounours->idle_time = 0;
 	nounours->idle_ping_interval = 0;
-	nounours->uinounours = nnuinounours_new(nounours);
+	nounours->uinounours = nnuinounours_new(nounours, window_id);
 	nounours->cur_theme = 0;
 	nounours->cur_image = 0;
 	nounours->cur_feature = 0;

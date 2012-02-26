@@ -33,7 +33,7 @@ typedef struct NNUINounours {
 
 } NNUINounours;
 
-NNUINounours *nnuinounours_new(struct NNNounours *nounours);
+NNUINounours *nnuinounours_new(struct NNNounours *nounours, int window_id);
 void nnuinounours_resize(NNUINounours *nounours, int width, int height);
 void nnuinounours_free(NNUINounours *nounours);
 void nnuinounours_show_image(NNUINounours *nounours, struct NNUIImage *image);
