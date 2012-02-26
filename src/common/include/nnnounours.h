@@ -30,6 +30,7 @@ typedef struct NNNounours {
 	int last_x;
 	int last_y;
 	long last_motion_event_time_us;
+	long last_action_time_us;
 	pthread_t animation_thread;
 	pthread_cond_t animation_cond;
 	pthread_mutex_t animation_mutex;

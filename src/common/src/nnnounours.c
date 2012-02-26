@@ -14,8 +14,8 @@
 
 static void * nnnounours_ping_thread(void *data) {
 	NNNounours * nounours = (NNNounours*) data;
-	while(1) {
-		sleep(nounours->idle_ping_interval/1000);
+	while (1) {
+		sleep(nounours->idle_ping_interval / 1000);
 		nnnounours_ping(nounours);
 	}
 }
@@ -36,12 +36,19 @@ NNNounours * nnnounours_new(int screensaver_mode, int window_id) {
 	nounours->last_x = -1;
 	nounours->last_y = -1;
 	nounours->last_motion_event_time_us = 0;
+	nounours->last_action_time_us = 0;
 	nnread_nounours_properties_file(nounours);
 	nnuinounours_start_loop(nounours->uinounours);
-	pthread_create(&nounours->ping_thread, NULL, nnnounours_ping_thread, nounours);
+	pthread_create(&nounours->ping_thread, NULL, nnnounours_ping_thread,
+			nounours);
 	pthread_mutex_init(&nounours->animation_mutex, 0);
 	pthread_cond_init(&nounours->animation_cond, 0);
 	return nounours;
+}
+static void nnnounours_reset_idle(NNNounours *nounours) {
+	struct timeval now_tv;
+	gettimeofday(&now_tv, NULL);
+	nounours->last_action_time_us = now_tv.tv_sec * 1000000 + now_tv.tv_usec;
 }
 void nnnounours_use_theme(NNNounours *nounours, NNTheme *theme) {
 	nounours->cur_theme = theme;
@@ -62,20 +69,21 @@ static void *nnnounours_animation_thread(void *data) {
 	if (nounours->is_doing_animation)
 		return;
 	nounours->is_doing_animation = 1;
+	nnnounours_reset_idle(nounours);
 	nnanimation_start(animation);
 	nounours->is_doing_animation = 0;
 	return (void*) NULL;
 }
 void nnnounours_start_animation(NNNounours *nounours, NNAnimation *animation) {
-	if(animation == NULL)
+	if (animation == NULL)
 		return;
-	if(nounours->is_doing_animation)
+	if (nounours->is_doing_animation)
 		nnnounours_stop_animation(nounours);
-	pthread_create(&nounours->animation_thread, NULL, nnnounours_animation_thread,
-			animation);
+	pthread_create(&nounours->animation_thread, NULL,
+			nnnounours_animation_thread, animation);
 }
 void nnnounours_stop_animation(NNNounours *nounours) {
-	nounours->is_doing_animation=0;
+	nounours->is_doing_animation = 0;
 	pthread_cond_signal(&nounours->animation_cond);
 }
 void nnnounours_on_press(NNNounours *nounours, int x, int y) {
@@ -90,6 +98,7 @@ void nnnounours_on_press(NNNounours *nounours, int x, int y) {
 			nounours->cur_image = nounours->cur_theme->default_image;
 		}
 	}
+	nnnounours_reset_idle(nounours);
 }
 void nnnounours_on_move(NNNounours *nounours, int x, int y) {
 	if (nounours->is_doing_animation)
@@ -110,6 +119,7 @@ void nnnounours_on_move(NNNounours *nounours, int x, int y) {
 	nounours->last_motion_event_time_us = now_us;
 	nounours->last_x = x;
 	nounours->last_y = y;
+	nnnounours_reset_idle(nounours);
 }
 void nnnounours_on_release(NNNounours *nounours, int x, int y) {
 	if (nounours->is_doing_animation)
@@ -117,6 +127,7 @@ void nnnounours_on_release(NNNounours *nounours, int x, int y) {
 
 	if (nounours->cur_image->release != 0)
 		nnnounours_show_image(nounours, nounours->cur_image->release);
+	nnnounours_reset_idle(nounours);
 }
 void nnnounours_on_fling(NNNounours *nounours, int x, int y, float vel_x,
 		float vel_y) {
@@ -139,10 +150,16 @@ void nnnounours_on_shake(NNNounours *nounours) {
 }
 
 void nnnounours_ping(NNNounours *nounours) {
-	if(nounours->is_doing_animation)
+	if (nounours->is_doing_animation)
 		return;
-	NNAnimation *animation = nnanimation_create_random(nounours);
-	nnnounours_start_animation(nounours, animation);
+	struct timeval now_tv;
+	gettimeofday(&now_tv, NULL);
+	long now_us = now_tv.tv_sec * 1000000 + now_tv.tv_usec;
+	long time_diff = now_us - nounours->last_action_time_us;
+	if (time_diff > nounours->idle_ping_interval*1000) {
+		NNAnimation *animation = nnanimation_create_random(nounours);
+		nnnounours_start_animation(nounours, animation);
+	}
 }
 
 void nnnounours_free(NNNounours *nounours) {

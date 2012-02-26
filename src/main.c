@@ -19,6 +19,7 @@
 void help(char *prog_name) {
 	printf("Usage:\n");
 	printf("%s [-theme <path/to/theme>] [-screensaver] [-window-id <window id>]\n", prog_name);
+	exit(1);
 }
 int main(int argc, char **argv) {
 	const char *theme_path = "data/themes/1";
