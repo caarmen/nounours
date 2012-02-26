@@ -23,6 +23,8 @@ NNUINounours *nnuinounours_new(NNNounours *nounours, int window_id) {
 	uinounours->last_window_x = -1;
 	uinounours->last_window_y = -1;
 	uinounours->last_window_move_time_us = 0;
+	pthread_cond_init(&uinounours->cond,0);
+	pthread_mutex_init(&uinounours->mutex,0);
 	return uinounours;
 }
 void nnuinounours_resize(NNUINounours *uinounours, int width, int height) {
