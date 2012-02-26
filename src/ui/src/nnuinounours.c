@@ -163,10 +163,12 @@ void nnuinounours_stop_loop(NNUINounours *uinounours) {
 }
 
 int nnuinounours_error_handler(Display *display, XErrorEvent *error_event) {
+	char error_message[128];
+	XGetErrorText(display, error_event->error_code, error_message, 128);
 	fprintf(
 			stderr,
-			"Error on display %p: type=%d, resourceid=%lu, serial=%lu, error_code=%d, request_code=%d, minor_code=%d\n",
+			"Error on display %p: type=%d, resourceid=%lu, serial=%lu, error_code=%d (%s), request_code=%d, minor_code=%d\n",
 			display, error_event->type, error_event->resourceid,
-			error_event->serial, error_event->error_code,
+			error_event->serial, error_event->error_code, error_message,
 			error_event->request_code, error_event->minor_code);
 }
