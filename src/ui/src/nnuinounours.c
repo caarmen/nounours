@@ -71,7 +71,7 @@ static void *nnuinounours_loop(void *data) {
 
 	uinounours->ui_display = XOpenDisplay(0);
 	if(uinounours->ui_display == 0) {
-		fprintf(stderr, "Could not open display.");
+		fprintf(stderr, "Could not open display.\n");
 		exit(-1);
 	}
 	uinounours->screen_number = DefaultScreen(uinounours->ui_display);
