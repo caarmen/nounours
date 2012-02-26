@@ -22,8 +22,14 @@ NNUINounours *nnuinounours_new(NNNounours *nounours) {
 	return uinounours;
 }
 void nnuinounours_resize(NNUINounours *uinounours, int width, int height) {
-	XMoveResizeWindow(uinounours->background_display, uinounours->window, 0, 0,
-			width, height);
+	int screen_width =
+			DisplayWidth(uinounours->ui_display, uinounours->screen_number);
+	int screen_height =
+			DisplayHeight(uinounours->ui_display, uinounours->screen_number);
+
+	XMoveResizeWindow(uinounours->background_display, uinounours->window,
+			(screen_width - width) / 2, (screen_height - height) / 2, width,
+			height);
 	XSizeHints* size_hints = XAllocSizeHints();
 	size_hints->flags = PMinSize | PMaxSize;
 	size_hints->min_width = width;
@@ -59,13 +65,14 @@ void nnuinounours_show_image(NNUINounours *uinounours, NNUIImage *uiimage) {
 
 static void *nnuinounours_loop(void *data) {
 	NNUINounours *uinounours = (NNUINounours*) data;
+
 	uinounours->ui_display = XOpenDisplay(0);
 	uinounours->screen_number = DefaultScreen(uinounours->ui_display);
 	uinounours->root_window = DefaultRootWindow(uinounours->ui_display);
 	int black_color =
 			BlackPixel(uinounours->ui_display, uinounours->screen_number);
 	uinounours->window = XCreateSimpleWindow(uinounours->ui_display,
-			uinounours->root_window, 0, 0, 50, 50, 0, black_color, black_color);
+			uinounours->root_window, 0, 0, 1, 1, 0, black_color, black_color);
 	XMapWindow(uinounours->ui_display, uinounours->window);
 
 	// wait for the notify event.
