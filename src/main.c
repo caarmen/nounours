@@ -19,7 +19,6 @@
 void help(char *prog_name) {
 	printf("Usage:\n");
 	printf("%s [-theme <path/to/theme>] [-screensaver]\n", prog_name);
-	exit(1);
 }
 int main(int argc, char **argv) {
 	const char *theme_path = "data/themes/1";
@@ -29,6 +28,7 @@ int main(int argc, char **argv) {
 	for(i = 1; i < argc; i++) {
 		if(!strcmp(argv[i], "-theme")) {
 			if(i == argc) {
+				printf("Missing theme path.\n");
 				help(argv[0]);
 			} else {
 				theme_path = argv[++i];
@@ -36,6 +36,7 @@ int main(int argc, char **argv) {
 		} else if(!strcmp(argv[i], "-screensaver")) {
 			screensaver_mode = 1;
 		} else {
+			printf("Unknown option %s\n", argv[i]);
 			help(argv[0]);
 		}
 	}
