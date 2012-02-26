@@ -86,18 +86,19 @@ static void *nnuinounours_loop(void *data) {
 			uinounours->window = XCreateSimpleWindow(uinounours->ui_display,
 					uinounours->root_window, 0, 0, 1, 1, 0, black_color,
 					black_color);
+			XMapWindow(uinounours->ui_display, uinounours->window);
 		}
 	}
-	XMapWindow(uinounours->ui_display, uinounours->window);
 
 	long event_mask = StructureNotifyMask;
 	XEvent xevent;
-
-	// wait for the notify event.
-	XSelectInput(uinounours->ui_display, uinounours->window, event_mask);
-	do {
-		XNextEvent(uinounours->ui_display, &xevent);
-	} while (xevent.type != MapNotify);
+	if (!uinounours->nounours->screensaver_mode) {
+		// wait for the notify event.
+		XSelectInput(uinounours->ui_display, uinounours->window, event_mask);
+		do {
+			XNextEvent(uinounours->ui_display, &xevent);
+		} while (xevent.type != MapNotify);
+	}
 	uinounours->gc = XCreateGC(uinounours->ui_display, uinounours->window, 0,
 			NULL);
 
