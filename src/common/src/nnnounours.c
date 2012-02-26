@@ -12,6 +12,8 @@
 #include "nnpropertiesreader.h"
 #include "nnmath.h"
 
+static pthread_t animation_thread;
+
 NNNounours * nnnounours_new() {
 	NNNounours *nounours = malloc(sizeof(NNNounours));
 	nounours->is_doing_animation = 0;
@@ -52,16 +54,19 @@ static void *nnnounours_animation_thread(void *data) {
 	nounours->is_doing_animation = 1;
 	nnanimation_show(animation);
 	nounours->is_doing_animation = 0;
+	return (void*) NULL;
 }
-void nnnounours_show_animation(NNNounours *nounours, NNAnimation *animation) {
-	pthread_t animation_thread;
+void nnnounours_start_animation(NNNounours *nounours, NNAnimation *animation) {
 	pthread_create(&animation_thread, NULL, nnnounours_animation_thread,
 			animation);
 }
-
+void nnnounours_stop_animation(NNNounours *nounours) {
+	pthread_cancel(animation_thread);
+	nounours->is_doing_animation=0;
+}
 void nnnounours_on_press(NNNounours *nounours, int x, int y) {
 	if (nounours->is_doing_animation)
-		return;
+		nnnounours_stop_animation(nounours);
 	nounours->cur_feature = nnimage_find_closest_feature(nounours->cur_image, x,
 			y);
 	if (nounours->cur_feature != 0) {
@@ -112,7 +117,7 @@ void nnnounours_on_fling(NNNounours *nounours, int x, int y, float vel_x,
 		if (!nnmath_point_is_in_square(x, y, fling->x, fling->y, fling->width,
 				fling->height))
 			continue;
-		nnnounours_show_animation(nounours, fling->animation);
+		nnnounours_start_animation(nounours, fling->animation);
 	}
 }
 

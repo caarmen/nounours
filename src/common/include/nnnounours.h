@@ -36,7 +36,8 @@ typedef struct NNNounours {
 NNNounours * nnnounours_new();
 void nnnounours_use_theme(NNNounours *nounours, struct NNTheme *theme);
 void nnnounours_show_image(NNNounours *nounours, struct NNImage *image);
-void nnnounours_show_animation(NNNounours *nounours, struct NNAnimation *animation);
+void nnnounours_start_animation(NNNounours *nounours, struct NNAnimation *animation);
+void nnnounours_stop_animation(NNNounours *nounours);
 void nnnounours_on_press(NNNounours *nounours, int x, int y);
 void nnnounours_on_move(NNNounours *nounours, int x, int y);
 void nnnounours_on_release(NNNounours *nounours, int x, int y);
