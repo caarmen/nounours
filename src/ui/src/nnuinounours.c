@@ -70,7 +70,7 @@ static void *nnuinounours_loop(void *data) {
 	NNUINounours *uinounours = (NNUINounours*) data;
 
 	uinounours->ui_display = XOpenDisplay(0);
-	if(uinounours->ui_display == 0) {
+	if (uinounours->ui_display == 0) {
 		fprintf(stderr, "Could not open display.\n");
 		exit(-1);
 	}
@@ -78,8 +78,13 @@ static void *nnuinounours_loop(void *data) {
 	uinounours->root_window = DefaultRootWindow(uinounours->ui_display);
 	int black_color =
 			BlackPixel(uinounours->ui_display, uinounours->screen_number);
-	uinounours->window = XCreateSimpleWindow(uinounours->ui_display,
-			uinounours->root_window, 0, 0, 1, 1, 0, black_color, black_color);
+	if (uinounours->nounours->screensaver_mode) {
+		uinounours->window = uinounours->root_window;
+	} else {
+		uinounours->window = XCreateSimpleWindow(uinounours->ui_display,
+				uinounours->root_window, 0, 0, 1, 1, 0, black_color,
+				black_color);
+	}
 	XMapWindow(uinounours->ui_display, uinounours->window);
 
 	// wait for the notify event.
@@ -128,9 +133,10 @@ static void *nnuinounours_loop(void *data) {
 			long now_us = now_tv.tv_sec * 1000000 + now_tv.tv_usec;
 			if (uinounours->last_window_x >= 0) {
 				long time_diff = now_us - uinounours->last_window_move_time_us;
-				long distance = nnmath_get_distance(conf_event.x, conf_event.y, uinounours->last_window_x, uinounours->last_window_y);
-				long speed = (distance *  1000000) / time_diff;
-				if(speed > uinounours->nounours->shake_factor)
+				long distance = nnmath_get_distance(conf_event.x, conf_event.y,
+						uinounours->last_window_x, uinounours->last_window_y);
+				long speed = (distance * 1000000) / time_diff;
+				if (speed > uinounours->nounours->shake_factor)
 					nnnounours_on_shake(uinounours->nounours);
 			}
 			uinounours->last_window_move_time_us = now_us;

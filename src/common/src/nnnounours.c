@@ -35,6 +35,7 @@ NNNounours * nnnounours_new() {
 	nounours->last_x = -1;
 	nounours->last_y = -1;
 	nounours->last_motion_event_time_us = 0;
+	nounours->screensaver_mode = 0;
 	nnread_nounours_properties_file(nounours);
 	nnuinounours_start_loop(nounours->uinounours);
 	pthread_create(&nounours->ping_thread, NULL, nnnounours_ping_thread, nounours);

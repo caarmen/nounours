@@ -34,6 +34,7 @@ typedef struct NNNounours {
 	pthread_cond_t animation_cond;
 	pthread_mutex_t animation_mutex;
 	pthread_t ping_thread;
+	int screensaver_mode;
 } NNNounours;
 
 NNNounours * nnnounours_new();
