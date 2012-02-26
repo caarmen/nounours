@@ -12,7 +12,6 @@
 #include "nnpropertiesreader.h"
 #include "nnmath.h"
 
-static pthread_t animation_thread;
 
 NNNounours * nnnounours_new() {
 	NNNounours *nounours = malloc(sizeof(NNNounours));
@@ -61,11 +60,11 @@ void nnnounours_start_animation(NNNounours *nounours, NNAnimation *animation) {
 		return;
 	if(nounours->is_doing_animation)
 		nnnounours_stop_animation(nounours);
-	pthread_create(&animation_thread, NULL, nnnounours_animation_thread,
+	pthread_create(&nounours->animation_thread, NULL, nnnounours_animation_thread,
 			animation);
 }
 void nnnounours_stop_animation(NNNounours *nounours) {
-	pthread_cancel(animation_thread);
+	pthread_cancel(nounours->animation_thread);
 	nounours->is_doing_animation=0;
 }
 void nnnounours_on_press(NNNounours *nounours, int x, int y) {
