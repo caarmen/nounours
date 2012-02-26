@@ -12,10 +12,10 @@
 #include "nncommon.h"
 #include "nncsvreader.h"
 
-NNTheme * nntheme_new(NNNounours *nounours, char *id) {
+NNTheme * nntheme_new(NNNounours *nounours, char *path) {
 	NNTheme *theme = malloc(sizeof(NNTheme));
 	theme->nounours = nounours;
-	theme->id = strdup(id);
+	theme->path = strdup(path);
 	theme->num_features = 0;
 	theme->features = malloc(sizeof(NNFeature*) * NN_INITIAL_LIST_CAPACITY);
 	theme->num_images = 0;
@@ -88,7 +88,7 @@ NNFeature *nntheme_find_feature(NNTheme *theme, const char *id) {
 }
 
 void nntheme_free(NNTheme *theme) {
-	free(theme->id);
+	free(theme->path);
 	int i;
 	for(i=0; i < theme->num_features; i++)
 		nnfeature_free(theme->features[i]);

@@ -61,7 +61,7 @@ int nncsv_read_line(FILE *file, NNCSVLine *line) {
 FILE *nncsv_pre_read_file(NNTheme *theme, const char *filename,
 		NNCSVLine **header, NNCSVLine **line) {
 	char full_filename[512];
-	sprintf(full_filename, "data/themes/%s/%s", theme->id, filename);
+	sprintf(full_filename, "%s/%s", theme->path, filename);
 
 	FILE *file = fopen(full_filename, "r");
 	*header = nncsv_line_new();
@@ -84,7 +84,7 @@ void nnread_image_file(NNTheme *theme) {
 		char *image_filename = nncsv_get_value(header, line, "Filename");
 		char location[128];
 		sprintf(location,
-				"data/themes/%s/images/%s", theme->id, image_filename);
+				"%s/images/%s", theme->path, image_filename);
 
 		NNImage *image = nnimage_new(theme->nounours, id, strdup(location));
 		char *release_image_id = nncsv_get_value(header, line, "OnRelease");

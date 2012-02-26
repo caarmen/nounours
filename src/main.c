@@ -18,13 +18,13 @@
 int main(int argc, char **argv) {
 
 	srandom(time(NULL));
-	const char *theme_id = "1";
+	const char *theme_path = "data/themes/1";
 	if(argc > 1) {
-		theme_id = argv[1];
+		theme_path = argv[1];
 	}
 
 	NNNounours *nounours = nnnounours_new();
-	NNTheme *theme = nntheme_new(nounours, strdup(theme_id));
+	NNTheme *theme = nntheme_new(nounours, strdup(theme_path));
 	nnnounours_use_theme(nounours, theme);
 	while(1) {
 		sleep(1000000);

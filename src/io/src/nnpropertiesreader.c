@@ -22,7 +22,7 @@ int nnproperties_read_line(FILE *file, char **key, char **val) {
 }
 void nnread_theme_properties_file(NNTheme *theme) {
 	char filename[512];
-	sprintf(filename, "data/themes/%s/theme.properties", theme->id);
+	sprintf(filename, "%s/theme.properties", theme->path);
 
 	FILE *file = fopen(filename, "r");
 	char *key, *val;
