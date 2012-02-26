@@ -40,7 +40,8 @@ int main(int argc, char **argv) {
 				printf("Missing window id.\n");
 				help(argv[0]);
 			} else {
-				window_id = atoi(argv[++i]);
+				char * window_id_str = argv[++i];
+				window_id = strtol(window_id_str, NULL, 16);
 			}
 		} else {
 			printf("Unknown option %s\n", argv[i]);
