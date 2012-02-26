@@ -86,21 +86,21 @@ static void *nnuinounours_loop(void *data) {
 			uinounours->window = XCreateSimpleWindow(uinounours->ui_display,
 					uinounours->root_window, 0, 0, 1, 1, 0, black_color,
 					black_color);
-			XMapWindow(uinounours->ui_display, uinounours->window);
 		}
 	}
+	XMapWindow(uinounours->ui_display, uinounours->window);
+
+	long event_mask = StructureNotifyMask;
+	XEvent xevent;
 
 	// wait for the notify event.
-	long event_mask = StructureNotifyMask;
 	XSelectInput(uinounours->ui_display, uinounours->window, event_mask);
-	XEvent event;
 	do {
-		XNextEvent(uinounours->ui_display, &event);
-	} while (event.type != MapNotify);
+		XNextEvent(uinounours->ui_display, &xevent);
+	} while (xevent.type != MapNotify);
 	uinounours->gc = XCreateGC(uinounours->ui_display, uinounours->window, 0,
 			NULL);
 
-	XEvent xevent;
 	event_mask = ExposureMask | ClientMessage | ButtonPressMask
 			| ButtonReleaseMask | ButtonMotionMask | StructureNotifyMask;
 	XSelectInput(uinounours->ui_display, uinounours->window, event_mask);
