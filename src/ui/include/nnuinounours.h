@@ -27,6 +27,10 @@ typedef struct NNUINounours {
 	pthread_t ui_thread;
 	pthread_mutex_t mutex;
 	pthread_cond_t cond;
+	int last_window_x;
+	int last_window_y;
+	long last_window_move_time_us;
+
 } NNUINounours;
 
 NNUINounours *nnuinounours_new(struct NNNounours *nounours);

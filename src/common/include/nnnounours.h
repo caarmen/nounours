@@ -42,6 +42,7 @@ void nnnounours_on_press(NNNounours *nounours, int x, int y);
 void nnnounours_on_move(NNNounours *nounours, int x, int y);
 void nnnounours_on_release(NNNounours *nounours, int x, int y);
 void nnnounours_on_fling(NNNounours *nounours, int x, int y, float vel_x, float vel_y);
+void nnnounours_on_shake(NNNounours *nounours);
 void nnnounours_free(NNNounours *nounours);
 
 #endif /* NNNOUNOURS_H_ */

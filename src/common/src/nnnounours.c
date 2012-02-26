@@ -57,6 +57,10 @@ static void *nnnounours_animation_thread(void *data) {
 	return (void*) NULL;
 }
 void nnnounours_start_animation(NNNounours *nounours, NNAnimation *animation) {
+	if(animation == NULL)
+		return;
+	if(nounours->is_doing_animation)
+		nnnounours_stop_animation(nounours);
 	pthread_create(&animation_thread, NULL, nnnounours_animation_thread,
 			animation);
 }
@@ -119,6 +123,9 @@ void nnnounours_on_fling(NNNounours *nounours, int x, int y, float vel_x,
 			continue;
 		nnnounours_start_animation(nounours, fling->animation);
 	}
+}
+void nnnounours_on_shake(NNNounours *nounours) {
+	nnnounours_start_animation(nounours, nounours->cur_theme->shake_animation);
 }
 
 void nnnounours_free(NNNounours *nounours) {

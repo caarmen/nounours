@@ -19,6 +19,9 @@ NNUINounours *nnuinounours_new(NNNounours *nounours) {
 	uinounours->nounours = nounours;
 	uinounours->is_running = 0;
 	XSetErrorHandler(nnuinounours_error_handler);
+	uinounours->last_window_x = -1;
+	uinounours->last_window_y = -1;
+	uinounours->last_window_move_time_us = 0;
 	return uinounours;
 }
 void nnuinounours_resize(NNUINounours *uinounours, int width, int height) {
@@ -87,7 +90,7 @@ static void *nnuinounours_loop(void *data) {
 
 	XEvent xevent;
 	event_mask = ExposureMask | ClientMessage | ButtonPressMask
-			| ButtonReleaseMask | ButtonMotionMask;
+			| ButtonReleaseMask | ButtonMotionMask | StructureNotifyMask;
 	XSelectInput(uinounours->ui_display, uinounours->window, event_mask);
 	uinounours->is_running = 1;
 	pthread_cond_signal(&uinounours->cond);
@@ -111,10 +114,24 @@ static void *nnuinounours_loop(void *data) {
 			XMotionEvent motion_event = xevent.xmotion;
 			nnnounours_on_move(uinounours->nounours, motion_event.x,
 					motion_event.y);
-
 		} else if (xevent.type == ButtonRelease) {
 			XButtonReleasedEvent bp_event = xevent.xbutton;
 			nnnounours_on_release(uinounours->nounours, bp_event.x, bp_event.y);
+		} else if (xevent.type == ConfigureNotify) {
+			XConfigureEvent conf_event = xevent.xconfigure;
+			struct timeval now_tv;
+			gettimeofday(&now_tv, NULL);
+			long now_us = now_tv.tv_sec * 1000000 + now_tv.tv_usec;
+			if (uinounours->last_window_x >= 0) {
+				long time_diff = now_us - uinounours->last_window_move_time_us;
+				long distance = nnmath_get_distance(conf_event.x, conf_event.y, uinounours->last_window_x, uinounours->last_window_y);
+				long speed = (distance *  1000000) / time_diff;
+				if(speed > uinounours->nounours->shake_factor)
+					nnnounours_on_shake(uinounours->nounours);
+			}
+			uinounours->last_window_move_time_us = now_us;
+			uinounours->last_window_x = conf_event.x;
+			uinounours->last_window_y = conf_event.y;
 		}
 
 	}
