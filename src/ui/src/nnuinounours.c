@@ -70,6 +70,10 @@ static void *nnuinounours_loop(void *data) {
 	NNUINounours *uinounours = (NNUINounours*) data;
 
 	uinounours->ui_display = XOpenDisplay(0);
+	if(uinounours->ui_display == 0) {
+		fprintf(stderr, "Could not open display.");
+		exit(-1);
+	}
 	uinounours->screen_number = DefaultScreen(uinounours->ui_display);
 	uinounours->root_window = DefaultRootWindow(uinounours->ui_display);
 	int black_color =
