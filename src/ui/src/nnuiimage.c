@@ -11,15 +11,15 @@
 #include <string.h>
 #include "nnuiimage.h"
 
-static XImage * nnuiimage_jpeg_to_Ximage(Display *display, int screen_number, const char *filename);
+static XImage * nnuiimage_jpeg_to_Ximage(Display *display, int window, const char *filename);
 
 NNUIImage *nnuiimage_new(NNUINounours *uinounours, const char *filename) {
 	NNUIImage *uiimage = malloc(sizeof(NNUIImage));
-	uiimage->ximage = nnuiimage_jpeg_to_Ximage(uinounours->background_display, uinounours->screen_number, filename);
+	uiimage->ximage = nnuiimage_jpeg_to_Ximage(uinounours->background_display, uinounours->window, filename);
 	return uiimage;
 }
 
-static XImage * nnuiimage_jpeg_to_Ximage(Display *display, int screen_number,
+static XImage * nnuiimage_jpeg_to_Ximage(Display *display, int window,
 		const char *filename) {
 	// Initialize the jpeg structs
 	struct jpeg_decompress_struct cinfo;
@@ -46,7 +46,9 @@ static XImage * nnuiimage_jpeg_to_Ximage(Display *display, int screen_number,
 	// on the screen depth (max bits per pixel the display
 	// can support).
 	// For an Ximage ZPixmap, we must use 32 bits, 16 bits, or 8 bits.
-	int depth = DefaultDepth(display, screen_number);
+	XWindowAttributes window_attributes;
+	XGetWindowAttributes(display, window, &window_attributes);
+	int depth = window_attributes.depth;
 	int image_bits_per_pixel;
 
 	// The device supports at least 17 bits (3 bytes minimulm required) per
@@ -67,7 +69,7 @@ static XImage * nnuiimage_jpeg_to_Ximage(Display *display, int screen_number,
 	size_t image_size = image_bytes_per_pixel * cinfo.output_width
 			* cinfo.output_height;
 	char *data = (char*) malloc(image_size);
-	Visual *visual = DefaultVisual(display, screen_number);
+	Visual *visual = window_attributes.visual;
 	int max_byte_value = 255;
 	int i;
 	int ptr = 0;

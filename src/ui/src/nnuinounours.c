@@ -86,9 +86,9 @@ static void *nnuinounours_loop(void *data) {
 			uinounours->window = XCreateSimpleWindow(uinounours->ui_display,
 					uinounours->root_window, 0, 0, 1, 1, 0, black_color,
 					black_color);
+			XMapWindow(uinounours->ui_display, uinounours->window);
 		}
 	}
-	XMapWindow(uinounours->ui_display, uinounours->window);
 
 	// wait for the notify event.
 	long event_mask = StructureNotifyMask;
