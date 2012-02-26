@@ -42,8 +42,7 @@ int main(int argc, char **argv) {
 	srandom(time(NULL));
 
 
-	NNNounours *nounours = nnnounours_new();
-	nounours->screensaver_mode = screensaver_mode;
+	NNNounours *nounours = nnnounours_new(screensaver_mode);
 	NNTheme *theme = nntheme_new(nounours, strdup(theme_path));
 	nnnounours_use_theme(nounours, theme);
 	while(1) {
