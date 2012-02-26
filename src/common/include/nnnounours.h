@@ -31,6 +31,9 @@ typedef struct NNNounours {
 	int last_y;
 	long last_motion_event_time_us;
 	pthread_t animation_thread;
+	pthread_cond_t animation_cond;
+	pthread_mutex_t animation_mutex;
+	pthread_t ping_thread;
 } NNNounours;
 
 NNNounours * nnnounours_new();
@@ -43,6 +46,7 @@ void nnnounours_on_move(NNNounours *nounours, int x, int y);
 void nnnounours_on_release(NNNounours *nounours, int x, int y);
 void nnnounours_on_fling(NNNounours *nounours, int x, int y, float vel_x, float vel_y);
 void nnnounours_on_shake(NNNounours *nounours);
+void nnnounours_ping(NNNounours *nounours);
 void nnnounours_free(NNNounours *nounours);
 
 #endif /* NNNOUNOURS_H_ */

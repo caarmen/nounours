@@ -54,6 +54,7 @@ NNFeature * nnimage_find_closest_feature(NNImage *image, int x, int y);
 int nnimage_get_distance(NNImage *image, NNFeature *feature, int x, int y);
 NNAdjacentImages * nnimage_find_adjacent_images(NNImage *image, NNFeature *feature);
 NNImage * nnimage_find_adjacent_image(NNImage *image, NNFeature *feature, int x, int y);
+NNImage * nnimage_get_random_adjacent_image(NNImage *image);
 void nnimage_adjacent_images_free(NNAdjacentImages *adjacent_images);
 void nnimage_free(NNImage *image);
 #endif /* NNIMAGE_H_ */

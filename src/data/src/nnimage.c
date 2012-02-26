@@ -123,6 +123,13 @@ NNImage * nnimage_find_adjacent_image(NNImage *image, NNFeature *feature, int x,
 	return result;
 }
 
+NNImage * nnimage_get_random_adjacent_image(NNImage *image) {
+	int adj_image_number = random() % image->num_adjacent_images;
+	NNAdjacentImages *adj_images = image->adjacent_images[adj_image_number];
+	int image_number = random() % adj_images->num_adjacent_images;
+	return adj_images->adjacent_images[image_number];
+}
+
 void nnimage_adjacent_images_free(NNAdjacentImages *adjacent_images) {
 	free(adjacent_images->adjacent_images);
 	free(adjacent_images);

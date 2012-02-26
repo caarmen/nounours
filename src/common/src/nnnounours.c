@@ -12,6 +12,13 @@
 #include "nnpropertiesreader.h"
 #include "nnmath.h"
 
+static void * nnnounours_ping_thread(void *data) {
+	NNNounours * nounours = (NNNounours*) data;
+	while(1) {
+		sleep(nounours->idle_ping_interval/1000);
+		nnnounours_ping(nounours);
+	}
+}
 
 NNNounours * nnnounours_new() {
 	NNNounours *nounours = malloc(sizeof(NNNounours));
@@ -30,7 +37,9 @@ NNNounours * nnnounours_new() {
 	nounours->last_motion_event_time_us = 0;
 	nnread_nounours_properties_file(nounours);
 	nnuinounours_start_loop(nounours->uinounours);
-
+	pthread_create(&nounours->ping_thread, NULL, nnnounours_ping_thread, nounours);
+	pthread_mutex_init(&nounours->animation_mutex, 0);
+	pthread_cond_init(&nounours->animation_cond, 0);
 	return nounours;
 }
 void nnnounours_use_theme(NNNounours *nounours, NNTheme *theme) {
@@ -45,13 +54,14 @@ void nnnounours_show_image(NNNounours *nounours, NNImage *image) {
 	nounours->cur_image = image;
 	nnuinounours_show_image(nounours->uinounours, image->uiimage);
 }
+
 static void *nnnounours_animation_thread(void *data) {
 	NNAnimation *animation = (NNAnimation*) data;
 	NNNounours *nounours = animation->nounours;
 	if (nounours->is_doing_animation)
 		return;
 	nounours->is_doing_animation = 1;
-	nnanimation_show(animation);
+	nnanimation_start(animation);
 	nounours->is_doing_animation = 0;
 	return (void*) NULL;
 }
@@ -64,8 +74,8 @@ void nnnounours_start_animation(NNNounours *nounours, NNAnimation *animation) {
 			animation);
 }
 void nnnounours_stop_animation(NNNounours *nounours) {
-	pthread_cancel(nounours->animation_thread);
 	nounours->is_doing_animation=0;
+	pthread_cond_signal(&nounours->animation_cond);
 }
 void nnnounours_on_press(NNNounours *nounours, int x, int y) {
 	if (nounours->is_doing_animation)
@@ -125,6 +135,13 @@ void nnnounours_on_fling(NNNounours *nounours, int x, int y, float vel_x,
 }
 void nnnounours_on_shake(NNNounours *nounours) {
 	nnnounours_start_animation(nounours, nounours->cur_theme->shake_animation);
+}
+
+void nnnounours_ping(NNNounours *nounours) {
+	if(nounours->is_doing_animation)
+		return;
+	NNAnimation *animation = nnanimation_create_random(nounours);
+	nnnounours_start_animation(nounours, animation);
 }
 
 void nnnounours_free(NNNounours *nounours) {
