@@ -61,7 +61,10 @@ void nnuinounours_show_image(NNUINounours *uinounours, NNUIImage *uiimage) {
 		notify_message_event.window = uinounours->window;
 		notify_message_event.format = 8; // doesn't really matter since we use memcpy to pass the pointer
 		memcpy(notify_message_event.data.l, &uiimage, sizeof(uiimage));
-		XSendEvent(uinounours->background_display, uinounours->window, 0, 0,
+		long event_mask = NoEventMask;
+		if(uinounours->nounours->screensaver_mode)
+			event_mask = ButtonReleaseMask; // TODO other applications may receive this event!
+		XSendEvent(uinounours->background_display, uinounours->window, 0, event_mask,
 				(XEvent*) &notify_message_event);
 		XFlush(uinounours->background_display);
 	}
@@ -102,7 +105,7 @@ static void *nnuinounours_loop(void *data) {
 	uinounours->gc = XCreateGC(uinounours->ui_display, uinounours->window, 0,
 			NULL);
 
-	event_mask = ExposureMask | ClientMessage | ButtonPressMask
+	event_mask = ExposureMask | ButtonPressMask
 			| ButtonReleaseMask | ButtonMotionMask | StructureNotifyMask;
 	XSelectInput(uinounours->ui_display, uinounours->window, event_mask);
 	uinounours->is_running = 1;
