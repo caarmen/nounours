@@ -19,7 +19,7 @@ int main(int argc, char **argv) {
 		theme_id = argv[1];
 	}
 	NNNounours *nounours = nnnounours_new();
-	NNTheme *theme = nntheme_new(nounours, theme_id);
+	NNTheme *theme = nntheme_new(nounours, strdup(theme_id));
 	nnnounours_use_theme(nounours, theme);
 	while(1) {
 		sleep(1000000);
