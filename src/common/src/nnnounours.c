@@ -20,6 +20,12 @@ static void * nnnounours_ping_thread(void *data) {
 	}
 }
 
+static void nnnounours_reset_idle(NNNounours *nounours) {
+	struct timeval now_tv;
+	gettimeofday(&now_tv, NULL);
+	nounours->last_action_time_us = now_tv.tv_sec * 1000000 + now_tv.tv_usec;
+}
+
 NNNounours * nnnounours_new(int screensaver_mode, int window_id) {
 	NNNounours *nounours = malloc(sizeof(NNNounours));
 	nounours->screensaver_mode = screensaver_mode;
@@ -36,20 +42,16 @@ NNNounours * nnnounours_new(int screensaver_mode, int window_id) {
 	nounours->last_x = -1;
 	nounours->last_y = -1;
 	nounours->last_motion_event_time_us = 0;
-	nounours->last_action_time_us = 0;
 	nnread_nounours_properties_file(nounours);
 	nnuinounours_start_loop(nounours->uinounours);
 	pthread_create(&nounours->ping_thread, NULL, nnnounours_ping_thread,
 			nounours);
 	pthread_mutex_init(&nounours->animation_mutex, 0);
 	pthread_cond_init(&nounours->animation_cond, 0);
+	nnnounours_reset_idle(nounours);
 	return nounours;
 }
-static void nnnounours_reset_idle(NNNounours *nounours) {
-	struct timeval now_tv;
-	gettimeofday(&now_tv, NULL);
-	nounours->last_action_time_us = now_tv.tv_sec * 1000000 + now_tv.tv_usec;
-}
+
 void nnnounours_use_theme(NNNounours *nounours, NNTheme *theme) {
 	nounours->cur_theme = theme;
 	nnuinounours_resize(nounours->uinounours, theme->width, theme->height);
@@ -69,7 +71,8 @@ static void *nnnounours_animation_thread(void *data) {
 	if (nounours->is_doing_animation)
 		return;
 	nounours->is_doing_animation = 1;
-	nnnounours_reset_idle(nounours);
+	if(!animation->is_random)
+		nnnounours_reset_idle(nounours);
 	nnanimation_start(animation);
 	nounours->is_doing_animation = 0;
 	return (void*) NULL;
@@ -156,7 +159,10 @@ void nnnounours_ping(NNNounours *nounours) {
 	gettimeofday(&now_tv, NULL);
 	long now_us = now_tv.tv_sec * 1000000 + now_tv.tv_usec;
 	long time_diff = now_us - nounours->last_action_time_us;
-	if (time_diff > nounours->idle_ping_interval*1000) {
+	if (time_diff > nounours->idle_time * 1000) {
+		nnnounours_stop_animation(nounours);
+		nnnounours_start_animation(nounours, nounours->cur_theme->animation_idle);
+	} else if (time_diff > nounours->idle_ping_interval * 1000) {
 		NNAnimation *animation = nnanimation_create_random(nounours);
 		nnnounours_start_animation(nounours, animation);
 	}
