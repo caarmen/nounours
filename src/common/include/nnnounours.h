@@ -27,6 +27,7 @@ typedef struct NNNounours {
 	struct NNTheme *cur_theme;
 	struct NNImage *cur_image;
 	struct NNFeature *cur_feature;
+	struct NNAnimation *cur_animation;
 	int last_x;
 	int last_y;
 	long last_motion_event_time_us;

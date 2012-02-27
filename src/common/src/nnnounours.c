@@ -39,6 +39,7 @@ NNNounours * nnnounours_new(int screensaver_mode, int window_id) {
 	nounours->cur_theme = 0;
 	nounours->cur_image = 0;
 	nounours->cur_feature = 0;
+	nounours->cur_animation = 0;
 	nounours->last_x = -1;
 	nounours->last_y = -1;
 	nounours->last_motion_event_time_us = 0;
@@ -70,11 +71,13 @@ static void *nnnounours_animation_thread(void *data) {
 	NNNounours *nounours = animation->nounours;
 	if (nounours->is_doing_animation)
 		return;
+	nounours->cur_animation = animation;
 	nounours->is_doing_animation = 1;
-	if(!animation->is_random)
+	if (!animation->is_random)
 		nnnounours_reset_idle(nounours);
 	nnanimation_start(animation);
 	nounours->is_doing_animation = 0;
+	nounours->cur_animation = 0;
 	return (void*) NULL;
 }
 void nnnounours_start_animation(NNNounours *nounours, NNAnimation *animation) {
@@ -86,22 +89,31 @@ void nnnounours_start_animation(NNNounours *nounours, NNAnimation *animation) {
 			nnnounours_animation_thread, animation);
 }
 void nnnounours_stop_animation(NNNounours *nounours) {
+	if (!nounours->is_doing_animation)
+		return;
 	nounours->is_doing_animation = 0;
+	nounours->cur_animation = 0;
 	pthread_cond_signal(&nounours->animation_cond);
 }
 void nnnounours_on_press(NNNounours *nounours, int x, int y) {
-	if (nounours->is_doing_animation)
-		nnnounours_stop_animation(nounours);
-	nounours->cur_feature = nnimage_find_closest_feature(nounours->cur_image, x,
-			y);
-	if (nounours->cur_feature != 0) {
-		NNAdjacentImages *adjacent_images = nnimage_find_adjacent_images(
-				nounours->cur_image, nounours->cur_feature);
-		if (adjacent_images == 0) {
-			nounours->cur_image = nounours->cur_theme->default_image;
+	int was_idle = nounours->is_doing_animation
+			&& nounours->cur_animation == nounours->cur_theme->animation_idle;
+	nnnounours_stop_animation(nounours);
+	nnnounours_reset_idle(nounours);
+	if (was_idle) {
+		nnnounours_start_animation(nounours,
+				nounours->cur_theme->animation_idle_end);
+	} else {
+		nounours->cur_feature = nnimage_find_closest_feature(
+				nounours->cur_image, x, y);
+		if (nounours->cur_feature != 0) {
+			NNAdjacentImages *adjacent_images = nnimage_find_adjacent_images(
+					nounours->cur_image, nounours->cur_feature);
+			if (adjacent_images == 0) {
+				nounours->cur_image = nounours->cur_theme->default_image;
+			}
 		}
 	}
-	nnnounours_reset_idle(nounours);
 }
 void nnnounours_on_move(NNNounours *nounours, int x, int y) {
 	if (nounours->is_doing_animation)
@@ -161,7 +173,8 @@ void nnnounours_ping(NNNounours *nounours) {
 	long time_diff = now_us - nounours->last_action_time_us;
 	if (time_diff > nounours->idle_time * 1000) {
 		nnnounours_stop_animation(nounours);
-		nnnounours_start_animation(nounours, nounours->cur_theme->animation_idle);
+		nnnounours_start_animation(nounours,
+				nounours->cur_theme->animation_idle);
 	} else if (time_diff > nounours->idle_ping_interval * 1000) {
 		NNAnimation *animation = nnanimation_create_random(nounours);
 		nnnounours_start_animation(nounours, animation);
