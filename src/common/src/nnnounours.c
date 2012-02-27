@@ -26,7 +26,7 @@ static void nnnounours_reset_idle(NNNounours *nounours) {
 	nounours->last_action_time_us = now_tv.tv_sec * 1000000 + now_tv.tv_usec;
 }
 
-NNNounours * nnnounours_new(int screensaver_mode, int window_id) {
+NNNounours * nnnounours_new(const char *path, int screensaver_mode, int window_id) {
 	NNNounours *nounours = malloc(sizeof(NNNounours));
 	nounours->screensaver_mode = screensaver_mode;
 	nounours->is_doing_animation = 0;
@@ -43,7 +43,7 @@ NNNounours * nnnounours_new(int screensaver_mode, int window_id) {
 	nounours->last_x = -1;
 	nounours->last_y = -1;
 	nounours->last_motion_event_time_us = 0;
-	nnread_nounours_properties_file(nounours);
+	nnread_nounours_properties_file(nounours, path);
 	nnuinounours_start_loop(nounours->uinounours);
 	pthread_create(&nounours->ping_thread, NULL, nnnounours_ping_thread,
 			nounours);

@@ -56,8 +56,11 @@ void nnread_theme_properties_file(NNTheme *theme) {
 	fclose(file);
 }
 
-void nnread_nounours_properties_file(NNNounours *nounours) {
-	FILE *file = fopen("data/nounours.properties", "r");
+void nnread_nounours_properties_file(NNNounours *nounours, const char *path) {
+	char filename[512];
+	sprintf(filename, "%s/nounours.properties", path);
+
+	FILE *file = fopen(filename, "r");
 	char *key, *val;
 	while (nnproperties_read_line(file, &key, &val)) {
 		if (key[0] == '#')

@@ -39,7 +39,7 @@ typedef struct NNNounours {
 	int screensaver_mode;
 } NNNounours;
 
-NNNounours * nnnounours_new(int screensaver_mode, int window_id);
+NNNounours * nnnounours_new(const char *path, int screensaver_mode, int window_id);
 void nnnounours_use_theme(NNNounours *nounours, struct NNTheme *theme);
 void nnnounours_show_image(NNNounours *nounours, struct NNImage *image);
 void nnnounours_start_animation(NNNounours *nounours, struct NNAnimation *animation);
