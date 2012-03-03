@@ -123,7 +123,7 @@ static void *nnuinounours_loop(void *data) {
 		if (uinounours->nounours->screensaver_mode) {
 			unsigned char *vroot_char = nnuinounours_find_first_property_in_child_windows(uinounours->ui_display, uinounours->root_window, "__SWM_VROOT");
 			if(vroot_char != 0)
-				uinounours->window = (Window) *vroot_char;
+				uinounours->window = (Window) ((unsigned long*)vroot_char)[0];
 			else
 				uinounours->window = uinounours->root_window;
 		} else {
