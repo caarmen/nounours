@@ -67,6 +67,54 @@ static unsigned char *nnuinounours_find_first_property_in_child_windows(
 	XFree(children_return);
 	return prop_return;
 }
+
+/**
+ * Find or create a window in which nounours will run.
+ */
+static void nnuinounours_setup_window(NNUINounours *uinounours) {
+
+	// We need to be able to open the display.
+	uinounours->ui_display = XOpenDisplay(0);
+	if (uinounours->ui_display == 0) {
+		syslog(LOG_ERR, "Could not open display");
+		exit(-1);
+	}
+	uinounours->screen_number = DefaultScreen(uinounours->ui_display);
+	uinounours->root_window = DefaultRootWindow(uinounours->ui_display);
+
+	// Find or create the window if we weren't given a specific window
+	// on the command line.
+	if (uinounours->window == 0) {
+		// In screensaver mode, we need to draw to the "root" window.
+		if (uinounours->nounours->screensaver_mode) {
+			// If we want to draw directly to the root window (the case of
+			// the screensaver mode), we need to
+			// make sure we use the right window.
+			// http://developer.gnome.org/wm-spec/#id2550868
+			// The right window could be a child of the root window which
+			// has a property "__SWM_VROOT" or "_NET_VIRTUAL_ROOTS".  During
+			// tests only __SWM_VROOT was found.
+			unsigned char *vroot_char =
+					nnuinounours_find_first_property_in_child_windows(
+							uinounours->ui_display, uinounours->root_window,
+							"__SWM_VROOT");
+			if (vroot_char != 0)
+				uinounours->window = (Window) ((unsigned long*) vroot_char)[0];
+			else
+				uinounours->window = uinounours->root_window;
+		}
+		// We're not in screensaver mode.  Let's create a window.
+		else {
+			int black_color =
+					BlackPixel(uinounours->ui_display, uinounours->screen_number);
+			uinounours->window = XCreateSimpleWindow(uinounours->ui_display,
+					uinounours->root_window, 0, 0, 1, 1, 0, black_color,
+					black_color);
+			XMapWindow(uinounours->ui_display, uinounours->window);
+		}
+	}
+
+}
 void nnuinounours_resize(NNUINounours *uinounours, int width, int height) {
 	int screen_width =
 			DisplayWidth(uinounours->ui_display, uinounours->screen_number);
@@ -115,32 +163,7 @@ void nnuinounours_show_image(NNUINounours *uinounours, NNUIImage *uiimage) {
 static void *nnuinounours_loop(void *data) {
 	NNUINounours *uinounours = (NNUINounours*) data;
 
-	uinounours->ui_display = XOpenDisplay(0);
-	if (uinounours->ui_display == 0) {
-		syslog(LOG_ERR, "Could not open display");
-		exit(-1);
-	}
-	uinounours->screen_number = DefaultScreen(uinounours->ui_display);
-	uinounours->root_window = DefaultRootWindow(uinounours->ui_display);
-	int black_color =
-			BlackPixel(uinounours->ui_display, uinounours->screen_number);
-	if (uinounours->window == 0) {
-		if (uinounours->nounours->screensaver_mode) {
-			unsigned char *vroot_char =
-					nnuinounours_find_first_property_in_child_windows(
-							uinounours->ui_display, uinounours->root_window,
-							"__SWM_VROOT");
-			if (vroot_char != 0)
-				uinounours->window = (Window) ((unsigned long*) vroot_char)[0];
-			else
-				uinounours->window = uinounours->root_window;
-		} else {
-			uinounours->window = XCreateSimpleWindow(uinounours->ui_display,
-					uinounours->root_window, 0, 0, 1, 1, 0, black_color,
-					black_color);
-			XMapWindow(uinounours->ui_display, uinounours->window);
-		}
-	}
+	nnuinounours_setup_window(uinounours);
 
 	long event_mask = StructureNotifyMask;
 	XEvent xevent;
