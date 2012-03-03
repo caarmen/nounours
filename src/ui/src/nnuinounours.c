@@ -30,8 +30,12 @@ NNUINounours *nnuinounours_new(NNNounours *nounours, int window_id) {
 	return uinounours;
 }
 
-static unsigned char *nnuinounours_find_first_property_in_child_windows(Display *display, Window window,
-		const char *property_name) {
+/**
+ * Search the child windows of the given window for the given property.
+ * Return the value of the property from the first child window which has a value.
+ */
+static unsigned char *nnuinounours_find_first_property_in_child_windows(
+		Display *display, Window window, const char *property_name) {
 	// Some variables which are filled in by X methods, which we do not need, but are required to pass to these methods.
 	Window window_not_used;
 	int int_not_used;
@@ -43,24 +47,25 @@ static unsigned char *nnuinounours_find_first_property_in_child_windows(Display 
 	unsigned int nchildren_return;
 	Status status = XQueryTree(display, window, &window_not_used,
 			&window_not_used, &children_return, &nchildren_return);
-	if(nchildren_return == 0)
+	if (nchildren_return == 0)
 		return 0;
 
 	// Create an atom for the property to find.
 	Atom property = XInternAtom(display, property_name, False);
-	unsigned char *prop_return;
+	unsigned char *prop_return = 0;
 
 	int i;
 	for (i = 0; i < nchildren_return; i++) {
 		// See if this child window has this property.
-		int result = XGetWindowProperty(display, children_return[i],
-				property, 0, 1, False, XA_WINDOW, &atom_not_used, &int_not_used,
+		int result = XGetWindowProperty(display, children_return[i], property,
+				0, 1, False, XA_WINDOW, &atom_not_used, &int_not_used,
 				&ulong_not_used, &ulong_not_used, &prop_return);
 		// We found a non-null value for this property.  Return it.
 		if (result == Success && prop_return != 0)
-			return prop_return;
+			break;
 	}
-	return 0;
+	XFree(children_return);
+	return prop_return;
 }
 void nnuinounours_resize(NNUINounours *uinounours, int width, int height) {
 	int screen_width =
@@ -121,9 +126,12 @@ static void *nnuinounours_loop(void *data) {
 			BlackPixel(uinounours->ui_display, uinounours->screen_number);
 	if (uinounours->window == 0) {
 		if (uinounours->nounours->screensaver_mode) {
-			unsigned char *vroot_char = nnuinounours_find_first_property_in_child_windows(uinounours->ui_display, uinounours->root_window, "__SWM_VROOT");
-			if(vroot_char != 0)
-				uinounours->window = (Window) ((unsigned long*)vroot_char)[0];
+			unsigned char *vroot_char =
+					nnuinounours_find_first_property_in_child_windows(
+							uinounours->ui_display, uinounours->root_window,
+							"__SWM_VROOT");
+			if (vroot_char != 0)
+				uinounours->window = (Window) ((unsigned long*) vroot_char)[0];
 			else
 				uinounours->window = uinounours->root_window;
 		} else {
@@ -147,9 +155,8 @@ static void *nnuinounours_loop(void *data) {
 			NULL);
 
 	event_mask = ExposureMask | StructureNotifyMask;
-	if(!uinounours->nounours->screensaver_mode)
-		event_mask |= ButtonPressMask | ButtonReleaseMask
-			| ButtonMotionMask; 
+	if (!uinounours->nounours->screensaver_mode)
+		event_mask |= ButtonPressMask | ButtonReleaseMask | ButtonMotionMask;
 	XSelectInput(uinounours->ui_display, uinounours->window, event_mask);
 	uinounours->is_running = 1;
 	pthread_cond_signal(&uinounours->cond);
