@@ -25,7 +25,7 @@ void help(char *prog_name) {
 int main(int argc, char **argv) {
 	const char *theme_path = "data/themes/1";
 	int screensaver_mode = 0;
-	int window_id = -1;
+	unsigned long window_id = 0;
 	int i;
 	for(i = 1; i < argc; i++) {
 		if(!strcmp(argv[i], "-theme")) {

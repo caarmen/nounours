@@ -8,6 +8,7 @@
 #include <X11/X.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+#include <X11/Xatom.h>
 #include <string.h>
 #include <pthread.h>
 #include <syslog.h>
@@ -24,9 +25,42 @@ NNUINounours *nnuinounours_new(NNNounours *nounours, int window_id) {
 	uinounours->last_window_x = -1;
 	uinounours->last_window_y = -1;
 	uinounours->last_window_move_time_us = 0;
-	pthread_cond_init(&uinounours->cond,0);
-	pthread_mutex_init(&uinounours->mutex,0);
+	pthread_cond_init(&uinounours->cond, 0);
+	pthread_mutex_init(&uinounours->mutex, 0);
 	return uinounours;
+}
+
+static unsigned char *nnuinounours_find_first_property_in_child_windows(Display *display, Window window,
+		const char *property_name) {
+	// Some variables which are filled in by X methods, which we do not need, but are required to pass to these methods.
+	Window window_not_used;
+	int int_not_used;
+	unsigned long ulong_not_used;
+	Atom atom_not_used;
+
+	// Get all the child windows of the given window.
+	Window *children_return;
+	unsigned int nchildren_return;
+	Status status = XQueryTree(display, window, &window_not_used,
+			&window_not_used, &children_return, &nchildren_return);
+	if(nchildren_return == 0)
+		return 0;
+
+	// Create an atom for the property to find.
+	Atom property = XInternAtom(display, property_name, False);
+	unsigned char *prop_return;
+
+	int i;
+	for (i = 0; i < nchildren_return; i++) {
+		// See if this child window has this property.
+		int result = XGetWindowProperty(display, children_return[i],
+				property, 0, 1, False, XA_WINDOW, &atom_not_used, &int_not_used,
+				&ulong_not_used, &ulong_not_used, &prop_return);
+		// We found a non-null value for this property.  Return it.
+		if (result == Success && prop_return != 0)
+			return prop_return;
+	}
+	return 0;
 }
 void nnuinounours_resize(NNUINounours *uinounours, int width, int height) {
 	int screen_width =
@@ -65,10 +99,10 @@ void nnuinounours_show_image(NNUINounours *uinounours, NNUIImage *uiimage) {
 		notify_message_event.format = 8; // doesn't really matter since we use memcpy to pass the pointer
 		memcpy(notify_message_event.data.l, &uiimage, sizeof(uiimage));
 		long event_mask = NoEventMask;
-		if(uinounours->nounours->screensaver_mode)
+		if (uinounours->nounours->screensaver_mode)
 			event_mask = ButtonReleaseMask; // TODO other applications may receive this event!
-		XSendEvent(uinounours->background_display, uinounours->window, 0, event_mask,
-				(XEvent*) &notify_message_event);
+		XSendEvent(uinounours->background_display, uinounours->window, 0,
+				event_mask, (XEvent*) &notify_message_event);
 		XFlush(uinounours->background_display);
 	}
 }
@@ -85,9 +119,13 @@ static void *nnuinounours_loop(void *data) {
 	uinounours->root_window = DefaultRootWindow(uinounours->ui_display);
 	int black_color =
 			BlackPixel(uinounours->ui_display, uinounours->screen_number);
-	if (uinounours->window == -1) {
+	if (uinounours->window == 0) {
 		if (uinounours->nounours->screensaver_mode) {
-			uinounours->window = uinounours->root_window;
+			unsigned char *vroot_char = nnuinounours_find_first_property_in_child_windows(uinounours->ui_display, uinounours->root_window, "__SWM_VROOT");
+			if(vroot_char != 0)
+				uinounours->window = (Window) *vroot_char;
+			else
+				uinounours->window = uinounours->root_window;
 		} else {
 			uinounours->window = XCreateSimpleWindow(uinounours->ui_display,
 					uinounours->root_window, 0, 0, 1, 1, 0, black_color,
@@ -108,8 +146,8 @@ static void *nnuinounours_loop(void *data) {
 	uinounours->gc = XCreateGC(uinounours->ui_display, uinounours->window, 0,
 			NULL);
 
-	event_mask = ExposureMask | ButtonPressMask
-			| ButtonReleaseMask | ButtonMotionMask | StructureNotifyMask;
+	event_mask = ExposureMask | ButtonPressMask | ButtonReleaseMask
+			| ButtonMotionMask | StructureNotifyMask;
 	XSelectInput(uinounours->ui_display, uinounours->window, event_mask);
 	uinounours->is_running = 1;
 	pthread_cond_signal(&uinounours->cond);
