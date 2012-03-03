@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <syslog.h>
 #include <time.h>
 #include "nnnounours.h"
 #include "nnimage.h"
@@ -51,6 +52,8 @@ int main(int argc, char **argv) {
 	}
 	srandom(time(NULL));
 
+	openlog("nounours", LOG_CONS|LOG_PID, 0);
+	syslog(LOG_ERR, "starting");
 
 	NNNounours *nounours = nnnounours_new(theme_path, screensaver_mode, window_id);
 	NNTheme *theme = nntheme_new(nounours, strdup(theme_path));
@@ -58,5 +61,6 @@ int main(int argc, char **argv) {
 	while(1) {
 		sleep(1000000);
 	}
+	closelog();
 	return 0;
 }

@@ -10,6 +10,7 @@
 #include <X11/Xutil.h>
 #include <string.h>
 #include <pthread.h>
+#include <syslog.h>
 #include <stdio.h>
 #include "nnuinounours.h"
 
@@ -77,7 +78,7 @@ static void *nnuinounours_loop(void *data) {
 
 	uinounours->ui_display = XOpenDisplay(0);
 	if (uinounours->ui_display == 0) {
-		fprintf(stderr, "Could not open display.\n");
+		syslog(LOG_ERR, "Could not open display");
 		exit(-1);
 	}
 	uinounours->screen_number = DefaultScreen(uinounours->ui_display);
@@ -120,7 +121,7 @@ static void *nnuinounours_loop(void *data) {
 			memcpy(&uiimage, client_message_event.data.l, sizeof(NNUIImage*));
 			nnuiimage_show(uinounours, uiimage);
 		} else if (xevent.type == Expose) {
-			printf("expose\n");
+			syslog(LOG_DEBUG, "expose");
 			if (uinounours->nounours->cur_image != 0)
 				nnuiimage_show(uinounours,
 						uinounours->nounours->cur_image->uiimage);
@@ -171,8 +172,8 @@ void nnuinounours_stop_loop(NNUINounours *uinounours) {
 int nnuinounours_error_handler(Display *display, XErrorEvent *error_event) {
 	char error_message[128];
 	XGetErrorText(display, error_event->error_code, error_message, 128);
-	fprintf(
-			stderr,
+	syslog(
+			LOG_ERR,
 			"Error on display %p: type=%d, resourceid=%lu, serial=%lu, error_code=%d (%s), request_code=%d, minor_code=%d\n",
 			display, error_event->type, error_event->resourceid,
 			error_event->serial, error_event->error_code, error_message,
