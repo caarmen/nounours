@@ -3,7 +3,7 @@
 <screensaver name="nounours" _label="Nounours">
 	<command arg="-screensaver -stretch" />
 
-	<select id="theme" _label="Theme">
+	<select id="theme">
 		<option id="default" _label="Default theme"
 			arg-set="-theme 1" />
 		<option id="rainbow" _label="Rainbow Nounours theme"
@@ -12,7 +12,7 @@
 			arg-set="-theme robot" />
 	</select>
 
-	<select id="idle.time" _label="Time before I fall asleep">
+	<select id="idle.time">
 		<option id="15" _label="Fall asleep after 15 seconds"
 			arg-set="-sleep-after 15" />
 		<option id="30" _label="Fall asleepa fter 30 seconds"
