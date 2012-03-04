@@ -20,7 +20,7 @@
 void help(char *prog_name) {
 	printf("Usage:\n");
 	printf(
-			"%s [-theme <path/to/theme>] [-screensaver] [-window-id <window id>] [-stretch]\n",
+			"%s [-theme <path/to/theme>] [-screensaver] [-window-id <window id>] [-stretch] [-sleep-after <time in seconds>]\n",
 			prog_name);
 	exit(1);
 }
@@ -30,6 +30,7 @@ int main(int argc, char **argv) {
 	unsigned long window_id = 0;
 	int do_stretch = 0;
 	int i;
+	int sleep_time = -1;
 	for (i = 1; i < argc; i++) {
 		if (!strcmp(argv[i], "-theme")) {
 			if (i == argc) {
@@ -50,6 +51,12 @@ int main(int argc, char **argv) {
 			}
 		} else if (!strcmp(argv[i], "-stretch")) {
 			do_stretch = 1;
+		} else if (!strcmp(argv[i], "-sleep-after")) {
+			if(i==argc) {
+				printf("Missing sleep time.\n");
+				help(argv[0]);
+			}
+			sleep_time = atoi(argv[++i]) * 1000;
 		} else {
 			printf("Unknown option %s\n", argv[i]);
 			help(argv[0]);
@@ -62,6 +69,8 @@ int main(int argc, char **argv) {
 
 	NNNounours *nounours = nnnounours_new(theme_path, screensaver_mode,
 			window_id);
+	if(sleep_time >0)
+		nounours->idle_time = sleep_time;
 	nounours->do_stretch = do_stretch;
 	NNTheme *theme = nntheme_new(nounours, strdup(theme_path));
 	nnnounours_use_theme(nounours, theme);
