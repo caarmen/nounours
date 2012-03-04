@@ -131,6 +131,8 @@ void nnnounours_on_move(NNNounours *nounours, int x, int y) {
 	long now_us = now_tv.tv_sec * 1000000 + now_tv.tv_usec;
 	if (nounours->last_x >= 0) {
 		long time_diff = now_us - nounours->last_motion_event_time_us;
+		if(time_diff == 0)
+			time_diff = 1;
 		float vel_x = 1000000 * (x - nounours->last_x) / time_diff;
 		float vel_y = 1000000 * (y - nounours->last_y) / time_diff;
 		nnnounours_on_fling(nounours, x, y, vel_x, vel_y);
