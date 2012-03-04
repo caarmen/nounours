@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<screensaver name="nounours" _label="Nounours">
+<command arg="-screensaver -stretch"/>
+
+ <select id="theme">
+  <option id="default"    _label="Default theme" arg-set="-theme /home/ubuntu/cnours/data/themes/1"/>
+  <option id="rainbow"      _label="Rainbow Nounours" arg-set="-theme /home/ubuntu/cnours/data/themes/rainbow"/>
+  <option id="robot" _label="Android robot"         arg-set="-theme /home/ubuntu/cnours/data/themes/robot"/>
+ </select>
+
+
+ <_description>
+
+Written by Carmen Alvarez, 2012
+  </_description>
+</screensaver>
