@@ -6,20 +6,20 @@
 	<select id="theme" _label="Theme">
 		<option id="default" _label="Default theme"
 			arg-set="-theme /home/ubuntu/cnours/data/themes/1" />
-		<option id="rainbow" _label="Rainbow Nounours"
+		<option id="rainbow" _label="Rainbow Nounours theme"
 			arg-set="-theme /home/ubuntu/cnours/data/themes/rainbow" />
-		<option id="robot" _label="Android robot"
+		<option id="robot" _label="Android robot theme"
 			arg-set="-theme /home/ubuntu/cnours/data/themes/robot" />
 	</select>
 
 	<select id="idle.time" _label="Time before I fall asleep">
-		<option id="15" _label="15 seconds"
+		<option id="15" _label="Fall asleep after 15 seconds"
 			arg-set="-sleep-after 15" />
-		<option id="30" _label="30 seconds"
+		<option id="30" _label="Fall asleepa fter 30 seconds"
 			arg-set="-sleep-after 30" />
-		<option id="60" _label="1 minute"
+		<option id="60" _label="Fall asleep after 1 minute"
 			arg-set="-sleep-after 60" />
-		<option id="300" _label="5 minutes"
+		<option id="300" _label="Fall asleep after 5 minutes"
 			arg-set="-sleep-after 300" />
 	</select>
 	<_description>
