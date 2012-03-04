@@ -169,6 +169,7 @@ void nnuiimage_resize(struct NNUINounours *uinounours, NNUIImage *uiimage,
 		int dest_width, int dest_height) {
 	if(uiimage->ximage->width == dest_width && uiimage->ximage->height == dest_height)
 		return;
+
 	XWindowAttributes window_attributes;
 	XGetWindowAttributes(uinounours->background_display, uinounours->window,
 			&window_attributes);
@@ -179,8 +180,11 @@ void nnuiimage_resize(struct NNUINounours *uinounours, NNUIImage *uiimage,
 }
 
 void nnuiimage_show(NNUINounours *uinounours, NNUIImage *uiimage) {
+
+	int dest_origin_x = (uinounours->window_width - uiimage->ximage->width)/2;
+	int dest_origin_y = (uinounours->window_height - uiimage->ximage->height)/2;
 	XPutImage(uinounours->ui_display, uinounours->window, uinounours->gc,
-			uiimage->ximage, 0, 0, 0, 0, uiimage->ximage->width,
+			uiimage->ximage, 0, 0, dest_origin_x, dest_origin_y, uiimage->ximage->width,
 			uiimage->ximage->height);
 	XFlush(uinounours->ui_display);
 }

@@ -121,14 +121,7 @@ void nnuinounours_stretch(NNUINounours *uinounours) {
 			DisplayWidth(uinounours->background_display, uinounours->screen_number);
 	int screen_height =
 			DisplayHeight(uinounours->background_display, uinounours->screen_number);
-	NNTheme *theme = uinounours->nounours->cur_theme;
-	float width_ratio = (float) screen_width / theme->width;
-	float height_ratio = (float) screen_height / theme->height;
-	float ratio_to_use =
-			width_ratio > height_ratio ? height_ratio : width_ratio;
-	int dest_height = ratio_to_use * theme->height;
-	int dest_width = ratio_to_use * theme->width;
-	nnuinounours_resize(uinounours, dest_width, dest_height);
+	nnuinounours_resize(uinounours, screen_width, screen_height);
 }
 
 void nnuinounours_resize(NNUINounours *uinounours, int width, int height) {
@@ -153,10 +146,17 @@ void nnuinounours_resize(NNUINounours *uinounours, int width, int height) {
 	XFree(size_hints);
 	if (uinounours->nounours->do_stretch) {
 		NNTheme *theme = uinounours->nounours->cur_theme;
+		float width_ratio = (float) width / theme->width;
+		float height_ratio = (float) height / theme->height;
+		float ratio_to_use =
+				width_ratio > height_ratio ? height_ratio : width_ratio;
+		int image_dest_height = ratio_to_use * theme->height;
+		int image_dest_width = ratio_to_use * theme->width;
+
 		int i;
 		for (i = 0; i < theme->num_images; i++) {
-			nnuiimage_resize(uinounours, theme->images[i]->uiimage, width,
-					height);
+			nnuiimage_resize(uinounours, theme->images[i]->uiimage, image_dest_width,
+					image_dest_height);
 		}
 	}
 }
