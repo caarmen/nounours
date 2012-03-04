@@ -116,22 +116,36 @@ static void nnuinounours_setup_window(NNUINounours *uinounours) {
 	}
 
 }
+
+static void nnuinounours_get_display_size(NNUINounours *uinounours, int *width, int *height) {
+	if (uinounours->nounours->screensaver_mode) {
+		XWindowAttributes window_attributes;
+		XGetWindowAttributes(uinounours->background_display, uinounours->window,
+				&window_attributes);
+		*width = window_attributes.width;
+		*height = window_attributes.height;
+	} else {
+		*width =
+				DisplayWidth(uinounours->background_display, uinounours->screen_number);
+		*height =
+				DisplayHeight(uinounours->background_display, uinounours->screen_number);
+	}
+}
 void nnuinounours_stretch(NNUINounours *uinounours) {
-	int screen_width =
-			DisplayWidth(uinounours->background_display, uinounours->screen_number);
-	int screen_height =
-			DisplayHeight(uinounours->background_display, uinounours->screen_number);
-	nnuinounours_resize(uinounours, screen_width, screen_height);
+	XWindowAttributes window_attributes;
+	XGetWindowAttributes(uinounours->background_display, uinounours->window,
+			&window_attributes);
+	int display_width, display_height;
+	nnuinounours_get_display_size(uinounours, &display_width, &display_height);
+	nnuinounours_resize(uinounours, display_width, display_height);
 }
 
 void nnuinounours_resize(NNUINounours *uinounours, int width, int height) {
-	int screen_width =
-			DisplayWidth(uinounours->background_display, uinounours->screen_number);
-	int screen_height =
-			DisplayHeight(uinounours->background_display, uinounours->screen_number);
+	int display_width, display_height;
+	nnuinounours_get_display_size(uinounours, &display_width, &display_height);
 
 	XMoveResizeWindow(uinounours->background_display, uinounours->window,
-			(screen_width - width) / 2, (screen_height - height) / 2, width,
+			(display_width - width) / 2, (display_height - height) / 2, width,
 			height);
 	XSizeHints* size_hints = XAllocSizeHints();
 	size_hints->flags = PMinSize | PMaxSize;
@@ -155,8 +169,8 @@ void nnuinounours_resize(NNUINounours *uinounours, int width, int height) {
 
 		int i;
 		for (i = 0; i < theme->num_images; i++) {
-			nnuiimage_resize(uinounours, theme->images[i]->uiimage, image_dest_width,
-					image_dest_height);
+			nnuiimage_resize(uinounours, theme->images[i]->uiimage,
+					image_dest_width, image_dest_height);
 		}
 	}
 }
