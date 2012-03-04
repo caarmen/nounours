@@ -124,7 +124,8 @@ void nnuinounours_stretch(NNUINounours *uinounours) {
 	NNTheme *theme = uinounours->nounours->cur_theme;
 	float width_ratio = (float) screen_width / theme->width;
 	float height_ratio = (float) screen_height / theme->height;
-	float ratio_to_use = width_ratio > height_ratio ? height_ratio : width_ratio;
+	float ratio_to_use =
+			width_ratio > height_ratio ? height_ratio : width_ratio;
 	int dest_height = ratio_to_use * theme->height;
 	int dest_width = ratio_to_use * theme->width;
 	nnuinounours_resize(uinounours, dest_width, dest_height);
@@ -145,18 +146,28 @@ void nnuinounours_resize(NNUINounours *uinounours, int width, int height) {
 	size_hints->min_height = height;
 	size_hints->max_width = width;
 	size_hints->max_height = height;
+	uinounours->window_width = width;
+	uinounours->window_height = height;
 	XSetWMNormalHints(uinounours->background_display, uinounours->window,
 			size_hints);
 	XFree(size_hints);
-	if(uinounours->nounours->do_stretch) {
+	if (uinounours->nounours->do_stretch) {
 		NNTheme *theme = uinounours->nounours->cur_theme;
 		int i;
-		for(i=0; i < theme->num_images; i++) {
-			nnuiimage_resize(uinounours, theme->images[i]->uiimage, width, height);
+		for (i = 0; i < theme->num_images; i++) {
+			nnuiimage_resize(uinounours, theme->images[i]->uiimage, width,
+					height);
 		}
 	}
 }
 
+void nnuinounours_translate(NNUINounours *uinounours, int window_x,
+		int window_y, int *image_x, int *image_y) {
+	NNTheme *theme = uinounours->nounours->cur_theme;
+	nnmath_translate(window_x, window_y, uinounours->window_width,
+			uinounours->window_height, theme->width, theme->height, image_x,
+			image_y);
+}
 void nnuinounours_free(NNUINounours *uinounours) {
 	XCloseDisplay(uinounours->background_display);
 	XCloseDisplay(uinounours->ui_display);
@@ -219,15 +230,20 @@ static void *nnuinounours_loop(void *data) {
 						uinounours->nounours->cur_image->uiimage);
 		} else if (xevent.type == ButtonPress) {
 			XButtonPressedEvent bp_event = xevent.xbutton;
-			nnnounours_on_press(uinounours->nounours, bp_event.x, bp_event.y);
-
+			int x, y;
+			nnuinounours_translate(uinounours, bp_event.x, bp_event.y, &x, &y);
+			nnnounours_on_press(uinounours->nounours, x, y);
 		} else if (xevent.type == MotionNotify) {
 			XMotionEvent motion_event = xevent.xmotion;
-			nnnounours_on_move(uinounours->nounours, motion_event.x,
-					motion_event.y);
+			int x, y;
+			nnuinounours_translate(uinounours, motion_event.x, motion_event.y,
+					&x, &y);
+			nnnounours_on_move(uinounours->nounours, x, y);
 		} else if (xevent.type == ButtonRelease) {
 			XButtonReleasedEvent bp_event = xevent.xbutton;
-			nnnounours_on_release(uinounours->nounours, bp_event.x, bp_event.y);
+			int x, y;
+			nnuinounours_translate(uinounours, bp_event.x, bp_event.y, &x, &y);
+			nnnounours_on_release(uinounours->nounours, x, y);
 		} else if (xevent.type == ConfigureNotify) {
 			XConfigureEvent conf_event = xevent.xconfigure;
 			struct timeval now_tv;

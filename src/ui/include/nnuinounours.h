@@ -30,11 +30,15 @@ typedef struct NNUINounours {
 	int last_window_x;
 	int last_window_y;
 	long last_window_move_time_us;
+	int window_width;
+	int window_height;
 
 } NNUINounours;
 
 NNUINounours *nnuinounours_new(struct NNNounours *nounours, int window_id);
 void nnuinounours_resize(NNUINounours *nounours, int width, int height);
+void nnuinounours_translate(NNUINounours *uinounours, int window_x, int window_y,
+		int *image_x, int *image_y);
 void nnuinounours_free(NNUINounours *nounours);
 void nnuinounours_show_image(NNUINounours *nounours, struct NNUIImage *image);
 void nnuinounours_start_loop(NNUINounours *uinounours);
