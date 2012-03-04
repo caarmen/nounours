@@ -281,7 +281,7 @@ static void *nnuinounours_loop(void *data) {
 			nnuinounours_read_client_event_data(&client_message_event,
 					&event_nounours, &uiimage);
 			if (event_nounours != uinounours->nounours) {
-				syslog(LOG_DEBUG, "Ignoring event from another nounours");
+				// too verbose: syslog(LOG_DEBUG, "Ignoring event from another nounours");
 			} else {
 				nnuiimage_show(uinounours, uiimage);
 			}
