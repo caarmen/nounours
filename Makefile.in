@@ -15,6 +15,7 @@
 
 @SET_MAKE@
 
+
 VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -48,7 +49,7 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
-am__installdirs = "$(DESTDIR)$(bindir)"
+am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(nounoursdir)"
 PROGRAMS = $(bin_PROGRAMS)
 am__dirstamp = $(am__leading_dot)dirstamp
 am_nounours_OBJECTS = src/main.$(OBJEXT) \
@@ -57,7 +58,7 @@ am_nounours_OBJECTS = src/main.$(OBJEXT) \
 	src/common/src/nnmath.$(OBJEXT) src/data/src/nnimage.$(OBJEXT) \
 	src/data/src/nnfeature.$(OBJEXT) \
 	src/data/src/nnanimation.$(OBJEXT) \
-	src/data/src/nntheme.$(OBJEXT) \
+	src/data/src/nntheme.$(OBJEXT) src/io/src/nnio.$(OBJEXT) \
 	src/io/src/nncsvreader.$(OBJEXT) \
 	src/io/src/nnpropertiesreader.$(OBJEXT) \
 	src/ui/src/nnuinounours.$(OBJEXT) \
@@ -75,6 +76,28 @@ CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 SOURCES = $(nounours_SOURCES)
 DIST_SOURCES = $(nounours_SOURCES)
+am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
+am__vpath_adj = case $$p in \
+    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
+    *) f=$$p;; \
+  esac;
+am__strip_dir = f=`echo $$p | sed -e 's|^.*/||'`;
+am__install_max = 40
+am__nobase_strip_setup = \
+  srcdirstrip=`echo "$(srcdir)" | sed 's/[].[^$$\\*|]/\\\\&/g'`
+am__nobase_strip = \
+  for p in $$list; do echo "$$p"; done | sed -e "s|$$srcdirstrip/||"
+am__nobase_list = $(am__nobase_strip_setup); \
+  for p in $$list; do echo "$$p $$p"; done | \
+  sed "s| $$srcdirstrip/| |;"' / .*\//!s/ .*/ ./; s,\( .*\)/[^/]*$$,\1,' | \
+  $(AWK) 'BEGIN { files["."] = "" } { files[$$2] = files[$$2] " " $$1; \
+    if (++n[$$2] == $(am__install_max)) \
+      { print $$2, files[$$2]; n[$$2] = 0; files[$$2] = "" } } \
+    END { for (dir in files) print dir, files[dir] }'
+am__base_list = \
+  sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
+  sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
+DATA = $(nobase_nounours_DATA)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -182,9 +205,11 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-AM_CFLAGS = $(JPEG_CFLAGS) -Isrc/data/include -Isrc/io/include -Isrc/common/include -Isrc/ui/include
+AM_CFLAGS = $(JPEG_CFLAGS) -Isrc/data/include -Isrc/io/include -Isrc/common/include -Isrc/ui/include -D__DATAROOT_DIR__=\"$(datarootdir)\"
 nounours_LDADD = $(X11_LIBS) $(JPEG_LIBS) -lpthread -lm
-nounours_SOURCES = src/main.c src/common/src/nnnounours.c src/common/src/nncommon.c src/common/src/nnmath.c src/data/src/nnimage.c src/data/src/nnfeature.c src/data/src/nnanimation.c src/data/src/nntheme.c src/io/src/nncsvreader.c src/io/src/nnpropertiesreader.c src/ui/src/nnuinounours.c src/ui/src/nnuiimage.c
+nounours_SOURCES = src/main.c src/common/src/nnnounours.c src/common/src/nncommon.c src/common/src/nnmath.c src/data/src/nnimage.c src/data/src/nnfeature.c src/data/src/nnanimation.c src/data/src/nntheme.c src/io/src/nnio.c src/io/src/nncsvreader.c src/io/src/nnpropertiesreader.c src/ui/src/nnuinounours.c src/ui/src/nnuiimage.c
+nounoursdir = $(datarootdir)/nounours
+nobase_nounours_DATA = data/nounours.xml data/themes/1/*.* data/themes/1/images/*.* data/themes/rainbow/*.* data/themes/rainbow/images/*.* data/themes/robot/*.* data/themes/robot/images/*.*
 all: all-am
 
 .SUFFIXES:
@@ -316,6 +341,8 @@ src/io/src/$(am__dirstamp):
 src/io/src/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) src/io/src/$(DEPDIR)
 	@: > src/io/src/$(DEPDIR)/$(am__dirstamp)
+src/io/src/nnio.$(OBJEXT): src/io/src/$(am__dirstamp) \
+	src/io/src/$(DEPDIR)/$(am__dirstamp)
 src/io/src/nncsvreader.$(OBJEXT): src/io/src/$(am__dirstamp) \
 	src/io/src/$(DEPDIR)/$(am__dirstamp)
 src/io/src/nnpropertiesreader.$(OBJEXT): src/io/src/$(am__dirstamp) \
@@ -344,6 +371,7 @@ mostlyclean-compile:
 	-rm -f src/data/src/nnimage.$(OBJEXT)
 	-rm -f src/data/src/nntheme.$(OBJEXT)
 	-rm -f src/io/src/nncsvreader.$(OBJEXT)
+	-rm -f src/io/src/nnio.$(OBJEXT)
 	-rm -f src/io/src/nnpropertiesreader.$(OBJEXT)
 	-rm -f src/main.$(OBJEXT)
 	-rm -f src/ui/src/nnuiimage.$(OBJEXT)
@@ -361,6 +389,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@src/data/src/$(DEPDIR)/nnimage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/data/src/$(DEPDIR)/nntheme.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/io/src/$(DEPDIR)/nncsvreader.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/io/src/$(DEPDIR)/nnio.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/io/src/$(DEPDIR)/nnpropertiesreader.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/ui/src/$(DEPDIR)/nnuiimage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/ui/src/$(DEPDIR)/nnuinounours.Po@am__quote@
@@ -380,6 +409,29 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+install-nobase_nounoursDATA: $(nobase_nounours_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(nounoursdir)" || $(MKDIR_P) "$(DESTDIR)$(nounoursdir)"
+	@list='$(nobase_nounours_DATA)'; test -n "$(nounoursdir)" || list=; \
+	$(am__nobase_list) | while read dir files; do \
+	  xfiles=; for file in $$files; do \
+	    if test -f "$$file"; then xfiles="$$xfiles $$file"; \
+	    else xfiles="$$xfiles $(srcdir)/$$file"; fi; done; \
+	  test -z "$$xfiles" || { \
+	    test "x$$dir" = x. || { \
+	      echo "$(MKDIR_P) '$(DESTDIR)$(nounoursdir)/$$dir'"; \
+	      $(MKDIR_P) "$(DESTDIR)$(nounoursdir)/$$dir"; }; \
+	    echo " $(INSTALL_DATA) $$xfiles '$(DESTDIR)$(nounoursdir)/$$dir'"; \
+	    $(INSTALL_DATA) $$xfiles "$(DESTDIR)$(nounoursdir)/$$dir" || exit $$?; }; \
+	done
+
+uninstall-nobase_nounoursDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(nobase_nounours_DATA)'; test -n "$(nounoursdir)" || list=; \
+	$(am__nobase_strip_setup); files=`$(am__nobase_strip)`; \
+	test -n "$$files" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(nounoursdir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(nounoursdir)" && rm -f $$files
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
@@ -582,9 +634,9 @@ distcleancheck: distclean
 	       exit 1; } >&2
 check-am: all-am
 check: check-am
-all-am: Makefile $(PROGRAMS)
+all-am: Makefile $(PROGRAMS) $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(bindir)"; do \
+	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(nounoursdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -645,7 +697,7 @@ info: info-am
 
 info-am:
 
-install-data-am:
+install-data-am: install-nobase_nounoursDATA
 
 install-dvi: install-dvi-am
 
@@ -692,7 +744,7 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-binPROGRAMS
+uninstall-am: uninstall-binPROGRAMS uninstall-nobase_nounoursDATA
 
 .MAKE: install-am install-strip
 
@@ -705,12 +757,13 @@ uninstall-am: uninstall-binPROGRAMS
 	install install-am install-binPROGRAMS install-data \
 	install-data-am install-dvi install-dvi-am install-exec \
 	install-exec-am install-html install-html-am install-info \
-	install-info-am install-man install-pdf install-pdf-am \
-	install-ps install-ps-am install-strip installcheck \
-	installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic pdf pdf-am ps ps-am tags uninstall \
-	uninstall-am uninstall-binPROGRAMS
+	install-info-am install-man install-nobase_nounoursDATA \
+	install-pdf install-pdf-am install-ps install-ps-am \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-compile mostlyclean-generic pdf pdf-am ps ps-am \
+	tags uninstall uninstall-am uninstall-binPROGRAMS \
+	uninstall-nobase_nounoursDATA
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

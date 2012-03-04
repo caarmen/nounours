@@ -5,11 +5,11 @@
 
 	<select id="theme" _label="Theme">
 		<option id="default" _label="Default theme"
-			arg-set="-theme /home/ubuntu/cnours/data/themes/1" />
+			arg-set="-theme 1" />
 		<option id="rainbow" _label="Rainbow Nounours theme"
-			arg-set="-theme /home/ubuntu/cnours/data/themes/rainbow" />
+			arg-set="-theme rainbow" />
 		<option id="robot" _label="Android robot theme"
-			arg-set="-theme /home/ubuntu/cnours/data/themes/robot" />
+			arg-set="-theme robot" />
 	</select>
 
 	<select id="idle.time" _label="Time before I fall asleep">

@@ -12,6 +12,7 @@
 #include "nncommon.h"
 #include "nnimage.h"
 #include "nnanimation.h"
+#include "nnio.h"
 
 static const char *CSV_SEP = ",\r\n";
 
@@ -60,10 +61,7 @@ int nncsv_read_line(FILE *file, NNCSVLine *line) {
 
 FILE *nncsv_pre_read_file(NNTheme *theme, const char *filename,
 		NNCSVLine **header, NNCSVLine **line) {
-	char full_filename[512];
-	sprintf(full_filename, "%s/%s", theme->path, filename);
-
-	FILE *file = fopen(full_filename, "r");
+	FILE *file = nnio_open_file(theme->path, filename, "r");
 	*header = nncsv_line_new();
 	nncsv_read_line(file, *header);
 	*line = nncsv_line_new();

@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <string.h>
 #include "nnuiimage.h"
+#include "nnio.h"
 
 static XImage * nnuiimage_jpeg_to_Ximage(Display *display, int window,
 		const char *filename);
@@ -59,7 +60,7 @@ static XImage * nnuiimage_jpeg_to_Ximage(Display *display, int window,
 	struct jpeg_error_mgr jerr;
 	cinfo.err = jpeg_std_error(&jerr);
 	jpeg_create_decompress(&cinfo);
-	FILE * file = fopen(filename, "rb");
+	FILE * file = nnio_open_file(0, filename, "rb");
 
 	// Read the jpeg header info
 	jpeg_stdio_src(&cinfo, file);

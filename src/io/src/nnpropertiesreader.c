@@ -9,6 +9,8 @@
 #include "nnpropertiesreader.h"
 #include "nntheme.h"
 #include "nnnounours.h"
+#include "nncommon.h"
+#include "nnio.h"
 
 int nnproperties_read_line(FILE *file, char **key, char **val) {
 	char buf[1024];
@@ -20,11 +22,11 @@ int nnproperties_read_line(FILE *file, char **key, char **val) {
 	*val = strsep(val, "\r\n");
 	return 1;
 }
-void nnread_theme_properties_file(NNTheme *theme) {
-	char filename[512];
-	sprintf(filename, "%s/theme.properties", theme->path);
 
-	FILE *file = fopen(filename, "r");
+
+void nnread_theme_properties_file(NNTheme *theme) {
+	FILE *file = nnio_open_file(theme->path, "theme.properties", "r");
+
 	char *key, *val;
 	while (nnproperties_read_line(file, &key, &val)) {
 		if (key[0] == '#')
@@ -59,10 +61,7 @@ void nnread_theme_properties_file(NNTheme *theme) {
 }
 
 void nnread_nounours_properties_file(NNNounours *nounours, const char *path) {
-	char filename[512];
-	sprintf(filename, "%s/nounours.properties", path);
-
-	FILE *file = fopen(filename, "r");
+	FILE *file = nnio_open_file(path, "nounours.properties", "r");
 	char *key, *val;
 	while (nnproperties_read_line(file, &key, &val)) {
 		if (key[0] == '#')
