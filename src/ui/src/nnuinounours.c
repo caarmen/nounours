@@ -174,7 +174,7 @@ void nnuinounours_resize(NNUINounours *uinounours, int width, int height) {
 			offset_y + ((display_height - height) / 2), width, height);
 	char *background_color = uinounours->nounours->cur_theme->background_color;
 	if (background_color != 0) {
-		long color_pixel = -1;
+		unsigned long color_pixel = 0;
 		if (!strcmp(background_color, "white")) {
 			color_pixel =
 					WhitePixel(uinounours->background_display, uinounours->screen_number);
@@ -182,7 +182,7 @@ void nnuinounours_resize(NNUINounours *uinounours, int width, int height) {
 			color_pixel =
 					BlackPixel(uinounours->background_display, uinounours->screen_number);
 		}
-		if (color_pixel != -1)
+		if (color_pixel != 0)
 			XSetWindowBackground(uinounours->background_display,
 					uinounours->window, color_pixel);
 
