@@ -7,11 +7,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <jpeglib.h>
+#include <X11/Xutil.h>
 #include <unistd.h>
 #include <string.h>
 #include "nnuiimage.h"
 
 static XImage * nnuiimage_jpeg_to_Ximage(Display *display, int window, const char *filename);
+static XImage * scale_image(Display *display, Visual *visual, XImage *in_image, int dest_width, int dest_height);
+
 
 NNUIImage *nnuiimage_new(NNUINounours *uinounours, const char *filename) {
 	NNUIImage *uiimage = malloc(sizeof(NNUIImage));
@@ -19,6 +22,34 @@ NNUIImage *nnuiimage_new(NNUINounours *uinounours, const char *filename) {
 	return uiimage;
 }
 
+static XImage * scale_image(Display *display, Visual *visual, XImage *in_image, int dest_width, int dest_height) {
+	float scale_x = dest_width / in_image->width;
+	float scale_y = dest_height / in_image->height;
+printf("Scale to %dx%d\n", dest_width, dest_height);
+	// Allocate the memory for the dest image data.
+	size_t image_size = in_image->bitmap_pad * dest_width
+			* dest_height;
+	char *data = (char*) malloc(image_size);
+
+	// Create the image we'll return
+	XImage *out_image = XCreateImage(display, visual, in_image->depth, ZPixmap, /*format*/
+	0, /*offset*/
+	data, dest_width, dest_height, in_image->bitmap_pad,
+	0/*bytes_per_line*/);
+
+	// Using the simple nearest-neighbor algorithm.  Not pretty, but easy to code :)
+	int x_dest;
+	for(x_dest=0; x_dest < dest_width; x_dest++) {
+		int y_dest;
+		for(y_dest=0; y_dest < dest_height; y_dest++) {
+			int x_source = x_dest / scale_x;
+			int y_source = y_dest / scale_y;
+			unsigned long pixel = XGetPixel(in_image, x_source, y_source);
+			XPutPixel(out_image, x_dest, y_dest, pixel);
+		}
+	}
+	return out_image;
+}
 static XImage * nnuiimage_jpeg_to_Ximage(Display *display, int window,
 		const char *filename) {
 	// Refer to libjpeg.txt file distributed with jpeglib, which explains
@@ -135,8 +166,8 @@ static XImage * nnuiimage_jpeg_to_Ximage(Display *display, int window,
 	return image;
 }
 
-void nnuiimage_show(NNUINounours *uinounours, NNUIImage *image) {
-	XPutImage(uinounours->ui_display, uinounours->window, uinounours->gc, image->ximage, 0, 0, 0, 0, image->ximage->width, image->ximage->height);
+void nnuiimage_show(NNUINounours *uinounours, NNUIImage *uiimage) {
+	XPutImage(uinounours->ui_display, uinounours->window, uinounours->gc, uiimage->ximage, 0, 0, 0, 0, uiimage->ximage->width, uiimage->ximage->height);
 	XFlush(uinounours->ui_display);
 }
 

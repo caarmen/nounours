@@ -29,6 +29,7 @@ static void nnnounours_reset_idle(NNNounours *nounours) {
 NNNounours * nnnounours_new(const char *path, int screensaver_mode, int window_id) {
 	NNNounours *nounours = malloc(sizeof(NNNounours));
 	nounours->screensaver_mode = screensaver_mode;
+	nounours->do_stretch = 0;
 	nounours->is_doing_animation = 0;
 	nounours->fling_factor = 0;
 	nounours->shake_factor = 0;
@@ -165,7 +166,7 @@ void nnnounours_on_shake(NNNounours *nounours) {
 }
 
 void nnnounours_ping(NNNounours *nounours) {
-	if (nounours->is_doing_animation)
+	if (nounours->cur_theme == 0 || nounours->is_doing_animation || nounours->cur_image == 0)
 		return;
 	struct timeval now_tv;
 	gettimeofday(&now_tv, NULL);
