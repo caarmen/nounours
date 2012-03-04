@@ -31,6 +31,19 @@ NNUINounours *nnuinounours_new(NNNounours *nounours, int window_id) {
 	return uinounours;
 }
 
+static void nnuinounours_write_client_event_data(XClientMessageEvent *event, NNNounours *nounours, NNUIImage *uiimage) {
+	void *ptr = event->data.l;
+	memcpy(ptr, &uiimage, sizeof(NNUIImage*));
+	ptr += sizeof(NNUIImage*);
+	memcpy(ptr, &nounours, sizeof(NNNounours*));
+}
+
+static void nnuinounours_read_client_event_data(XClientMessageEvent *event, NNNounours **nounours, NNUIImage **uiimage) {
+	void *ptr = event->data.l;
+	memcpy(uiimage, ptr, sizeof(NNUIImage*));
+	ptr += sizeof(NNUIImage*);
+	memcpy(nounours, ptr, sizeof(NNNounours*));
+}
 /**
  * Search the child windows of the given window for the given property.
  * Return the value of the property from the first child window which has a value.
@@ -206,7 +219,8 @@ void nnuinounours_show_image(NNUINounours *uinounours, NNUIImage *uiimage) {
 		notify_message_event.type = ClientMessage;
 		notify_message_event.window = uinounours->window;
 		notify_message_event.format = 8; // doesn't really matter since we use memcpy to pass the pointer
-		memcpy(notify_message_event.data.l, &uiimage, sizeof(uiimage));
+		nnuinounours_write_client_event_data(&notify_message_event, uinounours->nounours, uiimage);
+
 		long event_mask = NoEventMask;
 		if (uinounours->nounours->screensaver_mode)
 			event_mask = ExposureMask; // TODO other applications may receive this event!
@@ -244,8 +258,13 @@ static void *nnuinounours_loop(void *data) {
 		if (xevent.type == ClientMessage) {
 			XClientMessageEvent client_message_event = xevent.xclient;
 			NNUIImage *uiimage;
-			memcpy(&uiimage, client_message_event.data.l, sizeof(NNUIImage*));
-			nnuiimage_show(uinounours, uiimage);
+			NNNounours *event_nounours;
+			nnuinounours_read_client_event_data(&client_message_event, &event_nounours, &uiimage);
+			if(event_nounours != uinounours->nounours) {
+				syslog(LOG_DEBUG, "Ignoring event from another nounours");
+			} else {
+				nnuiimage_show(uinounours, uiimage);
+			}
 		} else if (xevent.type == Expose) {
 			syslog(LOG_DEBUG, "expose");
 			if (uinounours->nounours->cur_image != 0)
