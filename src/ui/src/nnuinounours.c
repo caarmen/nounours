@@ -14,6 +14,7 @@
 #include <syslog.h>
 #include <stdio.h>
 #include "nnuinounours.h"
+#include "nntheme.h"
 
 NNUINounours *nnuinounours_new(NNNounours *nounours, int window_id) {
 	NNUINounours *uinounours = malloc(sizeof(NNUINounours));
@@ -115,11 +116,25 @@ static void nnuinounours_setup_window(NNUINounours *uinounours) {
 	}
 
 }
+void nnuinounours_stretch(NNUINounours *uinounours) {
+	int screen_width =
+			DisplayWidth(uinounours->background_display, uinounours->screen_number);
+	int screen_height =
+			DisplayHeight(uinounours->background_display, uinounours->screen_number);
+	NNTheme *theme = uinounours->nounours->cur_theme;
+	float width_ratio = (float) screen_width / theme->width;
+	float height_ratio = (float) screen_height / theme->height;
+	float ratio_to_use = width_ratio > height_ratio ? height_ratio : width_ratio;
+	int dest_height = ratio_to_use * theme->height;
+	int dest_width = ratio_to_use * theme->width;
+	nnuinounours_resize(uinounours, dest_width, dest_height);
+}
+
 void nnuinounours_resize(NNUINounours *uinounours, int width, int height) {
 	int screen_width =
-			DisplayWidth(uinounours->ui_display, uinounours->screen_number);
+			DisplayWidth(uinounours->background_display, uinounours->screen_number);
 	int screen_height =
-			DisplayHeight(uinounours->ui_display, uinounours->screen_number);
+			DisplayHeight(uinounours->background_display, uinounours->screen_number);
 
 	XMoveResizeWindow(uinounours->background_display, uinounours->window,
 			(screen_width - width) / 2, (screen_height - height) / 2, width,
@@ -133,6 +148,13 @@ void nnuinounours_resize(NNUINounours *uinounours, int width, int height) {
 	XSetWMNormalHints(uinounours->background_display, uinounours->window,
 			size_hints);
 	XFree(size_hints);
+	if(uinounours->nounours->do_stretch) {
+		NNTheme *theme = uinounours->nounours->cur_theme;
+		int i;
+		for(i=0; i < theme->num_images; i++) {
+			nnuiimage_resize(uinounours, theme->images[i]->uiimage, width, height);
+		}
+	}
 }
 
 void nnuinounours_free(NNUINounours *uinounours) {

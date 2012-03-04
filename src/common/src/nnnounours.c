@@ -56,7 +56,10 @@ NNNounours * nnnounours_new(const char *path, int screensaver_mode, int window_i
 
 void nnnounours_use_theme(NNNounours *nounours, NNTheme *theme) {
 	nounours->cur_theme = theme;
-	nnuinounours_resize(nounours->uinounours, theme->width, theme->height);
+	if(nounours->do_stretch)
+		nnuinounours_stretch(nounours->uinounours);
+	else
+		nnuinounours_resize(nounours->uinounours, theme->width, theme->height);
 	nnnounours_show_image(nounours, theme->default_image);
 }
 

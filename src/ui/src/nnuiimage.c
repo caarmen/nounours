@@ -12,36 +12,36 @@
 #include <string.h>
 #include "nnuiimage.h"
 
-static XImage * nnuiimage_jpeg_to_Ximage(Display *display, int window, const char *filename);
-static XImage * scale_image(Display *display, Visual *visual, XImage *in_image, int dest_width, int dest_height);
-
+static XImage * nnuiimage_jpeg_to_Ximage(Display *display, int window,
+		const char *filename);
+static XImage * scale_image(Display *display, Visual *visual, XImage *in_image,
+		int dest_width, int dest_height);
 
 NNUIImage *nnuiimage_new(NNUINounours *uinounours, const char *filename) {
 	NNUIImage *uiimage = malloc(sizeof(NNUIImage));
-	uiimage->ximage = nnuiimage_jpeg_to_Ximage(uinounours->background_display, uinounours->window, filename);
+	uiimage->ximage = nnuiimage_jpeg_to_Ximage(uinounours->background_display,
+			uinounours->window, filename);
 	return uiimage;
 }
 
-static XImage * scale_image(Display *display, Visual *visual, XImage *in_image, int dest_width, int dest_height) {
-	float scale_x = dest_width / in_image->width;
-	float scale_y = dest_height / in_image->height;
-printf("Scale to %dx%d\n", dest_width, dest_height);
+static XImage * scale_image(Display *display, Visual *visual, XImage *in_image,
+		int dest_width, int dest_height) {
+	float scale_x = (float) dest_width / in_image->width;
+	float scale_y = (float) dest_height / in_image->height;
 	// Allocate the memory for the dest image data.
-	size_t image_size = in_image->bitmap_pad * dest_width
-			* dest_height;
+	size_t image_size = in_image->bitmap_pad * dest_width * dest_height;
 	char *data = (char*) malloc(image_size);
 
 	// Create the image we'll return
 	XImage *out_image = XCreateImage(display, visual, in_image->depth, ZPixmap, /*format*/
 	0, /*offset*/
-	data, dest_width, dest_height, in_image->bitmap_pad,
-	0/*bytes_per_line*/);
+	data, dest_width, dest_height, in_image->bitmap_pad, 0/*bytes_per_line*/);
 
 	// Using the simple nearest-neighbor algorithm.  Not pretty, but easy to code :)
 	int x_dest;
-	for(x_dest=0; x_dest < dest_width; x_dest++) {
+	for (x_dest = 0; x_dest < dest_width; x_dest++) {
 		int y_dest;
-		for(y_dest=0; y_dest < dest_height; y_dest++) {
+		for (y_dest = 0; y_dest < dest_height; y_dest++) {
 			int x_source = x_dest / scale_x;
 			int y_source = y_dest / scale_y;
 			unsigned long pixel = XGetPixel(in_image, x_source, y_source);
@@ -72,7 +72,7 @@ static XImage * nnuiimage_jpeg_to_Ximage(Display *display, int window,
 	JDIMENSION numrows = 1;
 	JDIMENSION samplesperrow = cinfo.output_width * cinfo.output_components;
 
-	JSAMPARRAY scanlines = cinfo.mem->alloc_sarray((j_common_ptr) & cinfo,
+	JSAMPARRAY scanlines = cinfo.mem->alloc_sarray((j_common_ptr) &cinfo,
 			JPOOL_IMAGE, samplesperrow, numrows);
 
 	// Figure out how many bytes each pixel will have, based
@@ -109,7 +109,7 @@ static XImage * nnuiimage_jpeg_to_Ximage(Display *display, int window,
 	for (i = 0; i < cinfo.output_height; i++) {
 		// Read one row of the picture.  For a color picture (we are not
 		// supporting grayscale now), this will have the width * 3 (for RGB).
-		jpeg_read_scanlines((j_decompress_ptr) & cinfo, scanlines, numrows);
+		jpeg_read_scanlines((j_decompress_ptr) &cinfo, scanlines, numrows);
 		int j;
 		// Iterate for each pixel in this row:
 		for (j = 0; j < cinfo.output_width; j++) {
@@ -165,9 +165,23 @@ static XImage * nnuiimage_jpeg_to_Ximage(Display *display, int window,
 	fclose(file);
 	return image;
 }
+void nnuiimage_resize(struct NNUINounours *uinounours, NNUIImage *uiimage,
+		int dest_width, int dest_height) {
+	if(uiimage->ximage->width == dest_width && uiimage->ximage->height == dest_height)
+		return;
+	XWindowAttributes window_attributes;
+	XGetWindowAttributes(uinounours->background_display, uinounours->window,
+			&window_attributes);
+	XImage *scaled_image = scale_image(uinounours->background_display,
+			window_attributes.visual, uiimage->ximage, dest_width, dest_height);
+	XDestroyImage(uiimage->ximage);
+	uiimage->ximage = scaled_image;
+}
 
 void nnuiimage_show(NNUINounours *uinounours, NNUIImage *uiimage) {
-	XPutImage(uinounours->ui_display, uinounours->window, uinounours->gc, uiimage->ximage, 0, 0, 0, 0, uiimage->ximage->width, uiimage->ximage->height);
+	XPutImage(uinounours->ui_display, uinounours->window, uinounours->gc,
+			uiimage->ximage, 0, 0, 0, 0, uiimage->ximage->width,
+			uiimage->ximage->height);
 	XFlush(uinounours->ui_display);
 }
 
