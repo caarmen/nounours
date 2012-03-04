@@ -144,8 +144,17 @@ void nnuinounours_resize(NNUINounours *uinounours, int width, int height) {
 	int display_width, display_height;
 	nnuinounours_get_display_size(uinounours, &display_width, &display_height);
 
+	int offset_x = 0;
+	int offset_y = 0;
+	if(uinounours->nounours->screensaver_mode) {
+		XWindowAttributes window_attributes;
+		XGetWindowAttributes(uinounours->background_display, uinounours->window,
+				&window_attributes);
+		offset_x = window_attributes.x;
+		offset_y = window_attributes.y;
+	}
 	XMoveResizeWindow(uinounours->background_display, uinounours->window,
-			(display_width - width) / 2, (display_height - height) / 2, width,
+			offset_x + ((display_width - width) / 2), offset_y + ((display_height - height) / 2), width,
 			height);
 	XSizeHints* size_hints = XAllocSizeHints();
 	size_hints->flags = PMinSize | PMaxSize;
