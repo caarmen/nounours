@@ -31,14 +31,16 @@ NNUINounours *nnuinounours_new(NNNounours *nounours, int window_id) {
 	return uinounours;
 }
 
-static void nnuinounours_write_client_event_data(XClientMessageEvent *event, NNNounours *nounours, NNUIImage *uiimage) {
+static void nnuinounours_write_client_event_data(XClientMessageEvent *event,
+		NNNounours *nounours, NNUIImage *uiimage) {
 	void *ptr = event->data.l;
 	memcpy(ptr, &uiimage, sizeof(NNUIImage*));
 	ptr += sizeof(NNUIImage*);
 	memcpy(ptr, &nounours, sizeof(NNNounours*));
 }
 
-static void nnuinounours_read_client_event_data(XClientMessageEvent *event, NNNounours **nounours, NNUIImage **uiimage) {
+static void nnuinounours_read_client_event_data(XClientMessageEvent *event,
+		NNNounours **nounours, NNUIImage **uiimage) {
 	void *ptr = event->data.l;
 	memcpy(uiimage, ptr, sizeof(NNUIImage*));
 	ptr += sizeof(NNUIImage*);
@@ -130,7 +132,8 @@ static void nnuinounours_setup_window(NNUINounours *uinounours) {
 
 }
 
-static void nnuinounours_get_display_size(NNUINounours *uinounours, int *width, int *height) {
+static void nnuinounours_get_display_size(NNUINounours *uinounours, int *width,
+		int *height) {
 	if (uinounours->nounours->screensaver_mode) {
 		XWindowAttributes window_attributes;
 		XGetWindowAttributes(uinounours->background_display, uinounours->window,
@@ -159,7 +162,7 @@ void nnuinounours_resize(NNUINounours *uinounours, int width, int height) {
 
 	int offset_x = 0;
 	int offset_y = 0;
-	if(uinounours->nounours->screensaver_mode) {
+	if (uinounours->nounours->screensaver_mode) {
 		XWindowAttributes window_attributes;
 		XGetWindowAttributes(uinounours->background_display, uinounours->window,
 				&window_attributes);
@@ -167,8 +170,23 @@ void nnuinounours_resize(NNUINounours *uinounours, int width, int height) {
 		offset_y = window_attributes.y;
 	}
 	XMoveResizeWindow(uinounours->background_display, uinounours->window,
-			offset_x + ((display_width - width) / 2), offset_y + ((display_height - height) / 2), width,
-			height);
+			offset_x + ((display_width - width) / 2),
+			offset_y + ((display_height - height) / 2), width, height);
+	char *background_color = uinounours->nounours->cur_theme->background_color;
+	if (background_color != 0) {
+		long color_pixel = -1;
+		if (!strcmp(background_color, "white")) {
+			color_pixel =
+					WhitePixel(uinounours->background_display, uinounours->screen_number);
+		} else if (!strcmp(background_color, "black")) {
+			color_pixel =
+					BlackPixel(uinounours->background_display, uinounours->screen_number);
+		}
+		if (color_pixel != -1)
+			XSetWindowBackground(uinounours->background_display,
+					uinounours->window, color_pixel);
+
+	}
 	XSizeHints* size_hints = XAllocSizeHints();
 	size_hints->flags = PMinSize | PMaxSize;
 	size_hints->min_width = width;
@@ -219,7 +237,8 @@ void nnuinounours_show_image(NNUINounours *uinounours, NNUIImage *uiimage) {
 		notify_message_event.type = ClientMessage;
 		notify_message_event.window = uinounours->window;
 		notify_message_event.format = 8; // doesn't really matter since we use memcpy to pass the pointer
-		nnuinounours_write_client_event_data(&notify_message_event, uinounours->nounours, uiimage);
+		nnuinounours_write_client_event_data(&notify_message_event,
+				uinounours->nounours, uiimage);
 
 		long event_mask = NoEventMask;
 		if (uinounours->nounours->screensaver_mode)
@@ -259,8 +278,9 @@ static void *nnuinounours_loop(void *data) {
 			XClientMessageEvent client_message_event = xevent.xclient;
 			NNUIImage *uiimage;
 			NNNounours *event_nounours;
-			nnuinounours_read_client_event_data(&client_message_event, &event_nounours, &uiimage);
-			if(event_nounours != uinounours->nounours) {
+			nnuinounours_read_client_event_data(&client_message_event,
+					&event_nounours, &uiimage);
+			if (event_nounours != uinounours->nounours) {
 				syslog(LOG_DEBUG, "Ignoring event from another nounours");
 			} else {
 				nnuiimage_show(uinounours, uiimage);
@@ -293,7 +313,7 @@ static void *nnuinounours_loop(void *data) {
 			long now_us = now_tv.tv_sec * 1000000 + now_tv.tv_usec;
 			if (uinounours->last_window_x >= 0) {
 				long time_diff = now_us - uinounours->last_window_move_time_us;
-				if(time_diff == 0)
+				if (time_diff == 0)
 					time_diff = 1;
 				long distance = nnmath_get_distance(conf_event.x, conf_event.y,
 						uinounours->last_window_x, uinounours->last_window_y);

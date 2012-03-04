@@ -51,6 +51,8 @@ void nnread_theme_properties_file(NNTheme *theme) {
 			theme->height = atoi(val);
 		} else if (!strcmp(key, "resolution.width")) {
 			theme->width = atoi(val);
+		} else if (!strcmp(key, "background.color")) {
+			theme->background_color = strdup(val);
 		}
 	}
 	fclose(file);

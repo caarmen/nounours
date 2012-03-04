@@ -32,6 +32,7 @@ NNTheme * nntheme_new(NNNounours *nounours, char *path) {
 	theme->help_image= 0;
 	theme->height = 0;
 	theme->width = 0;
+	theme->background_color = 0;
 	nnread_feature_file(theme);
 	nnread_image_file(theme);
 	nnread_animation_file(theme);
@@ -99,4 +100,6 @@ void nntheme_free(NNTheme *theme) {
 	free(theme->animations);
 	free(theme->images);
 	free(theme);
+	if(theme->background_color)
+		free(theme->background_color);
 }

@@ -30,6 +30,7 @@ typedef struct NNTheme {
 	NNImage *help_image;
 	int height;
 	int width;
+	char *background_color;
 } NNTheme;
 
 NNTheme * nntheme_new(NNNounours *nounours, char *path);
