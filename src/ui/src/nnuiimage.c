@@ -21,6 +21,8 @@ NNUIImage *nnuiimage_new(NNUINounours *uinounours, const char *filename) {
 
 static XImage * nnuiimage_jpeg_to_Ximage(Display *display, int window,
 		const char *filename) {
+	// Refer to libjpeg.txt file distributed with jpeglib, which explains
+	// how to read in jpeg header and data from a file.
 	// Initialize the jpeg structs
 	struct jpeg_decompress_struct cinfo;
 	struct jpeg_error_mgr jerr;
@@ -51,7 +53,7 @@ static XImage * nnuiimage_jpeg_to_Ximage(Display *display, int window,
 	int depth = window_attributes.depth;
 	int image_bits_per_pixel;
 
-	// The device supports at least 17 bits (3 bytes minimulm required) per
+	// The device supports at least 17 bits (3 bytes minimum required) per
 	// pixel.  We will use 32 bits (4 bytes).
 	if (depth > 16)
 		image_bits_per_pixel = 32;
@@ -70,7 +72,7 @@ static XImage * nnuiimage_jpeg_to_Ximage(Display *display, int window,
 			* cinfo.output_height;
 	char *data = (char*) malloc(image_size);
 	Visual *visual = window_attributes.visual;
-	int max_byte_value = 255;
+	int max_byte_value = 0xFF;
 	int i;
 	int ptr = 0;
 	for (i = 0; i < cinfo.output_height; i++) {
@@ -82,6 +84,8 @@ static XImage * nnuiimage_jpeg_to_Ximage(Display *display, int window,
 		for (j = 0; j < cinfo.output_width; j++) {
 			// Extract the red, green, and blue bytes.
 			// "Shift" them by multiplying them by the mask.
+			// Thanks to George Peter Staplin and his tutorial for pointing this out:
+			// http://user.xmission.com/~georgeps/documentation/tutorials/Xlib_JPEG_Tutorial-5.html
 			u_int32_t red = scanlines[0][3 * j] * visual->red_mask
 					/ max_byte_value;
 			u_int32_t green = scanlines[0][3 * j + 1] * visual->green_mask
@@ -91,6 +95,10 @@ static XImage * nnuiimage_jpeg_to_Ximage(Display *display, int window,
 			// If we don't & the color components with their masks,
 			// the value of the red pixel will be mixed with the blue
 			// and/or green components.
+			// From  my understanding, this is actually not a floating point issue as indicated by
+			// Mr Staplin, since in my implementation we are not using any floats. This is
+			// actually a problem of the uneven bit-depths for RGB with 16-bit depth.
+			//
 			// We don't see this problem with 24-bit depth, but we
 			// do see it with 16-bit depth.
 			// For 16 bit depth, the number of bits for RGB is an uneven 5,6,5,
