@@ -274,6 +274,8 @@ static void *nnuinounours_loop(void *data) {
 			long now_us = now_tv.tv_sec * 1000000 + now_tv.tv_usec;
 			if (uinounours->last_window_x >= 0) {
 				long time_diff = now_us - uinounours->last_window_move_time_us;
+				if(time_diff == 0)
+					time_diff = 1;
 				long distance = nnmath_get_distance(conf_event.x, conf_event.y,
 						uinounours->last_window_x, uinounours->last_window_y);
 				long speed = (distance * 1000000) / time_diff;
