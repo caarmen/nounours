@@ -1,0 +1,13 @@
+ImageId,FeatureId,AdjacentImageId
+Default,RH,RightDown
+Default,LH,LeftDown
+LeftOut,LH,LeftUp
+LeftOut,LH,LeftDown
+RightDown,RH,RightOut
+RightOut,RH,RightUp
+RightOut,LH,BothOut
+RightDown,LH,BothDown
+RightUp,LH,BothUp
+LeftDown,RH,BothDown
+LeftOut,RH,BothOut
+LeftUp,RH,BothUp
