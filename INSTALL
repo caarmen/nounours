@@ -1,0 +1,23 @@
+
+1) Run the configure script ./configure
+The following optional parameters may be provided:
+
+--prefix=DIR: The location prefix for the location where the 
+              nounours binary and theme files will be placed.
+              The nounours binary will be placed in PREFIX/bin,
+              and the theme files will be placed in 
+              PREFIX/share/nounours/data.
+
+--with-jpeg-include-path: location of the jpeglib.h, defaults to /usr/include/
+
+--with-jpeg-lib-path: location of the libjpeg library
+
+2) Run make:
+make
+
+3) Run make install:
+make install
+
+4) To install the screensaver:
+* copy the data/nounours.xml file to /usr/share/xscreensaver/config/
+* copy the ./nounours binary file to /usr/lib/xscreensaver/ 
