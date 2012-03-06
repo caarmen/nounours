@@ -319,11 +319,6 @@ static void *nnuinounours_loop(void *data) {
 			NNNounours *event_nounours;
 			nnuinounours_read_client_event_data(&client_message_event,
 					&event_nounours, &uiimage);
-			syslog(LOG_DEBUG,
-					"message type %s\n",
-					XGetAtomName(uinounours->ui_display,
-							client_message_event.message_type));
-
 			if (client_message_event.message_type
 					== uinounours->atom_set_image) {
 				if (event_nounours != uinounours->nounours) {
@@ -337,8 +332,7 @@ static void *nnuinounours_loop(void *data) {
 					if(window_of_other_nounours == uinounours->window) {
 						syslog(LOG_DEBUG, "other nounours is using my window!");
 						nnuinounours_switch_window(uinounours);
-	XSelectInput(uinounours->ui_display, uinounours->window, event_mask);
-
+						XSelectInput(uinounours->ui_display, uinounours->window, event_mask);
 					}
 				}
 			}
