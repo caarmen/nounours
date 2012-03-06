@@ -47,6 +47,7 @@ static void nnuinounours_send_client_message_event(XClientMessageEvent *event, N
 	long event_mask = NoEventMask;
 	if (uinounours->nounours->screensaver_mode)
 		event_mask = ExposureMask; // TODO other applications may receive this event!
+syslog(LOG_DEBUG, "Send Event to window %lx", uinounours->window);
 	XSendEvent(uinounours->background_display, uinounours->window, 0,
 			event_mask, (XEvent*) event);
 	XFlush(uinounours->background_display);
@@ -326,7 +327,7 @@ static void *nnuinounours_loop(void *data) {
 			if (client_message_event.message_type
 					== uinounours->atom_set_image) {
 				if (event_nounours != uinounours->nounours) {
-					// too verbose: syslog(LOG_DEBUG, "Ignoring event from another nounours");
+					syslog(LOG_DEBUG, "Ignoring event from another nounours");
 				} else {
 					nnuiimage_show(uinounours, uiimage);
 				}
@@ -336,6 +337,8 @@ static void *nnuinounours_loop(void *data) {
 					if(window_of_other_nounours == uinounours->window) {
 						syslog(LOG_DEBUG, "other nounours is using my window!");
 						nnuinounours_switch_window(uinounours);
+	XSelectInput(uinounours->ui_display, uinounours->window, event_mask);
+
 					}
 				}
 			}
