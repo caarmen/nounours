@@ -111,6 +111,19 @@ static Window * nnuinounours_find_child_windows_for_property(Display *display,
 	return windows;
 }
 
+static void nnuinounours_switch_window(NNUINounours *uinounours) {
+	int num_windows;
+	Window *windows = nnuinounours_find_child_windows_for_property(
+			uinounours->ui_display, uinounours->root_window,
+			"__SWM_VROOT", &num_windows);
+	int i;
+	for(i=0; i < num_windows; i++) {
+		if(windows[i] != uinounours->window) {
+syslog(LOG_DEBUG, "switching from %lx to %lx", uinounours->window, windows[i]);
+			uinounours->window = windows[i];
+		}
+	}
+}
 /**
  * Find or create a window in which nounours will run.
  */
@@ -316,6 +329,14 @@ static void *nnuinounours_loop(void *data) {
 					// too verbose: syslog(LOG_DEBUG, "Ignoring event from another nounours");
 				} else {
 					nnuiimage_show(uinounours, uiimage);
+				}
+			} else if(client_message_event.message_type == uinounours->atom_my_window) {
+				if(event_nounours != uinounours->nounours) {
+					Window window_of_other_nounours = (Window) client_message_event.data.l[0];
+					if(window_of_other_nounours == uinounours->window) {
+						syslog(LOG_DEBUG, "other nounours is using my window!");
+						nnuinounours_switch_window(uinounours);
+					}
 				}
 			}
 		} else if (xevent.type == Expose) {
