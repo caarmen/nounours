@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include "nnuinounours.h"
 #include "nntheme.h"
+#include "nncommon.h"
 
 NNUINounours *nnuinounours_new(NNNounours *nounours, int window_id) {
 	NNUINounours *uinounours = malloc(sizeof(NNUINounours));
@@ -48,10 +49,12 @@ static void nnuinounours_read_client_event_data(XClientMessageEvent *event,
 }
 /**
  * Search the child windows of the given window for the given property.
- * Return the value of the property from the first child window which has a value.
+ * Return the values of the properties from the children windows which have a value.
  */
-static unsigned char *nnuinounours_find_first_property_in_child_windows(
-		Display *display, Window window, const char *property_name) {
+static Window * nnuinounours_find_child_windows_for_property(
+		Display *display, Window window, const char *property_name, int *num_results) {
+	*num_results = 0;
+	Window *windows = (Window*) malloc(NN_INITIAL_LIST_CAPACITY*sizeof(Window));
 	// Some variables which are filled in by X methods, which we do not need, but are required to pass to these methods.
 	Window window_not_used;
 	int int_not_used;
@@ -77,11 +80,14 @@ static unsigned char *nnuinounours_find_first_property_in_child_windows(
 				0, 1, False, XA_WINDOW, &atom_not_used, &int_not_used,
 				&ulong_not_used, &ulong_not_used, &prop_return);
 		// We found a non-null value for this property.  Return it.
-		if (result == Success && prop_return != 0)
-			break;
+		if (result == Success && prop_return != 0) {
+			windows = nnresize_if_needed(windows, *num_results);
+			windows[*num_results] =	children_return[i];
+			*num_results = *num_results+1;
+		}
 	}
 	XFree(children_return);
-	return prop_return;
+	return windows;
 }
 
 /**
@@ -110,12 +116,12 @@ static void nnuinounours_setup_window(NNUINounours *uinounours) {
 			// The right window could be a child of the root window which
 			// has a property "__SWM_VROOT" or "_NET_VIRTUAL_ROOTS".  During
 			// tests only __SWM_VROOT was found.
-			unsigned char *vroot_char =
-					nnuinounours_find_first_property_in_child_windows(
-							uinounours->ui_display, uinounours->root_window,
-							"__SWM_VROOT");
-			if (vroot_char != 0)
-				uinounours->window = (Window) ((unsigned long*) vroot_char)[0];
+			int num_windows;
+			Window *windows = nnuinounours_find_child_windows_for_property(uinounours->ui_display, uinounours->root_window,
+							"__SWM_VROOT", &num_windows);
+syslog(LOG_DEBUG, "found %d windows", num_windows);
+			if (num_windows >0)
+				uinounours->window = windows[0];
 			else
 				uinounours->window = uinounours->root_window;
 		}
