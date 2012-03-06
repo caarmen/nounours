@@ -29,9 +29,29 @@ NNUINounours *nnuinounours_new(NNNounours *nounours, int window_id) {
 	uinounours->last_window_move_time_us = 0;
 	pthread_cond_init(&uinounours->cond, 0);
 	pthread_mutex_init(&uinounours->mutex, 0);
+	uinounours->atom_my_window = XInternAtom(uinounours->background_display, "NN_ATOM_MY_WINDOW",
+			False);
+	uinounours->atom_set_image = XInternAtom(uinounours->background_display, "NN_ATOM_SET_IMAGE",
+			False);
 	return uinounours;
 }
+static void nnuinounours_init_client_message_event(XClientMessageEvent *event, NNUINounours *uinounours, Atom atom, int format) {
+	memset(event, 0, sizeof(XClientMessageEvent));
+	event->type = ClientMessage;
+	event->window = uinounours->window;
+	event->format = format; // doesn't really matter since we use memcpy to pass the pointer
+	event->message_type = atom;
+}
 
+static void nnuinounours_send_client_message_event(XClientMessageEvent *event, NNUINounours *uinounours) {
+	long event_mask = NoEventMask;
+	if (uinounours->nounours->screensaver_mode)
+		event_mask = ExposureMask; // TODO other applications may receive this event!
+	XSendEvent(uinounours->background_display, uinounours->window, 0,
+			event_mask, (XEvent*) event);
+	XFlush(uinounours->background_display);
+
+}
 static void nnuinounours_write_client_event_data(XClientMessageEvent *event,
 		NNNounours *nounours, NNUIImage *uiimage) {
 	void *ptr = event->data.l;
@@ -49,12 +69,13 @@ static void nnuinounours_read_client_event_data(XClientMessageEvent *event,
 }
 /**
  * Search the child windows of the given window for the given property.
- * Return the values of the properties from the children windows which have a value.
+ * @return the child windows having the given property.
  */
-static Window * nnuinounours_find_child_windows_for_property(
-		Display *display, Window window, const char *property_name, int *num_results) {
+static Window * nnuinounours_find_child_windows_for_property(Display *display,
+		Window window, const char *property_name, int *num_results) {
 	*num_results = 0;
-	Window *windows = (Window*) malloc(NN_INITIAL_LIST_CAPACITY*sizeof(Window));
+	Window *windows = (Window*) malloc(
+			NN_INITIAL_LIST_CAPACITY * sizeof(Window));
 	// Some variables which are filled in by X methods, which we do not need, but are required to pass to these methods.
 	Window window_not_used;
 	int int_not_used;
@@ -82,8 +103,8 @@ static Window * nnuinounours_find_child_windows_for_property(
 		// We found a non-null value for this property.  Return it.
 		if (result == Success && prop_return != 0) {
 			windows = nnresize_if_needed(windows, *num_results);
-			windows[*num_results] =	children_return[i];
-			*num_results = *num_results+1;
+			windows[*num_results] = children_return[i];
+			*num_results = *num_results + 1;
 		}
 	}
 	XFree(children_return);
@@ -117,13 +138,18 @@ static void nnuinounours_setup_window(NNUINounours *uinounours) {
 			// has a property "__SWM_VROOT" or "_NET_VIRTUAL_ROOTS".  During
 			// tests only __SWM_VROOT was found.
 			int num_windows;
-			Window *windows = nnuinounours_find_child_windows_for_property(uinounours->ui_display, uinounours->root_window,
-							"__SWM_VROOT", &num_windows);
-syslog(LOG_DEBUG, "found %d windows", num_windows);
-			if (num_windows >0)
+			Window *windows = nnuinounours_find_child_windows_for_property(
+					uinounours->ui_display, uinounours->root_window,
+					"__SWM_VROOT", &num_windows);
+			if (num_windows > 0) {
 				uinounours->window = windows[0];
-			else
+				XClientMessageEvent event;
+				nnuinounours_init_client_message_event(&event, uinounours, uinounours->atom_my_window, 32);
+				event.data.l[0] = (long) uinounours->window;
+				nnuinounours_send_client_message_event(&event, uinounours);
+			} else {
 				uinounours->window = uinounours->root_window;
+			}
 		}
 		// We're not in screensaver mode.  Let's create a window.
 		else {
@@ -233,25 +259,18 @@ void nnuinounours_free(NNUINounours *uinounours) {
 	XCloseDisplay(uinounours->ui_display);
 	free(uinounours);
 }
+
+
 void nnuinounours_show_image(NNUINounours *uinounours, NNUIImage *uiimage) {
 	pthread_t mythread = pthread_self();
 	if (mythread == uinounours->ui_thread) {
 		nnuiimage_show(uinounours, uiimage);
 	} else {
 		XClientMessageEvent notify_message_event;
-		memset(&notify_message_event, 0, sizeof(XClientMessageEvent));
-		notify_message_event.type = ClientMessage;
-		notify_message_event.window = uinounours->window;
-		notify_message_event.format = 8; // doesn't really matter since we use memcpy to pass the pointer
+		nnuinounours_init_client_message_event(&notify_message_event, uinounours, uinounours->atom_set_image, 8);
 		nnuinounours_write_client_event_data(&notify_message_event,
 				uinounours->nounours, uiimage);
-
-		long event_mask = NoEventMask;
-		if (uinounours->nounours->screensaver_mode)
-			event_mask = ExposureMask; // TODO other applications may receive this event!
-		XSendEvent(uinounours->background_display, uinounours->window, 0,
-				event_mask, (XEvent*) &notify_message_event);
-		XFlush(uinounours->background_display);
+		nnuinounours_send_client_message_event(&notify_message_event, uinounours);
 	}
 }
 
@@ -286,10 +305,18 @@ static void *nnuinounours_loop(void *data) {
 			NNNounours *event_nounours;
 			nnuinounours_read_client_event_data(&client_message_event,
 					&event_nounours, &uiimage);
-			if (event_nounours != uinounours->nounours) {
-				// too verbose: syslog(LOG_DEBUG, "Ignoring event from another nounours");
-			} else {
-				nnuiimage_show(uinounours, uiimage);
+			syslog(LOG_DEBUG,
+					"message type %s\n",
+					XGetAtomName(uinounours->ui_display,
+							client_message_event.message_type));
+
+			if (client_message_event.message_type
+					== uinounours->atom_set_image) {
+				if (event_nounours != uinounours->nounours) {
+					// too verbose: syslog(LOG_DEBUG, "Ignoring event from another nounours");
+				} else {
+					nnuiimage_show(uinounours, uiimage);
+				}
 			}
 		} else if (xevent.type == Expose) {
 			syslog(LOG_DEBUG, "expose");

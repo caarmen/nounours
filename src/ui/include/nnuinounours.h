@@ -8,6 +8,7 @@
 #ifndef NNUINOUNOURS_H_
 #define NNUINOUNOURS_H_
 #include <X11/Xlib.h>
+#include <X11/X.h>
 
 #include "nnnounours.h"
 #include "nnuiimage.h"
@@ -32,6 +33,8 @@ typedef struct NNUINounours {
 	long last_window_move_time_us;
 	int window_width;
 	int window_height;
+	Atom atom_set_image;
+	Atom atom_my_window;
 
 } NNUINounours;
 
