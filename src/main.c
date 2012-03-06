@@ -62,7 +62,10 @@ int main(int argc, char **argv) {
 			help(argv[0]);
 		}
 	}
-	srandom(time(NULL));
+	struct timeval now_tv;
+	gettimeofday(&now_tv, NULL);
+	long now_us = now_tv.tv_sec * 1000000 + now_tv.tv_usec;
+	srandom(now_us);
 
 	openlog("nounours", LOG_CONS | LOG_PID, 0);
 	syslog(LOG_ERR, "starting");
