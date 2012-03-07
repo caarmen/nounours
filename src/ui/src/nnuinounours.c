@@ -322,7 +322,9 @@ static void *nnuinounours_loop(void *data) {
 			if (client_message_event.message_type
 					== uinounours->atom_set_image) {
 				if (event_nounours != uinounours->nounours) {
-					syslog(LOG_DEBUG, "Ignoring event from another nounours");
+					//Too verbose, but why are we still receiving
+					// events from the other nounours after changing the
+					// select input? syslog(LOG_DEBUG, "Ignoring event from another nounours");
 				} else {
 					nnuiimage_show(uinounours, uiimage);
 				}
