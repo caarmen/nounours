@@ -21,3 +21,6 @@ make install
 4) To install the screensaver:
 * copy the data/nounours.xml file to /usr/share/xscreensaver/config/
 * copy the ./nounours binary file to /usr/lib/xscreensaver/ 
+* add a line in ~/.xscreensaver (run xscreensaver-demo once if this file doesn't exist),
+in the "programs:" section:
+nounours -screensaver -stretch \n\
