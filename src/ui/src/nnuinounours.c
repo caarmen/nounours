@@ -47,7 +47,6 @@ static void nnuinounours_send_client_message_event(XClientMessageEvent *event, N
 	long event_mask = NoEventMask;
 	if (uinounours->nounours->screensaver_mode)
 		event_mask = ExposureMask; // TODO other applications may receive this event!
-syslog(LOG_DEBUG, "Send Event to window %lx", uinounours->window);
 	XSendEvent(uinounours->background_display, uinounours->window, 0,
 			event_mask, (XEvent*) event);
 	XFlush(uinounours->background_display);
