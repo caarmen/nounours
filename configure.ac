@@ -39,6 +39,12 @@ AC_ARG_WITH([jpeg-lib-path],
   [JPEG_LIBS='-ljpeg'])
 AC_SUBST([JPEG_LIBS])
 
+AC_ARG_WITH([xscreensaver-config-path],
+  [AS_HELP_STRING([--with-xscreensaver-config-path],
+    [location of the xscreensaver hack xmls files, defaults to /usr/share/xscreensaver/config/])],
+  [XSCREENSAVER_CONFIG_PATH="$withval"],
+  [XSCREENSAVER_CONFIG_PATH='/usr/share/xscreensaver/config'])
+AC_SUBST([XSCREENSAVER_CONFIG_PATH])
 
 # Checks for library functions.
 
