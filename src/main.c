@@ -20,17 +20,29 @@
 void help(char *prog_name) {
 	printf("Usage:\n");
 	printf(
-			"%s [-theme <path/to/theme>] [-screensaver] [-window-id <window id>] [-stretch] [-sleep-after <time in seconds>]\n",
+			"%s [-theme <theme>] [-screensaver] [-window-id <window id>] [-stretch] [-sleep-after <time in seconds>]\n",
 			prog_name);
+	printf("<theme> may be:\n");
+	printf("  /path/to/theme\n");
+	printf("  default|rainbow|robot|random\n");
 	exit(1);
 }
 int main(int argc, char **argv) {
-	const char *theme_path = "data/themes/1";
+	const char *theme_path = "default";
 	int screensaver_mode = 0;
 	unsigned long window_id = 0;
 	int do_stretch = 0;
 	int i;
 	int sleep_time = -1;
+
+	struct timeval now_tv;
+	gettimeofday(&now_tv, NULL);
+	long now_us = now_tv.tv_sec * 1000000 + now_tv.tv_usec;
+	srandom(now_us);
+
+	openlog("nounours", LOG_CONS | LOG_PID, 0);
+	syslog(LOG_ERR, "starting");
+
 	for (i = 1; i < argc; i++) {
 		if (!strcmp(argv[i], "-theme")) {
 			if (i == argc) {
@@ -38,6 +50,13 @@ int main(int argc, char **argv) {
 				help(argv[0]);
 			} else {
 				theme_path = argv[++i];
+				if(!strcmp(theme_path, "random")) {
+					theme_path = nntheme_get_random_theme_id();
+					if(theme_path == NULL) {
+						fprintf(stderr, "Could not get random theme\n");
+						exit(1);
+					}
+				}
 			}
 		} else if (!strcmp(argv[i], "-screensaver")) {
 			screensaver_mode = 1;
@@ -62,13 +81,7 @@ int main(int argc, char **argv) {
 			help(argv[0]);
 		}
 	}
-	struct timeval now_tv;
-	gettimeofday(&now_tv, NULL);
-	long now_us = now_tv.tv_sec * 1000000 + now_tv.tv_usec;
-	srandom(now_us);
 
-	openlog("nounours", LOG_CONS | LOG_PID, 0);
-	syslog(LOG_ERR, "starting");
 
 	NNNounours *nounours = nnnounours_new(theme_path, screensaver_mode,
 			window_id);

@@ -6,6 +6,8 @@
  */
 #include <stdlib.h>
 #include <string.h>
+#include <dirent.h>
+#include <syslog.h>
 #include "nntheme.h"
 #include "nnanimation.h"
 #include "nnimage.h"
@@ -102,4 +104,39 @@ void nntheme_free(NNTheme *theme) {
 	free(theme);
 	if(theme->background_color)
 		free(theme->background_color);
+}
+char * nntheme_get_random_theme_id() {
+	int num_themes;
+	char **theme_ids;
+	nntheme_get_theme_ids(&theme_ids, &num_themes);
+	if(num_themes == 0) {
+		return NULL;
+	}
+	int random_theme_idx = random() % num_themes;
+	syslog(LOG_DEBUG, "Randomly choosing theme %s", theme_ids[random_theme_idx]);
+	return theme_ids[random_theme_idx];
+}
+void nntheme_get_theme_ids(char ***theme_ids_return, int *num_themes_return) {
+	*theme_ids_return = NULL;
+	*num_themes_return = 0;
+	char **theme_ids = (char**) malloc(NN_INITIAL_LIST_CAPACITY * sizeof(char*));
+	int num_themes = 0;
+	char themes_path[1024];
+	sprintf(themes_path, "%s/nounours/data/themes/", __DATAROOT_DIR__);
+	DIR *themes_dir = opendir(themes_path);
+	if(themes_dir == NULL) {
+		fprintf(stderr, "Could not find %s!\n", themes_path);
+		return;
+	}
+	struct dirent *theme_dir;
+	while((theme_dir = readdir(themes_dir))!=NULL) {
+		if(!strcmp(".", theme_dir->d_name) || !strcmp("..", theme_dir->d_name))
+			continue;
+		theme_ids = nnresize_if_needed(theme_ids, num_themes);
+		char *theme_dir_name = strdup(theme_dir->d_name); // TODO should free this
+		theme_ids[num_themes++] = theme_dir_name;
+	}
+	closedir(themes_dir);
+	*theme_ids_return = theme_ids;
+	*num_themes_return = num_themes;
 }

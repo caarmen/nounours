@@ -42,5 +42,7 @@ NNImage *nntheme_find_image(NNTheme *theme, const char *path);
 NNAnimation *nntheme_find_animation(NNTheme *theme, const char *path);
 NNFeature *nntheme_find_feature(NNTheme *theme, const char *path);
 void nntheme_free(NNTheme *theme);
+char * nntheme_get_random_theme_id();
+void nntheme_get_theme_ids(char ***theme_ids, int *num_themes);
 
 #endif /* NNTHEME_H_ */
