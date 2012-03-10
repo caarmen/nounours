@@ -5,11 +5,13 @@
 
 	<select id="theme">
 		<option id="default" _label="Default theme"
-			arg-set="-theme 1" />
+			arg-set="-theme default" />
 		<option id="rainbow" _label="Rainbow Nounours theme"
 			arg-set="-theme rainbow" />
 		<option id="robot" _label="Android robot theme"
 			arg-set="-theme robot" />
+		<option id="random" _label="Random theme"
+			arg-set="-theme random" />
 	</select>
 
 	<select id="idle.time">
