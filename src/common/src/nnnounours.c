@@ -182,9 +182,6 @@ void nnnounours_ping(NNNounours *nounours) {
 	gettimeofday(&now_tv, NULL);
 	long now_us = now_tv.tv_sec * 1000000 + now_tv.tv_usec;
 	long time_diff = now_us - nounours->last_action_time_us;
-	printf("last action time %ld vs sleep time %d vs ping time %d, diff time %ld\n",
-			nounours->last_action_time_us, nounours->idle_time*1000,
-			nounours->idle_ping_interval*1000, time_diff);
 	if (time_diff > nounours->idle_time * 1000) {
 		nnnounours_stop_animation(nounours);
 		nnnounours_start_animation(nounours,

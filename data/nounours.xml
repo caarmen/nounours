@@ -15,14 +15,11 @@
 	</select>
 
 	<select id="idle.time">
-		<option id="15" _label="Fall asleep after 15 seconds"
-			arg-set="-sleep-after 15" />
-		<option id="30" _label="Fall asleepa fter 30 seconds"
-			arg-set="-sleep-after 30" />
-		<option id="60" _label="Fall asleep after 1 minute"
-			arg-set="-sleep-after 60" />
-		<option id="300" _label="Fall asleep after 5 minutes"
-			arg-set="-sleep-after 300" />
+		<option id="300" _label="Fall asleep after 5 minutes" arg-set="-sleep-after 300" />
+		<option id="60" _label="Fall asleep after 2 minutes" arg-set="-sleep-after 120" />
+		<option id="60" _label="Fall asleep after 1 minute" arg-set="-sleep-after 60" />
+		<option id="30" _label="Fall asleepa fter 30 seconds" arg-set="-sleep-after 30" />
+		<option id="15" _label="Fall asleep after 15 seconds" arg-set="-sleep-after 15" />
 	</select>
 	<_description>
 
