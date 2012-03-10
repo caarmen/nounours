@@ -8,6 +8,8 @@
 			arg-set="-theme default" />
 		<option id="rainbow" _label="Rainbow Nounours theme"
 			arg-set="-theme rainbow" />
+		<option id="college" _label="College Nounours theme"
+			arg-set="-theme college" />
 		<option id="robot" _label="Android robot theme"
 			arg-set="-theme robot" />
 		<option id="random" _label="Random theme"
