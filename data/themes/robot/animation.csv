@@ -7,4 +7,4 @@ Id,Label,Interval,Repeat,Sequence,Visible,Vibrate,Sound
 6,Parachute,40,1,Default;Float1;Float2;d=5;Float2BothOut;Float1BothUp;Float1BothOut;BothDown,true,false,
 7,Dance,400,3,TiltRight;Default;TiltLeft;Default,true,false
 8,Sleep,1000,30,Sleep1;Sleep2,true,false,lullaby_musicbox
-9,SleepNoSound,1000,200,Sleep1;Sleep2,false,false
+9,SleepNoSound,1000,30,Sleep1;Sleep2,false,false
