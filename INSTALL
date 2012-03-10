@@ -12,15 +12,12 @@ The following optional parameters may be provided:
 
 --with-jpeg-lib-path: location of the libjpeg library
 
+--with-xscreensaver-config-path: location of the xscreensaver config directory.
+                                 Defaults to /usr/share/xscreensaver/config
+
 2) Run make:
 make
 
 3) Run make install:
 make install
 
-4) To install the screensaver:
-* copy the data/nounours.xml file to /usr/share/xscreensaver/config/
-* copy the ./nounours binary file to /usr/lib/xscreensaver/ 
-* add a line in ~/.xscreensaver (run xscreensaver-demo once if this file doesn't exist),
-in the "programs:" section:
-nounours -screensaver -stretch \n\
