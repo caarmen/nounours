@@ -252,8 +252,8 @@ void nnuinounours_resize(NNUINounours *uinounours, int width, int height) {
 	XSetWMNormalHints(uinounours->background_display, uinounours->window,
 			size_hints);
 	XFree(size_hints);
-	if (uinounours->nounours->config.do_stretch) {
-		NNTheme *theme = uinounours->nounours->state.cur_theme;
+	NNTheme *theme = uinounours->nounours->state.cur_theme;
+	if(width != theme->width || height != theme->height ) {
 		float width_ratio = (float) width / theme->width;
 		float height_ratio = (float) height / theme->height;
 		float ratio_to_use =

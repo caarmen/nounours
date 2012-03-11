@@ -64,14 +64,17 @@ NNNounours * nnnounours_new(const char *path, nnbool screensaver_mode,
 }
 
 void nnnounours_use_theme(NNNounours *nounours, NNTheme *theme) {
+	nnnounours_use_theme_scaled(nounours, theme, 1.0f);
+}
+
+void nnnounours_use_theme_scaled(NNNounours *nounours, NNTheme *theme, float scale) {
 	nounours->state.cur_theme = theme;
 	if (nounours->config.do_stretch)
 		nnuinounours_stretch(nounours->uinounours);
 	else
-		nnuinounours_resize(nounours->uinounours, theme->width, theme->height);
+		nnuinounours_resize(nounours->uinounours, scale*theme->width, scale*theme->height);
 	nnnounours_show_image(nounours, theme->default_image);
 }
-
 void nnnounours_show_image(NNNounours *nounours, NNImage *image) {
 	if (nounours->state.cur_image == image)
 		return;

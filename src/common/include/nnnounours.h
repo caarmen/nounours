@@ -56,6 +56,11 @@ NNNounours * nnnounours_new(const char *path, nnbool screensaver_mode,
  * Sets the current theme, resizes the window, and shows the default image of this theme.
  */
 void nnnounours_use_theme(NNNounours *nounours, struct NNTheme *theme);
+
+/**
+ * Same as nnnounours_use_theme, except that the window will be scaled by the scale parameter.
+ */
+void nnnounours_use_theme_scaled(NNNounours *nounours, struct NNTheme *theme, float scale);
 void nnnounours_show_image(NNNounours *nounours, struct NNImage *image);
 void nnnounours_start_animation(NNNounours *nounours,
 		struct NNAnimation *animation);

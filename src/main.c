@@ -33,7 +33,7 @@ int main(int argc, char **argv) {
 	nnbool do_stretch = NNFALSE;
 	int i;
 	int sleep_time = -1;
-
+	float scale = 1.0f;
 	struct timeval now_tv;
 	gettimeofday(&now_tv, NULL);
 	long now_us = now_tv.tv_sec * 1000000 + now_tv.tv_usec;
@@ -75,6 +75,12 @@ int main(int argc, char **argv) {
 				help(argv[0]);
 			}
 			sleep_time = atoi(argv[++i]) * 1000;
+		} else if (!strcmp(argv[i], "-scale")) {
+			if(i== argc) {
+				printf("Missing scale factor.\n");
+				help(argv[0]);
+			}
+			scale = strtof(argv[++i], NULL);
 		} else {
 			printf("Unknown option %s\n", argv[i]);
 			help(argv[0]);
@@ -87,7 +93,7 @@ int main(int argc, char **argv) {
 		nounours->config.idle_time_for_sleep_ms = sleep_time;
 	nounours->config.do_stretch = do_stretch;
 	NNTheme *theme = nntheme_new(nounours, strdup(theme_path));
-	nnnounours_use_theme(nounours, theme);
+	nnnounours_use_theme_scaled(nounours, theme, scale);
 	while (1) {
 		sleep(1000000);
 	}
