@@ -4,16 +4,11 @@
 	<command arg="-screensaver -stretch" />
 
 	<select id="theme">
-		<option id="default" _label="Default theme"
-			arg-set="-theme default" />
-		<option id="rainbow" _label="Rainbow Nounours theme"
-			arg-set="-theme rainbow" />
-		<option id="college" _label="College Nounours theme"
-			arg-set="-theme college" />
-		<option id="robot" _label="Android robot theme"
-			arg-set="-theme robot" />
-		<option id="random" _label="Random theme"
-			arg-set="-theme random" />
+		<option id="default" _label="Default theme" arg-set="-theme default" />
+		<option id="rainbow" _label="Rainbow Nounours theme" arg-set="-theme rainbow" />
+		<option id="college" _label="College Nounours theme" arg-set="-theme college" />
+		<option id="robot" _label="Android robot theme" arg-set="-theme robot" />
+		<option id="random" _label="Random theme" arg-set="-theme random" />
 	</select>
 
 	<select id="idle.time">
@@ -23,6 +18,12 @@
 		<option id="30" _label="Fall asleepa fter 30 seconds" arg-set="-sleep-after 30" />
 		<option id="15" _label="Fall asleep after 15 seconds" arg-set="-sleep-after 15" />
 	</select>
+
+
+	<number id="rows" type="spinbutton" arg="-rows %" _label="Rows"
+		low="1" high="25" default="1" />
+	<number id="cols" type="spinbutton" arg="-cols %" _label="Columns"
+		low="1" high="10" default="1" />
 	<_description>
 
 		Written by Carmen Alvarez, 2012
