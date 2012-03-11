@@ -19,11 +19,18 @@
 void help(char *prog_name) {
 	printf("Usage:\n");
 	printf(
-			"%s [-theme <theme>] [-screensaver] [-window-id <window id>] [-stretch] [-sleep-after <time in seconds>]\n",
+			"%s [OPTIONS]\n",
 			prog_name);
+	printf("The following options are supported:\n");
+	printf("  -theme <theme>\n");
+	printf("  -screensaver\n");
+	printf("  -window-id <window id>\n");
+	printf("  -sleep-after <time in seconds>\n");
+	printf("  -stretch\n");
+	printf("  -scale <scale factor>\n");
 	printf("<theme> may be:\n");
 	printf("  /path/to/theme\n");
-	printf("  default|rainbow|robot|random\n");
+	printf("  default|rainbow|college|robot|random\n");
 	exit(1);
 }
 int main(int argc, char **argv) {
