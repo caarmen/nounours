@@ -5,10 +5,7 @@
 #include <stdio.h>
 #include <syslog.h>
 #include <stdlib.h>
-#include <string.h>
-#include <X11/Xatom.h>
 #include "nnuinounoursapp.h"
-#include "nncommon.h"
 
 static int nnuinounoursapp_error_handler(Display *display,
 		XErrorEvent *error_event) {

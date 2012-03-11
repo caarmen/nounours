@@ -6,6 +6,8 @@
 #ifndef NNIO_H_
 #define NNIO_H_
 
+#include <stdio.h>
+
 /**
  * Opens a file relative to the working directory, if it exists.  Otherwise, opens
  * a file relative to the data/themes directory of the installed location of

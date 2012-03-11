@@ -6,7 +6,6 @@
 #include <string.h>
 #include "nnpropertiesreader.h"
 #include "nntheme.h"
-#include "nnnounours.h"
 #include "nncommon.h"
 #include "nnio.h"
 

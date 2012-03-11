@@ -3,9 +3,9 @@
  *      Author: Carmen Alvarez
  */
 
-#include "nnfeature.h"
 #include <stdlib.h>
 #include <string.h>
+#include "nnfeature.h"
 
 NNFeature * nnfeature_new(char *id) {
 	NNFeature *feature = malloc(sizeof(NNFeature*));

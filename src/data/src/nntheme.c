@@ -6,6 +6,7 @@
 #include <string.h>
 #include <dirent.h>
 #include <syslog.h>
+#include <stdio.h>
 #include "nntheme.h"
 #include "nnanimation.h"
 #include "nnimage.h"

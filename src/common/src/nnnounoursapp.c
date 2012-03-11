@@ -4,9 +4,12 @@
  */
 
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 #include "nnnounoursapp.h"
 #include "nncommon.h"
 #include "nnnounours.h"
+#include "nntheme.h"
 
 static NNNounoursGrid* nnnounoursgrid_new(NNNounoursApp *app,int width, int height, const char *path,
 		nnbool is_screensaver_mode, int window_id) {

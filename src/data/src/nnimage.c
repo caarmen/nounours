@@ -6,8 +6,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
-#include "nnimage.h"
 #include "nncommon.h"
+#include "nnimage.h"
 #include "nnmath.h"
 
 NNImage * nnimage_new(NNNounoursApp *app, char *id, char *filename) {

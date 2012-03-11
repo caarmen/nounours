@@ -3,17 +3,9 @@
  *      Author: Carmen Alvarez
  */
 #include <stdlib.h>
-#include <X11/X.h>
-#include <X11/Xlib.h>
-#include <X11/Xatom.h>
-#include <string.h>
 #include <pthread.h>
 #include <syslog.h>
-#include <stdio.h>
-#include <sys/types.h>
 #include "nnuinounours.h"
-#include "nntheme.h"
-#include "nncommon.h"
 #include "nnuinounoursapp.h"
 
 NNUINounours *nnuinounours_new(NNUINounoursApp *uiapp, NNNounours *nounours,

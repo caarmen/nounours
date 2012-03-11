@@ -6,7 +6,6 @@
 #ifndef NNPROPERTIESREADER_H_
 #define NNPROPERTIESREADER_H_
 
-#include <stdio.h>
 #include "nntheme.h"
 #include "nnnounoursapp.h"
 

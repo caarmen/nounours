@@ -5,7 +5,6 @@
 
 #ifndef NNCSVREADER_H_
 #define NNCSVREADER_H_
-#include <stdio.h>
 #include "nntheme.h"
 #include "nnnounoursapp.h"
 

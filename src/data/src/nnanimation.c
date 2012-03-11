@@ -6,12 +6,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <stdio.h>
 #include <time.h>
-#include <errno.h>
 #include "nnanimation.h"
-#include "nncommon.h"
-#include "nntheme.h"
 
 NNAnimation * nnanimation_new(char *id, char *label,
 		int interval, int repeat) {
