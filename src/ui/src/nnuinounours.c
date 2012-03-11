@@ -36,7 +36,6 @@ void nnuinounours_translate(NNUINounours *uinounours, int window_x,
 	nnmath_translate(pane_x, pane_y, image_width,
 			image_height, theme->width, theme->height, image_x,
 			image_y);
-	printf("window %dx%d, image %dx%d, offset %dx%d\n", window_x, window_y, *image_x, *image_y, uinounours->window_x, uinounours->window_y);
 }
 void nnuinounours_free(NNUINounours *uinounours) {
 	free(uinounours);

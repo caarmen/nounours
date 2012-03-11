@@ -213,7 +213,6 @@ void nnuinounoursapp_stretch(NNUINounoursApp *uiapp) {
 			&window_attributes);
 	int display_width, display_height;
 	nnuinounoursapp_get_display_size(uiapp, &display_width, &display_height);
-	printf("display %dx%d\n", display_width, display_height);
 	nnuinounoursapp_resize(uiapp, display_width, display_height);
 }
 static void nnuinounoursapp_set_background_color(NNUINounoursApp *uiapp) {
@@ -235,14 +234,11 @@ static void nnuinounoursapp_set_background_color(NNUINounoursApp *uiapp) {
 }
 static void nnuinounoursapp_resize_images(NNUINounoursApp *uiapp,
 		int window_width, int window_height) {
-	printf("resize images window %dx%d\n", window_width, window_height);
 	NNTheme *theme = uiapp->app->config.theme;
 	NNNounoursGrid *grid = uiapp->app->grid;
 
 	int images_width = theme->width * grid->width;
 	int images_height = theme->height * grid->height;
-
-	printf("resize images images size %dx%d\n", images_width, images_height);
 
 	float width_ratio = (float) window_width / images_width;
 	float height_ratio = (float) window_height / images_height;
@@ -250,8 +246,6 @@ static void nnuinounoursapp_resize_images(NNUINounoursApp *uiapp,
 			width_ratio > height_ratio ? height_ratio : width_ratio;
 	int image_dest_height = ratio_to_use * theme->height;
 	int image_dest_width = ratio_to_use * theme->width;
-	printf("resize images dest size %dx%d\n", image_dest_width,
-			image_dest_height);
 
 	int offset_x = 0;
 	int offset_y = 0;
@@ -260,7 +254,6 @@ static void nnuinounoursapp_resize_images(NNUINounoursApp *uiapp,
 	} else {
 		offset_x = (int) ((window_width - ratio_to_use * images_width) / 2);
 	}
-	printf("ratio %f, offset %dx%d\n", ratio_to_use, offset_x, offset_y);
 
 	nnbool size_changed = image_dest_width != theme->width
 			|| image_dest_height != theme->height;
@@ -272,8 +265,7 @@ static void nnuinounoursapp_resize_images(NNUINounoursApp *uiapp,
 			uinounours->window_y = j * image_dest_height + offset_y;
 			uinounours->window_width = image_dest_width;
 			uinounours->window_height = image_dest_height;
-			printf("nounours @ %dx%d\n", uinounours->window_x,
-					uinounours->window_y);
+
 			if (size_changed) {
 				for (k = 0; k < theme->num_images; k++) {
 					nnuiimage_resize(uiapp, theme->images[k]->uiimage,
@@ -336,9 +328,7 @@ static NNNounours * nnuinounoursapp_find_nounours(NNUINounoursApp *uiapp,
 		return 0;
 	int index_x = (window_x - offset_x) / image_width;
 	int index_y = (window_y - offset_y) / image_height;
-	printf("offsetx %d, windowx %d,index %dx%d\n", offset_x, window_x,index_x, index_y);
 	if(index_x < 0 || index_y < 0 || index_x >= grid->width || index_y >= grid->height) {
-		printf("no nounours\n");
 		return 0;
 	}
 	NNNounours *nounours = uiapp->app->grid->nounoursen[index_x][index_y];
