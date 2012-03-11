@@ -31,8 +31,8 @@ void nnuinounours_translate(NNUINounours *uinounours, int window_x,
 	nnmath_translate(window_x, window_y, uinounours->window_width,
 			uinounours->window_height, theme->width, theme->height, image_x,
 			image_y);
-	*image_x = *image_x + uinounours->window_x;
-	*image_y = *image_y + uinounours->window_y;
+	*image_x = *image_x - uinounours->window_x;
+	*image_y = *image_y - uinounours->window_y;
 }
 void nnuinounours_free(NNUINounours *uinounours) {
 	free(uinounours);

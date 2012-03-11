@@ -2,6 +2,7 @@
  *  Created on: Mar 11, 2012
  *      Author: Carmen Alvarez
  */
+#include <stdio.h>
 #include <syslog.h>
 #include <stdlib.h>
 #include <string.h>
@@ -9,7 +10,6 @@
 #include <X11/Xutil.h>
 #include "nnuinounoursapp.h"
 #include "nncommon.h"
-
 
 static int nnuinounoursapp_error_handler(Display *display,
 		XErrorEvent *error_event) {
@@ -44,17 +44,16 @@ NNUINounoursApp *nnuinounoursapp_new(struct NNNounoursApp *app, int window_id) {
 	return uiapp;
 }
 
-void nnuinounoursapp_init_client_message_event(
-		XClientMessageEvent *event, NNUINounoursApp *uiapp, Atom atom,
-		int format) {
+void nnuinounoursapp_init_client_message_event(XClientMessageEvent *event,
+		NNUINounoursApp *uiapp, Atom atom, int format) {
 	memset(event, 0, sizeof(XClientMessageEvent));
 	event->type = ClientMessage;
 	event->window = uiapp->window;
 	event->format = format; // doesn't really matter since we use memcpy to pass the pointer
 	event->message_type = atom;
 }
-void nnuinounoursapp_send_client_message_event(
-		XClientMessageEvent *event, NNUINounoursApp *uiapp) {
+void nnuinounoursapp_send_client_message_event(XClientMessageEvent *event,
+		NNUINounoursApp *uiapp) {
 	long event_mask = NoEventMask;
 	if (uiapp->app->config.is_in_screensaver_mode)
 		event_mask = ExposureMask; // TODO other applications may receive this event!
@@ -213,6 +212,66 @@ void nnuinounoursapp_stretch(NNUINounoursApp *uiapp) {
 	nnuinounoursapp_get_display_size(uiapp, &display_width, &display_height);
 	nnuinounoursapp_resize(uiapp, display_width, display_height);
 }
+static void nnuinounoursapp_set_background_color(NNUINounoursApp *uiapp) {
+	char *background_color = uiapp->app->config.theme->background_color;
+	if (background_color != 0) {
+		unsigned long color_pixel = 0;
+		if (!strcmp(background_color, "white")) {
+			color_pixel =
+					WhitePixel(uiapp->background_display, uiapp->screen_number);
+		} else if (!strcmp(background_color, "black")) {
+			color_pixel =
+					BlackPixel(uiapp->background_display, uiapp->screen_number);
+		}
+		if (color_pixel != 0)
+			XSetWindowBackground(uiapp->background_display, uiapp->window,
+					color_pixel);
+
+	}
+}
+static void nnuinounoursapp_resize_images(NNUINounoursApp *uiapp, int width,
+		int height) {
+	NNTheme *theme = uiapp->app->config.theme;
+
+	float width_ratio = (float) width / theme->width;
+	float height_ratio = (float) height / theme->height;
+	float ratio_to_use =
+			width_ratio > height_ratio ? height_ratio : width_ratio;
+	int image_dest_height = ratio_to_use * theme->height;
+	int image_dest_width = ratio_to_use * theme->width;
+
+	nnbool size_changed = width != theme->width || height != theme->height;
+	int i, j, k;
+	NNNounoursGrid *grid = uiapp->app->grid;
+	for (i = 0; i < grid->width; i++) {
+		for (j = 0; j < grid->height; j++) {
+			NNUINounours *uinounours = grid->nounoursen[i][j]->uinounours;
+			uinounours->window_x = i * width;
+			uinounours->window_y = j * height;
+			uinounours->window_width = width;
+			uinounours->window_height = height;
+			if (size_changed) {
+				for (k = 0; k < theme->num_images; k++) {
+					nnuiimage_resize(uiapp, theme->images[k]->uiimage,
+							image_dest_width, image_dest_height);
+				}
+			}
+		}
+	}
+}
+static void nnuinounoursapp_fix_window(NNUINounoursApp *uiapp, int width,
+		int height) {
+	XSizeHints* size_hints = XAllocSizeHints();
+	size_hints->flags = PMinSize | PMaxSize;
+	size_hints->min_width = width;
+	size_hints->min_height = height;
+	size_hints->max_width = width;
+	size_hints->max_height = height;
+	uiapp->window_width = width;
+	uiapp->window_height = height;
+	XSetWMNormalHints(uiapp->background_display, uiapp->window, size_hints);
+	XFree(size_hints);
+}
 
 void nnuinounoursapp_resize(NNUINounoursApp *uiapp, int width, int height) {
 	int display_width, display_height;
@@ -230,53 +289,11 @@ void nnuinounoursapp_resize(NNUINounoursApp *uiapp, int width, int height) {
 	XMoveResizeWindow(uiapp->background_display, uiapp->window,
 			offset_x + ((display_width - width) / 2),
 			offset_y + ((display_height - height) / 2), width, height);
-	char *background_color = uiapp->app->config.theme->background_color;
-	if (background_color != 0) {
-		unsigned long color_pixel = 0;
-		if (!strcmp(background_color, "white")) {
-			color_pixel =
-					WhitePixel(uiapp->background_display, uiapp->screen_number);
-		} else if (!strcmp(background_color, "black")) {
-			color_pixel =
-					BlackPixel(uiapp->background_display, uiapp->screen_number);
-		}
-		if (color_pixel != 0)
-			XSetWindowBackground(uiapp->background_display, uiapp->window,
-					color_pixel);
-
-	}
-	XSizeHints* size_hints = XAllocSizeHints();
-	size_hints->flags = PMinSize | PMaxSize;
-	size_hints->min_width = width;
-	size_hints->min_height = height;
-	size_hints->max_width = width;
-	size_hints->max_height = height;
-	uiapp->window_width = width;
-	uiapp->window_height = height;
-	XSetWMNormalHints(uiapp->background_display, uiapp->window, size_hints);
-	XFree(size_hints);
-	NNTheme *theme = uiapp->app->config.theme;
-	if (width != theme->width || height != theme->height) {
-		float width_ratio = (float) width / theme->width;
-		float height_ratio = (float) height / theme->height;
-		float ratio_to_use =
-				width_ratio > height_ratio ? height_ratio : width_ratio;
-		int image_dest_height = ratio_to_use * theme->height;
-		int image_dest_width = ratio_to_use * theme->width;
-
-		int i, j, k;
-		NNNounoursGrid *grid = uiapp->app->grid;
-		for (i = 0; i < grid->width; i++) {
-			for (j = 0; j < grid->height; j++) {
-				NNUINounours *uinounours = grid->nounoursen[i][j]->uinounours;
-				for (k = 0; k < theme->num_images; k++) {
-					nnuiimage_resize(uiapp, theme->images[k]->uiimage,
-							image_dest_width, image_dest_height);
-				}
-			}
-		}
-	}
+	nnuinounoursapp_set_background_color(uiapp);
+	nnuinounoursapp_fix_window(uiapp, width, height);
+	nnuinounoursapp_resize_images(uiapp, width, height);
 }
+
 static NNNounours * nnuinounoursapp_find_nounours(NNUINounoursApp *uiapp,
 		int window_x, int window_y) {
 	return uiapp->app->grid->nounoursen[0][0];
@@ -293,6 +310,22 @@ static nnbool nnuinounoursapp_is_my_nounours(NNUINounoursApp *uiapp,
 		}
 	}
 	return NNFALSE;
+}
+
+static void nnuinounoursapp_pointer_event(NNUINounoursApp *uiapp, int type,
+		int window_x, int window_y) {
+	NNNounours *nounours = nnuinounoursapp_find_nounours(uiapp, window_x,
+			window_y);
+	int local_x, local_y;
+	nnuinounours_translate(nounours->uinounours, window_x, window_y, &local_x,
+			&local_y);
+	if (type == ButtonPress) {
+		nnnounours_on_press(nounours, local_x, local_y);
+	} else if (type == MotionNotify) {
+		nnnounours_on_move(nounours, local_x, local_y);
+	} else if (type == ButtonRelease) {
+		nnnounours_on_release(nounours, local_x, local_y);
+	}
 }
 static void *nnuinounoursapp_loop(void *data) {
 	NNUINounoursApp *uiapp = (NNUINounoursApp*) data;
@@ -351,36 +384,21 @@ static void *nnuinounoursapp_loop(void *data) {
 			syslog(LOG_DEBUG, "expose");
 			NNNounoursGrid *grid = uiapp->app->grid;
 			int i, j;
-			for(i=0; i < grid->width; i++) {
-				for(j=0; j < grid->height; j++) {
-					NNUINounours *uinounours = grid->nounoursen[i][j]->uinounours;
+			for (i = 0; i < grid->width; i++) {
+				for (j = 0; j < grid->height; j++) {
+					NNUINounours *uinounours =
+							grid->nounoursen[i][j]->uinounours;
 					if (uinounours->nounours->state.cur_image != 0)
 						nnuiimage_show(uinounours,
 								uinounours->nounours->state.cur_image->uiimage);
 				}
 			}
-		} else if (xevent.type == ButtonPress) {
-			XButtonPressedEvent bp_event = xevent.xbutton;
-			int x, y;
-			NNNounours *nounours = nnuinounoursapp_find_nounours(uiapp,
-					bp_event.x, bp_event.y);
-			nnuinounours_translate(nounours->uinounours, bp_event.x, bp_event.y, &x, &y);
-			nnnounours_on_press(nounours, x, y);
+		} else if (xevent.type == ButtonPress || xevent.type == ButtonRelease) {
+			nnuinounoursapp_pointer_event(uiapp, xevent.type, xevent.xbutton.x,
+					xevent.xbutton.y);
 		} else if (xevent.type == MotionNotify) {
-			XMotionEvent motion_event = xevent.xmotion;
-			int x, y;
-			NNNounours *nounours = nnuinounoursapp_find_nounours(uiapp,
-					motion_event.x, motion_event.y);
-			nnuinounours_translate(nounours->uinounours, motion_event.x, motion_event.y,
-					&x, &y);
-			nnnounours_on_move(nounours, x, y);
-		} else if (xevent.type == ButtonRelease) {
-			XButtonReleasedEvent bp_event = xevent.xbutton;
-			int x, y;
-			NNNounours *nounours = nnuinounoursapp_find_nounours(uiapp,
-					bp_event.x, bp_event.y);
-			nnuinounours_translate(nounours->uinounours, bp_event.x, bp_event.y, &x, &y);
-			nnnounours_on_release(nounours, x, y);
+			nnuinounoursapp_pointer_event(uiapp, xevent.type, xevent.xmotion.x,
+					xevent.xmotion.y);
 		} else if (xevent.type == ConfigureNotify) {
 			XConfigureEvent conf_event = xevent.xconfigure;
 			struct timeval now_tv;

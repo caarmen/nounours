@@ -180,10 +180,10 @@ void nnuiimage_resize(struct NNUINounoursApp *uiapp, NNUIImage *uiimage,
 
 void nnuiimage_show(NNUINounours *uinounours, NNUIImage *uiimage) {
 
-	int dest_origin_x = (uinounours->window_width - uiimage->ximage->width)/2;
-	int dest_origin_y = (uinounours->window_height - uiimage->ximage->height)/2;
+	int dest_x = uinounours->window_x;
+	int dest_y = uinounours->window_y;
 	XPutImage(uinounours->uiapp->ui_display, uinounours->uiapp->window, uinounours->uiapp->gc,
-			uiimage->ximage, 0, 0, dest_origin_x, dest_origin_y, uiimage->ximage->width,
+			uiimage->ximage, 0, 0, dest_x, dest_y, uiimage->ximage->width,
 			uiimage->ximage->height);
 	XFlush(uinounours->uiapp->ui_display);
 }
