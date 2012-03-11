@@ -10,6 +10,7 @@
 #include "nnnounoursapp.h"
 
 void nnread_theme_properties_file(NNTheme *theme);
-void nnread_nounours_properties_file(NNNounoursConfig *nounours_config, const char *path);
+void nnread_nounours_properties_file(NNNounoursConfig *nounours_config,
+		const char *path);
 
 #endif /* NNPROPERTIESREADER_H_ */

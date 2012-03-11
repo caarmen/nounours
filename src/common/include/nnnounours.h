@@ -44,8 +44,8 @@ typedef struct NNNounours {
 /**
  * Create a new NNNounours, read in the properties file, and start the UI thread.
  */
-NNNounours * nnnounours_new(char *id, struct NNNounoursApp *app, const char *path, nnbool screensaver_mode,
-		int window_id);
+NNNounours * nnnounours_new(char *id, struct NNNounoursApp *app,
+		const char *path, nnbool screensaver_mode, int window_id);
 
 /**
  * Sets the current theme, resizes the window, and shows the default image of this theme.
@@ -55,7 +55,8 @@ void nnnounours_use_theme(NNNounours *nounours, struct NNTheme *theme);
 /**
  * Same as nnnounours_use_theme, except that the window will be scaled by the scale parameter.
  */
-void nnnounours_use_theme_scaled(NNNounours *nounours, struct NNTheme *theme, float scale);
+void nnnounours_use_theme_scaled(NNNounours *nounours, struct NNTheme *theme,
+		float scale);
 void nnnounours_show_image(NNNounours *nounours, struct NNImage *image);
 void nnnounours_start_animation(NNNounours *nounours,
 		struct NNAnimation *animation);

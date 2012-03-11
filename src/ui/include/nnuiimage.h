@@ -17,7 +17,8 @@ typedef struct NNUIImage {
 } NNUIImage;
 
 NNUIImage *nnuiimage_new(struct NNUINounoursApp *uiapp, const char *filename);
-void nnuiimage_resize(struct NNUINounoursApp *uiapp, NNUIImage *uiimage, int dest_width, int dest_height);
+void nnuiimage_resize(struct NNUINounoursApp *uiapp, NNUIImage *uiimage,
+		int dest_width, int dest_height);
 void nnuiimage_show(struct NNUINounours *uinounours, NNUIImage *uiimage);
 void nnuiimage_free(NNUIImage *uiimage);
 

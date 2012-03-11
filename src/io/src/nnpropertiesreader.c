@@ -56,7 +56,8 @@ void nnread_theme_properties_file(NNTheme *theme) {
 	fclose(file);
 }
 
-void nnread_nounours_properties_file(NNNounoursConfig *nounours_config, const char *path) {
+void nnread_nounours_properties_file(NNNounoursConfig *nounours_config,
+		const char *path) {
 	FILE *file = nnio_open_file(path, "nounours.properties", "r");
 	char *key, *val;
 	while (nnproperties_read_line(file, &key, &val)) {

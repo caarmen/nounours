@@ -39,7 +39,6 @@ typedef struct NNUINounoursApp {
 
 NNUINounoursApp *nnuinounoursapp_new(struct NNNounoursApp *app, int window_id);
 
-
 void nnuinounoursapp_start_loop(NNUINounoursApp *uiapp);
 void nnuinounoursapp_stop_loop(NNUINounoursApp *uiapp);
 #endif /* NNUINOUNOURSAPP_H_ */

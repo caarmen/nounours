@@ -42,5 +42,4 @@ void nnwindow_resize(NNUINounoursApp *uiapp, int width, int height);
 void nnwindow_get_dimensions(NNUINounoursApp *uiapp, int *offset_x,
 		int *offset_y, int *image_width, int *image_height);
 
-
 #endif /* NNWINDOW_H_ */

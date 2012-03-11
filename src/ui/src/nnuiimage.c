@@ -166,7 +166,8 @@ static XImage * nnuiimage_jpeg_to_Ximage(Display *display, int window,
 }
 void nnuiimage_resize(struct NNUINounoursApp *uiapp, NNUIImage *uiimage,
 		int dest_width, int dest_height) {
-	if(uiimage->ximage->width == dest_width && uiimage->ximage->height == dest_height)
+	if (uiimage->ximage->width == dest_width
+			&& uiimage->ximage->height == dest_height)
 		return;
 
 	XWindowAttributes window_attributes;
@@ -182,9 +183,9 @@ void nnuiimage_show(NNUINounours *uinounours, NNUIImage *uiimage) {
 
 	int dest_x = uinounours->window_x;
 	int dest_y = uinounours->window_y;
-	XPutImage(uinounours->uiapp->ui_display, uinounours->uiapp->window, uinounours->uiapp->gc,
-			uiimage->ximage, 0, 0, dest_x, dest_y, uiimage->ximage->width,
-			uiimage->ximage->height);
+	XPutImage(uinounours->uiapp->ui_display, uinounours->uiapp->window,
+			uinounours->uiapp->gc, uiimage->ximage, 0, 0, dest_x, dest_y,
+			uiimage->ximage->width, uiimage->ximage->height);
 	XFlush(uinounours->uiapp->ui_display);
 }
 

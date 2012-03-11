@@ -11,7 +11,8 @@ static int nnuinounoursapp_error_handler(Display *display,
 		XErrorEvent *error_event) {
 	char error_message[128];
 	XGetErrorText(display, error_event->error_code, error_message, 128);
-	syslog(LOG_ERR,
+	syslog(
+			LOG_ERR,
 			"Error on display %p: type=%d, resourceid=%lx, serial=%lu, error_code=%d (%s), request_code=%d, minor_code=%d\n",
 			display, error_event->type, error_event->resourceid,
 			error_event->serial, error_event->error_code, error_message,
@@ -48,12 +49,14 @@ static NNNounours * nnuinounoursapp_find_nounours(NNUINounoursApp *uiapp,
 		int window_x, int window_y) {
 	NNNounoursGrid *grid = uiapp->app->grid;
 	int offset_x, offset_y, image_width, image_height;
-	nnwindow_get_dimensions(uiapp, &offset_x, &offset_y, &image_width, &image_height);
-	if(window_x < offset_x || window_y < offset_y)
+	nnwindow_get_dimensions(uiapp, &offset_x, &offset_y, &image_width,
+			&image_height);
+	if (window_x < offset_x || window_y < offset_y)
 		return 0;
 	int index_x = (window_x - offset_x) / image_width;
 	int index_y = (window_y - offset_y) / image_height;
-	if(index_x < 0 || index_y < 0 || index_x >= grid->width || index_y >= grid->height) {
+	if (index_x < 0 || index_y < 0 || index_x >= grid->width
+			|| index_y >= grid->height) {
 		return 0;
 	}
 	NNNounours *nounours = uiapp->app->grid->nounoursen[index_x][index_y];
@@ -77,7 +80,7 @@ static void nnuinounoursapp_pointer_event(NNUINounoursApp *uiapp, int type,
 		int window_x, int window_y) {
 	NNNounours *nounours = nnuinounoursapp_find_nounours(uiapp, window_x,
 			window_y);
-	if(nounours == 0)
+	if (nounours == 0)
 		return;
 	int local_x, local_y;
 	nnuinounours_translate(nounours->uinounours, window_x, window_y, &local_x,
@@ -118,8 +121,8 @@ static void *nnuinounoursapp_loop(void *data) {
 			XClientMessageEvent client_message_event = xevent.xclient;
 			NNUIImage *uiimage;
 			NNNounours *event_nounours;
-			nnclientmessage_read(&client_message_event,
-					&event_nounours, &uiimage);
+			nnclientmessage_read(&client_message_event, &event_nounours,
+					&uiimage);
 			nnbool is_my_nounours = nnuinounoursapp_is_my_nounours(uiapp,
 					event_nounours);
 			if (client_message_event.message_type == uiapp->atom_set_image) {

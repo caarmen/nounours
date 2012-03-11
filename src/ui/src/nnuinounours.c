@@ -22,12 +22,12 @@ void nnuinounours_translate(NNUINounours *uinounours, int window_x,
 		int window_y, int *image_x, int *image_y) {
 	NNTheme *theme = uinounours->nounours->app->config.theme;
 	int offset_x, offset_y, image_width, image_height;
-	nnwindow_get_dimensions(uinounours->uiapp, &offset_x, &offset_y, &image_width, &image_height);
+	nnwindow_get_dimensions(uinounours->uiapp, &offset_x, &offset_y,
+			&image_width, &image_height);
 	int tile_x = (window_x - offset_x) % image_width;
 	int tile_y = (window_y - offset_y) % image_height;
-	nnmath_translate(tile_x, tile_y, image_width,
-			image_height, theme->width, theme->height, image_x,
-			image_y);
+	nnmath_translate(tile_x, tile_y, image_width, image_height, theme->width,
+			theme->height, image_x, image_y);
 }
 void nnuinounours_free(NNUINounours *uinounours) {
 	free(uinounours);
@@ -39,12 +39,11 @@ void nnuinounours_show_image(NNUINounours *uinounours, NNUIImage *uiimage) {
 		nnuiimage_show(uinounours, uiimage);
 	} else {
 		XClientMessageEvent notify_message_event;
-		nnclientmessage_init(&notify_message_event,
-				uinounours->uiapp, uinounours->uiapp->atom_set_image, 8);
-		nnclientmessage_write(&notify_message_event,
-				uinounours->nounours, uiimage);
-		nnclientmessage_send(&notify_message_event,
-				uinounours->uiapp);
+		nnclientmessage_init(&notify_message_event, uinounours->uiapp,
+				uinounours->uiapp->atom_set_image, 8);
+		nnclientmessage_write(&notify_message_event, uinounours->nounours,
+				uiimage);
+		nnclientmessage_send(&notify_message_event, uinounours->uiapp);
 	}
 }
 

@@ -85,8 +85,7 @@ void nnread_image_file(NNNounoursApp *app, NNTheme *theme) {
 		char *id = nncsv_get_value(header, line, "Id");
 		char *image_filename = nncsv_get_value(header, line, "Filename");
 		char location[128];
-		sprintf(location,
-				"%s/images/%s", theme->path, image_filename);
+		sprintf(location, "%s/images/%s", theme->path, image_filename);
 
 		NNImage *image = nnimage_new(app, id, strdup(location));
 		char *release_image_id = nncsv_get_value(header, line, "OnRelease");
@@ -141,7 +140,8 @@ void nnread_feature_file(NNTheme *theme) {
 
 void nnread_image_feature_file(NNTheme *theme) {
 	NNCSVLine *header, *line;
-	FILE *file = nncsv_pre_read_file(theme, "imagefeatureassoc.csv", &header, &line);
+	FILE *file = nncsv_pre_read_file(theme, "imagefeatureassoc.csv", &header,
+			&line);
 	while (nncsv_read_line(file, line)) {
 		char *image_id = nncsv_get_value(header, line, "ImageId");
 		char *feature_id = nncsv_get_value(header, line, "FeatureId");
@@ -156,7 +156,8 @@ void nnread_image_feature_file(NNTheme *theme) {
 
 void nnread_adjacent_image_file(NNTheme *theme) {
 	NNCSVLine *header, *line;
-	FILE *file = nncsv_pre_read_file(theme, "adjacentimage.csv", &header, &line);
+	FILE *file = nncsv_pre_read_file(theme, "adjacentimage.csv", &header,
+			&line);
 	while (nncsv_read_line(file, line)) {
 		char *image_id = nncsv_get_value(header, line, "ImageId");
 		char *feature_id = nncsv_get_value(header, line, "FeatureId");
@@ -173,7 +174,8 @@ void nnread_adjacent_image_file(NNTheme *theme) {
 
 void nnread_fling_animation_file(NNTheme *theme) {
 	NNCSVLine *header, *line;
-	FILE *file = nncsv_pre_read_file(theme, "flinganimation.csv", &header, &line);
+	FILE *file = nncsv_pre_read_file(theme, "flinganimation.csv", &header,
+			&line);
 	while (nncsv_read_line(file, line)) {
 		char *id = nncsv_get_value(header, line, "Id");
 		char *x = nncsv_get_value(header, line, "X");

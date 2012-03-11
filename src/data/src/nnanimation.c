@@ -9,8 +9,7 @@
 #include <time.h>
 #include "nnanimation.h"
 
-NNAnimation * nnanimation_new(char *id, char *label,
-		int interval, int repeat) {
+NNAnimation * nnanimation_new(char *id, char *label, int interval, int repeat) {
 	NNAnimation *animation = malloc(sizeof(NNAnimation));
 	animation->images = malloc(
 			sizeof(NNAnimationImage*) * NN_INITIAL_LIST_CAPACITY);
@@ -40,8 +39,7 @@ NNAnimation * nnanimation_create_random(NNNounours *nounours) {
 	char *id = strdup("random");
 	char *label = strdup("label");
 
-	NNAnimation * animation = nnanimation_new(id, label, interval,
-			repeat);
+	NNAnimation * animation = nnanimation_new(id, label, interval, repeat);
 	animation->is_preset = NNFALSE;
 	NNImage *image = nounours->state.cur_image;
 	int i;
@@ -96,8 +94,7 @@ void nnanimation_start(NNNounours *nounours, NNAnimation *animation) {
 	// exiting immediately.
 	pthread_mutex_unlock(&nounours->animation_mutex);
 
-	nnnounours_show_image(nounours,
-			nounours->app->config.theme->default_image);
+	nnnounours_show_image(nounours, nounours->app->config.theme->default_image);
 	if (!animation->is_preset)
 		nnanimation_free(animation);
 }
