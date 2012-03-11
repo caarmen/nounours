@@ -94,6 +94,10 @@ void nnanimation_start(NNNounours *nounours, NNAnimation *animation) {
 					&nounours->animation_mutex, &ts);
 		}
 	}
+	// Saw a problem on cygwin (not ubuntu or mac)
+	// if we don't unlock the mutex here.  In subsequent
+	// animations, pthread_cond_timedwait was always
+	// exiting immediately.
 	pthread_mutex_unlock(&nounours->animation_mutex);
 
 	nnnounours_show_image(nounours,

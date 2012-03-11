@@ -50,9 +50,9 @@ void nnnounoursapp_use_theme_scaled(NNNounoursApp *app, NNTheme *theme, float sc
 	app->config.theme = theme;
 
 	if (app->config.do_stretch)
-		nnuinounoursapp_stretch(app->ui);
+		nnwindow_stretch(app->ui);
 	else
-		nnuinounoursapp_resize(app->ui, scale*theme->width*app->grid->width, scale*theme->height*app->grid->height);
+		nnwindow_resize(app->ui, (int) (scale*theme->width*app->grid->width), (int) (scale*theme->height*app->grid->height));
 	int i, j;
 	for(i=0; i < app->grid->width; i++) {
 		for(j=0; j < app->grid->height; j++) {

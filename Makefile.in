@@ -63,6 +63,8 @@ am_nounours_OBJECTS = src/main.$(OBJEXT) \
 	src/io/src/nncsvreader.$(OBJEXT) \
 	src/io/src/nnpropertiesreader.$(OBJEXT) \
 	src/ui/src/nnuinounoursapp.$(OBJEXT) \
+	src/ui/src/nnclientmessage.$(OBJEXT) \
+	src/ui/src/nnwindow.$(OBJEXT) \
 	src/ui/src/nnuinounours.$(OBJEXT) \
 	src/ui/src/nnuiimage.$(OBJEXT)
 nounours_OBJECTS = $(am_nounours_OBJECTS)
@@ -210,7 +212,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_CFLAGS = $(JPEG_CFLAGS) -Isrc/data/include -Isrc/io/include -Isrc/common/include -Isrc/ui/include -D__DATAROOT_DIR__=\"$(datarootdir)\"
 nounours_LDADD = $(X11_LIBS) $(JPEG_LIBS) -lpthread -lm
-nounours_SOURCES = src/main.c src/common/src/nnnounours.c src/common/src/nnnounoursapp.c src/common/src/nncommon.c src/common/src/nnmath.c src/data/src/nnimage.c src/data/src/nnfeature.c src/data/src/nnanimation.c src/data/src/nntheme.c src/io/src/nnio.c src/io/src/nncsvreader.c src/io/src/nnpropertiesreader.c src/ui/src/nnuinounoursapp.c src/ui/src/nnuinounours.c src/ui/src/nnuiimage.c
+nounours_SOURCES = src/main.c src/common/src/nnnounours.c src/common/src/nnnounoursapp.c src/common/src/nncommon.c src/common/src/nnmath.c src/data/src/nnimage.c src/data/src/nnfeature.c src/data/src/nnanimation.c src/data/src/nntheme.c src/io/src/nnio.c src/io/src/nncsvreader.c src/io/src/nnpropertiesreader.c src/ui/src/nnuinounoursapp.c src/ui/src/nnclientmessage.c src/ui/src/nnwindow.c src/ui/src/nnuinounours.c src/ui/src/nnuiimage.c
 nounoursdir = $(datarootdir)/nounours
 nobase_nounours_DATA = data/nounours.xml data/themes/default/*.* data/themes/default/images/*.* data/themes/rainbow/*.* data/themes/rainbow/images/*.* data/themes/robot/*.* data/themes/robot/images/*.* data/themes/college/*.* data/themes/college/images/*.*
 all: all-am
@@ -361,6 +363,10 @@ src/ui/src/$(DEPDIR)/$(am__dirstamp):
 	@: > src/ui/src/$(DEPDIR)/$(am__dirstamp)
 src/ui/src/nnuinounoursapp.$(OBJEXT): src/ui/src/$(am__dirstamp) \
 	src/ui/src/$(DEPDIR)/$(am__dirstamp)
+src/ui/src/nnclientmessage.$(OBJEXT): src/ui/src/$(am__dirstamp) \
+	src/ui/src/$(DEPDIR)/$(am__dirstamp)
+src/ui/src/nnwindow.$(OBJEXT): src/ui/src/$(am__dirstamp) \
+	src/ui/src/$(DEPDIR)/$(am__dirstamp)
 src/ui/src/nnuinounours.$(OBJEXT): src/ui/src/$(am__dirstamp) \
 	src/ui/src/$(DEPDIR)/$(am__dirstamp)
 src/ui/src/nnuiimage.$(OBJEXT): src/ui/src/$(am__dirstamp) \
@@ -383,9 +389,11 @@ mostlyclean-compile:
 	-rm -f src/io/src/nnio.$(OBJEXT)
 	-rm -f src/io/src/nnpropertiesreader.$(OBJEXT)
 	-rm -f src/main.$(OBJEXT)
+	-rm -f src/ui/src/nnclientmessage.$(OBJEXT)
 	-rm -f src/ui/src/nnuiimage.$(OBJEXT)
 	-rm -f src/ui/src/nnuinounours.$(OBJEXT)
 	-rm -f src/ui/src/nnuinounoursapp.$(OBJEXT)
+	-rm -f src/ui/src/nnwindow.$(OBJEXT)
 
 distclean-compile:
 	-rm -f *.tab.c
@@ -402,9 +410,11 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@src/io/src/$(DEPDIR)/nncsvreader.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/io/src/$(DEPDIR)/nnio.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/io/src/$(DEPDIR)/nnpropertiesreader.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/ui/src/$(DEPDIR)/nnclientmessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/ui/src/$(DEPDIR)/nnuiimage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/ui/src/$(DEPDIR)/nnuinounours.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/ui/src/$(DEPDIR)/nnuinounoursapp.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/ui/src/$(DEPDIR)/nnwindow.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
