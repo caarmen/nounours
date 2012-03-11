@@ -183,8 +183,6 @@ void nnread_fling_animation_file(NNTheme *theme) {
 		char *min_vel_x = nncsv_get_value(header, line, "MinVelX");
 		char *min_vel_y = nncsv_get_value(header, line, "MinVelY");
 		char *animation_id = nncsv_get_value(header, line, "AnimationId");
-		printf("fling %s min_vel_x %s (%f) min_vel_y %s (%f)\n", id, min_vel_x, strtof(min_vel_x, NULL),
-				min_vel_y, strtof(min_vel_y, NULL));
 		NNAnimation *animation = nntheme_find_animation(theme, animation_id);
 		NNAnimationFling *fling = nnanimation_fling_new(atoi(x), atoi(y),
 				atoi(width), atoi(height), strtof(min_vel_x, NULL),
