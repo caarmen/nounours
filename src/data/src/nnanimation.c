@@ -1,8 +1,6 @@
 /*
- * nnanimation.c
- *
  *  Created on: Feb 19, 2012
- *      Author: calvarez
+ *      Author: Carmen Alvarez
  */
 
 #include <stdlib.h>
@@ -23,31 +21,34 @@ NNAnimation * nnanimation_new(NNNounours *nounours, char *id, char *label,
 			sizeof(NNAnimationImage*) * NN_INITIAL_LIST_CAPACITY);
 	animation->id = strdup(id);
 	animation->label = strdup(label);
-	animation->interval = interval;
+	animation->interval_ms = interval;
 	animation->repeat = repeat;
 	animation->num_images = 0;
-	animation->is_random = 0;
+	animation->is_preset = NNFALSE;
 
 	return animation;
 }
 NNAnimation * nnanimation_create_random(NNNounours *nounours) {
 	// every now and then, do one of our preset animations.
 	int r = random() % 5;
-	if (r == 4) {
+	if (r == 0) {
 		int preset_animation_number = random()
-				% nounours->cur_theme->num_animations;
-		return nounours->cur_theme->animations[preset_animation_number];
+				% nounours->state.cur_theme->num_animations;
+		return nounours->state.cur_theme->animations[preset_animation_number];
 	}
+	// Random base duration for each frame, from 100 to 500ms
 	int interval = 100 + (random() % 400);
 	int repeat = 1;
+
+	// Random number of frames, from 2 to 10
 	int num_frames = 2 + (random() % 8);
 	char *id = strdup("random");
 	char *label = strdup("label");
 
 	NNAnimation * animation = nnanimation_new(nounours, id, label, interval,
 			repeat);
-	animation->is_random = 1;
-	NNImage *image = nounours->cur_image;
+	animation->is_preset = NNFALSE;
+	NNImage *image = nounours->state.cur_image;
 	int i;
 	for (i = 0; i < num_frames; i++) {
 		float duration = 0.5f + ((float) random() / RAND_MAX) * 2;
@@ -62,14 +63,22 @@ NNAnimation * nnanimation_create_random(NNNounours *nounours) {
 void nnanimation_start(NNAnimation *animation) {
 	NNNounours *nounours = animation->nounours;
 	int i;
-	for (i = 0; i < animation->repeat && nounours->is_doing_animation; i++) {
+	for (i = 0; i < animation->repeat && nounours->state.is_doing_animation;
+			i++) {
 		int j;
-		for (j = 0; j < animation->num_images && nounours->is_doing_animation;
+		for (j = 0;
+				j < animation->num_images && nounours->state.is_doing_animation;
 				j++) {
+			// Show this frame
 			nnnounours_show_image(nounours, animation->images[j]->image);
-			long sleep_duration_ns = (animation->images[j]->duration
-					* animation->interval) * 1000000;
 
+			// Now wait for the duration of this frame, before
+			// showing the next frame.
+			long sleep_duration_ns = (animation->images[j]->duration
+					* animation->interval_ms) * 1000000;
+
+			// Create a timespec for X milliseconds in the future
+			// (where X is the duration of this frame).
 			struct timeval tv;
 			struct timespec ts;
 			gettimeofday(&tv, NULL);
@@ -81,14 +90,17 @@ void nnanimation_start(NNAnimation *animation) {
 					- secs_to_add * 1000000000;
 			ts.tv_sec += secs_to_add;
 			ts.tv_nsec = nsecs_to_add;
+
+			// Wait for the duration of this frame, or until
+			// the animation was interrupted.
 			pthread_cond_timedwait(&nounours->animation_cond,
 					&nounours->animation_mutex, &ts);
 		}
 	}
 
 	nnnounours_show_image(animation->nounours,
-			animation->nounours->cur_theme->default_image);
-	if (animation->is_random)
+			animation->nounours->state.cur_theme->default_image);
+	if (!animation->is_preset)
 		nnanimation_free(animation);
 }
 

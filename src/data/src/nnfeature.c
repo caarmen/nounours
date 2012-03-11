@@ -1,8 +1,6 @@
 /*
- * NImage.c
- *
  *  Created on: Feb 19, 2012
- *      Author: calvarez
+ *      Author: Carmen Alvarez
  */
 
 #include "nnfeature.h"

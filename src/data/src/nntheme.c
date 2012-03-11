@@ -1,8 +1,6 @@
 /*
- * nntheme.c
- *
  *  Created on: Feb 19, 2012
- *      Author: calvarez
+ *      Author: Carmen Alvarez
  */
 #include <stdlib.h>
 #include <string.h>

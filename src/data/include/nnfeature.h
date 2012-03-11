@@ -1,8 +1,6 @@
 /*
- * nfeature.h
- *
  *  Created on: Feb 19, 2012
- *      Author: calvarez
+ *      Author: Carmen Alvarez
  */
 
 #ifndef NNFEATURE_H_

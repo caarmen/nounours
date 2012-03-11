@@ -1,8 +1,6 @@
 /*
- * nncsvreader.c
- *
  *  Created on: Feb 19, 2012
- *      Author: calvarez
+ *      Author: Carmen Alvarez
  */
 
 #include <string.h>
@@ -16,7 +14,12 @@
 
 static const char *CSV_SEP = ",\r\n";
 
-char *nncsv_get_value(NNCSVLine *header, NNCSVLine *line,
+typedef struct NNCSVLine {
+	int num_cells;
+	char ** cells;
+} NNCSVLine;
+
+static char *nncsv_get_value(NNCSVLine *header, NNCSVLine *line,
 		const char *field_name) {
 	int i;
 	for (i = 0; i < line->num_cells; i++) {
@@ -26,13 +29,14 @@ char *nncsv_get_value(NNCSVLine *header, NNCSVLine *line,
 	return "";
 }
 
-NNCSVLine *nncsv_line_new() {
+static NNCSVLine *nncsv_line_new() {
 	NNCSVLine *line = malloc(sizeof(NNCSVLine));
 	line->num_cells = 0;
 	line->cells = malloc(sizeof(char*) * NN_INITIAL_LIST_CAPACITY);
 	return line;
 }
-void nncsv_line_free(NNCSVLine *line) {
+
+static void nncsv_line_free(NNCSVLine *line) {
 	int i;
 	for (i = 0; i < line->num_cells; i++)
 		free(line->cells[i]);
@@ -40,7 +44,7 @@ void nncsv_line_free(NNCSVLine *line) {
 	free(line);
 }
 
-void nncsv_split_line(char *input, NNCSVLine *line, const char *sep) {
+static void nncsv_split_line(char *input, NNCSVLine *line, const char *sep) {
 	char *ptr;
 	char *cell;
 	line->num_cells = 0;
@@ -51,7 +55,7 @@ void nncsv_split_line(char *input, NNCSVLine *line, const char *sep) {
 	}
 }
 
-int nncsv_read_line(FILE *file, NNCSVLine *line) {
+static int nncsv_read_line(FILE *file, NNCSVLine *line) {
 	char buf[1024];
 	if (!fgets(buf, sizeof(buf), file))
 		return 0;
@@ -59,7 +63,7 @@ int nncsv_read_line(FILE *file, NNCSVLine *line) {
 	return 1;
 }
 
-FILE *nncsv_pre_read_file(NNTheme *theme, const char *filename,
+static FILE *nncsv_pre_read_file(NNTheme *theme, const char *filename,
 		NNCSVLine **header, NNCSVLine **line) {
 	FILE *file = nnio_open_file(theme->path, filename, "r");
 	*header = nncsv_line_new();
@@ -68,7 +72,7 @@ FILE *nncsv_pre_read_file(NNTheme *theme, const char *filename,
 	return file;
 }
 
-void nncsv_post_read_file(FILE *file, NNCSVLine *header, NNCSVLine *line) {
+static void nncsv_post_read_file(FILE *file, NNCSVLine *header, NNCSVLine *line) {
 	nncsv_line_free(header);
 	nncsv_line_free(line);
 	fclose(file);
@@ -104,6 +108,7 @@ void nnread_animation_file(NNTheme *theme) {
 		char *repeat = nncsv_get_value(header, line, "Repeat");
 		NNAnimation *animation = nnanimation_new(theme->nounours, id, label, atoi(interval),
 				atoi(repeat));
+		animation->is_preset = NNTRUE;
 		char *sequence = nncsv_get_value(header, line, "Sequence");
 		nncsv_split_line(sequence, image_ids, ";");
 		int i;

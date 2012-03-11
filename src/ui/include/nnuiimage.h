@@ -1,8 +1,6 @@
 /*
- * nnuiimage.h
- *
  *  Created on: Feb 20, 2012
- *      Author: calvarez
+ *      Author: Carmen Alvarez
  */
 
 #ifndef NNUIIMAGE_H_

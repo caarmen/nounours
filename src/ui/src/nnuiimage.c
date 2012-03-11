@@ -1,8 +1,6 @@
 /*
- * nnuiimage.c
- *
  *  Created on: Feb 20, 2012
- *      Author: calvarez
+ *      Author: Carmen Alvarez
  */
 #include <stdlib.h>
 #include <stdio.h>

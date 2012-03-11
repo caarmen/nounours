@@ -50,9 +50,9 @@ int main(int argc, char **argv) {
 				help(argv[0]);
 			} else {
 				theme_path = argv[++i];
-				if(!strcmp(theme_path, "random")) {
+				if (!strcmp(theme_path, "random")) {
 					theme_path = nntheme_get_random_theme_id();
-					if(theme_path == NULL) {
+					if (theme_path == NULL) {
 						fprintf(stderr, "Could not get random theme\n");
 						exit(1);
 					}
@@ -71,7 +71,7 @@ int main(int argc, char **argv) {
 		} else if (!strcmp(argv[i], "-stretch")) {
 			do_stretch = 1;
 		} else if (!strcmp(argv[i], "-sleep-after")) {
-			if(i==argc) {
+			if (i == argc) {
 				printf("Missing sleep time.\n");
 				help(argv[0]);
 			}
@@ -82,12 +82,11 @@ int main(int argc, char **argv) {
 		}
 	}
 
-
 	NNNounours *nounours = nnnounours_new(theme_path, screensaver_mode,
 			window_id);
-	if(sleep_time >0)
-		nounours->idle_time = sleep_time;
-	nounours->do_stretch = do_stretch;
+	if (sleep_time > 0)
+		nounours->config.idle_time_for_sleep_ms = sleep_time;
+	nounours->config.do_stretch = do_stretch;
 	NNTheme *theme = nntheme_new(nounours, strdup(theme_path));
 	nnnounours_use_theme(nounours, theme);
 	while (1) {

@@ -1,10 +1,9 @@
 /*
- * nnio.c
- *
  *  Created on: Mar 5, 2012
- *      Author: calvarez
+ *      Author: Carmen Alvarez
  */
 #include <stdio.h>
+#include <stdlib.h>
 #include "nnio.h"
 
 FILE *nnio_open_file(const char *theme_path, const char *file_name, const char *mode) {

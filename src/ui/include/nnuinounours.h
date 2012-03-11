@@ -1,8 +1,6 @@
 /*
- * nnuinounours.h
- *
  *  Created on: Feb 20, 2012
- *      Author: calvarez
+ *      Author: Carmen Alvarez
  */
 
 #ifndef NNUINOUNOURS_H_
@@ -40,12 +38,9 @@ typedef struct NNUINounours {
 
 NNUINounours *nnuinounours_new(struct NNNounours *nounours, int window_id);
 void nnuinounours_resize(NNUINounours *nounours, int width, int height);
-void nnuinounours_translate(NNUINounours *uinounours, int window_x, int window_y,
-		int *image_x, int *image_y);
 void nnuinounours_free(NNUINounours *nounours);
 void nnuinounours_show_image(NNUINounours *nounours, struct NNUIImage *image);
 void nnuinounours_start_loop(NNUINounours *uinounours);
 void nnuinounours_stop_loop(NNUINounours *uinounours);
-int nnuinounours_error_handler(Display *display, XErrorEvent *error_event);
 
 #endif /* NNUINOUNOURS_H_ */

@@ -1,8 +1,6 @@
 /*
- * nnuinounours.c
- *
  *  Created on: Feb 20, 2012
- *      Author: calvarez
+ *      Author: Carmen Alvarez
  */
 #include <stdlib.h>
 #include <X11/X.h>
@@ -16,6 +14,17 @@
 #include "nnuinounours.h"
 #include "nntheme.h"
 #include "nncommon.h"
+
+static int nnuinounours_error_handler(Display *display, XErrorEvent *error_event) {
+	char error_message[128];
+	XGetErrorText(display, error_event->error_code, error_message, 128);
+	syslog(
+			LOG_ERR,
+			"Error on display %p: type=%d, resourceid=%lx, serial=%lu, error_code=%d (%s), request_code=%d, minor_code=%d\n",
+			display, error_event->type, error_event->resourceid,
+			error_event->serial, error_event->error_code, error_message,
+			error_event->request_code, error_event->minor_code);
+}
 
 NNUINounours *nnuinounours_new(NNNounours *nounours, int window_id) {
 	NNUINounours *uinounours = malloc(sizeof(NNUINounours));
@@ -45,7 +54,7 @@ static void nnuinounours_init_client_message_event(XClientMessageEvent *event, N
 
 static void nnuinounours_send_client_message_event(XClientMessageEvent *event, NNUINounours *uinounours) {
 	long event_mask = NoEventMask;
-	if (uinounours->nounours->screensaver_mode)
+	if (uinounours->nounours->config.is_in_screensaver_mode)
 		event_mask = ExposureMask; // TODO other applications may receive this event!
 	XSendEvent(uinounours->background_display, uinounours->window, 0,
 			event_mask, (XEvent*) event);
@@ -142,7 +151,7 @@ static void nnuinounours_setup_window(NNUINounours *uinounours) {
 	// on the command line.
 	if (uinounours->window == 0) {
 		// In screensaver mode, we need to draw to the "root" window.
-		if (uinounours->nounours->screensaver_mode) {
+		if (uinounours->nounours->config.is_in_screensaver_mode) {
 			// If we want to draw directly to the root window (the case of
 			// the screensaver mode), we need to
 			// make sure we use the right window.
@@ -179,7 +188,7 @@ static void nnuinounours_setup_window(NNUINounours *uinounours) {
 
 static void nnuinounours_get_display_size(NNUINounours *uinounours, int *width,
 		int *height) {
-	if (uinounours->nounours->screensaver_mode) {
+	if (uinounours->nounours->config.is_in_screensaver_mode) {
 		XWindowAttributes window_attributes;
 		XGetWindowAttributes(uinounours->background_display, uinounours->window,
 				&window_attributes);
@@ -207,7 +216,7 @@ void nnuinounours_resize(NNUINounours *uinounours, int width, int height) {
 
 	int offset_x = 0;
 	int offset_y = 0;
-	if (uinounours->nounours->screensaver_mode) {
+	if (uinounours->nounours->config.is_in_screensaver_mode) {
 		XWindowAttributes window_attributes;
 		XGetWindowAttributes(uinounours->background_display, uinounours->window,
 				&window_attributes);
@@ -217,7 +226,7 @@ void nnuinounours_resize(NNUINounours *uinounours, int width, int height) {
 	XMoveResizeWindow(uinounours->background_display, uinounours->window,
 			offset_x + ((display_width - width) / 2),
 			offset_y + ((display_height - height) / 2), width, height);
-	char *background_color = uinounours->nounours->cur_theme->background_color;
+	char *background_color = uinounours->nounours->state.cur_theme->background_color;
 	if (background_color != 0) {
 		unsigned long color_pixel = 0;
 		if (!strcmp(background_color, "white")) {
@@ -243,8 +252,8 @@ void nnuinounours_resize(NNUINounours *uinounours, int width, int height) {
 	XSetWMNormalHints(uinounours->background_display, uinounours->window,
 			size_hints);
 	XFree(size_hints);
-	if (uinounours->nounours->do_stretch) {
-		NNTheme *theme = uinounours->nounours->cur_theme;
+	if (uinounours->nounours->config.do_stretch) {
+		NNTheme *theme = uinounours->nounours->state.cur_theme;
 		float width_ratio = (float) width / theme->width;
 		float height_ratio = (float) height / theme->height;
 		float ratio_to_use =
@@ -260,9 +269,9 @@ void nnuinounours_resize(NNUINounours *uinounours, int width, int height) {
 	}
 }
 
-void nnuinounours_translate(NNUINounours *uinounours, int window_x,
+static void nnuinounours_translate(NNUINounours *uinounours, int window_x,
 		int window_y, int *image_x, int *image_y) {
-	NNTheme *theme = uinounours->nounours->cur_theme;
+	NNTheme *theme = uinounours->nounours->state.cur_theme;
 	nnmath_translate(window_x, window_y, uinounours->window_width,
 			uinounours->window_height, theme->width, theme->height, image_x,
 			image_y);
@@ -294,7 +303,7 @@ static void *nnuinounours_loop(void *data) {
 
 	long event_mask = StructureNotifyMask;
 	XEvent xevent;
-	if (!uinounours->nounours->screensaver_mode) {
+	if (!uinounours->nounours->config.is_in_screensaver_mode) {
 		// wait for the notify event.
 		XSelectInput(uinounours->ui_display, uinounours->window, event_mask);
 		do {
@@ -305,7 +314,7 @@ static void *nnuinounours_loop(void *data) {
 			NULL);
 
 	event_mask = ExposureMask | StructureNotifyMask;
-	if (!uinounours->nounours->screensaver_mode)
+	if (!uinounours->nounours->config.is_in_screensaver_mode)
 		event_mask |= ButtonPressMask | ButtonReleaseMask | ButtonMotionMask;
 	XSelectInput(uinounours->ui_display, uinounours->window, event_mask);
 	uinounours->is_running = 1;
@@ -339,9 +348,9 @@ static void *nnuinounours_loop(void *data) {
 			}
 		} else if (xevent.type == Expose) {
 			syslog(LOG_DEBUG, "expose");
-			if (uinounours->nounours->cur_image != 0)
+			if (uinounours->nounours->state.cur_image != 0)
 				nnuiimage_show(uinounours,
-						uinounours->nounours->cur_image->uiimage);
+						uinounours->nounours->state.cur_image->uiimage);
 		} else if (xevent.type == ButtonPress) {
 			XButtonPressedEvent bp_event = xevent.xbutton;
 			int x, y;
@@ -370,7 +379,7 @@ static void *nnuinounours_loop(void *data) {
 				long distance = nnmath_get_distance(conf_event.x, conf_event.y,
 						uinounours->last_window_x, uinounours->last_window_y);
 				long speed = (distance * 1000000) / time_diff;
-				if (speed > uinounours->nounours->shake_factor)
+				if (speed > uinounours->nounours->config.shake_factor)
 					nnnounours_on_shake(uinounours->nounours);
 			}
 			uinounours->last_window_move_time_us = now_us;
@@ -393,13 +402,4 @@ void nnuinounours_stop_loop(NNUINounours *uinounours) {
 	pthread_join(uinounours->ui_thread, NULL);
 }
 
-int nnuinounours_error_handler(Display *display, XErrorEvent *error_event) {
-	char error_message[128];
-	XGetErrorText(display, error_event->error_code, error_message, 128);
-	syslog(
-			LOG_ERR,
-			"Error on display %p: type=%d, resourceid=%lx, serial=%lu, error_code=%d (%s), request_code=%d, minor_code=%d\n",
-			display, error_event->type, error_event->resourceid,
-			error_event->serial, error_event->error_code, error_message,
-			error_event->request_code, error_event->minor_code);
-}
+

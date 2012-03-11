@@ -1,8 +1,6 @@
 /*
- * nnpropertiesreader.c
- *
  *  Created on: Feb 20, 2012
- *      Author: calvarez
+ *      Author: Carmen Alvarez
  */
 #include <stdio.h>
 #include <string.h>
@@ -12,7 +10,7 @@
 #include "nncommon.h"
 #include "nnio.h"
 
-int nnproperties_read_line(FILE *file, char **key, char **val) {
+static int nnproperties_read_line(FILE *file, char **key, char **val) {
 	char buf[1024];
 	memset(buf, 0, 1024);
 	if (!fgets(buf, sizeof(buf), file))
@@ -22,7 +20,6 @@ int nnproperties_read_line(FILE *file, char **key, char **val) {
 	*val = strsep(val, "\r\n");
 	return 1;
 }
-
 
 void nnread_theme_properties_file(NNTheme *theme) {
 	FILE *file = nnio_open_file(theme->path, "theme.properties", "r");
@@ -66,16 +63,12 @@ void nnread_nounours_properties_file(NNNounours *nounours, const char *path) {
 	while (nnproperties_read_line(file, &key, &val)) {
 		if (key[0] == '#')
 			continue;
-		if (!strcmp(key, "fling.factor")) {
-			nounours->fling_factor = atoi(val);
-		} else if (!strcmp(key, "fling.precision")) {
-			nounours->fling_factor = atoi(val);
-		} else if (!strcmp(key, "shake.factor")) {
-			nounours->shake_factor = atoi(val);
+		if (!strcmp(key, "shake.factor")) {
+			nounours->config.shake_factor = atoi(val);
 		} else if (!strcmp(key, "idle.time")) {
-			nounours->idle_time = atoi(val);
+			nounours->config.idle_time_for_sleep_ms = atoi(val);
 		} else if (!strcmp(key, "idle.ping.interval")) {
-			nounours->idle_ping_interval = atoi(val);
+			nounours->config.idle_time_for_auto_move_ms = atoi(val);
 		}
 	}
 	fclose(file);
