@@ -90,13 +90,13 @@ void nnanimation_start(NNAnimation *animation) {
 					- secs_to_add * 1000000000;
 			ts.tv_sec += secs_to_add;
 			ts.tv_nsec = nsecs_to_add;
-
 			// Wait for the duration of this frame, or until
 			// the animation was interrupted.
 			pthread_cond_timedwait(&nounours->animation_cond,
 					&nounours->animation_mutex, &ts);
 		}
 	}
+	pthread_mutex_unlock(&nounours->animation_mutex);
 
 	nnnounours_show_image(animation->nounours,
 			animation->nounours->app->config.theme->default_image);

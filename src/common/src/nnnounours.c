@@ -18,6 +18,7 @@ static void * nnnounours_ping_thread(void *data) {
 		sleep(nounours->app->config.idle_time_for_auto_move_ms / 1000);
 		nnnounours_ping(nounours);
 	}
+	return NULL;
 }
 
 static void nnnounours_reset_idle(NNNounours *nounours) {
@@ -44,10 +45,10 @@ NNNounours * nnnounours_new(NNNounoursApp *app, const char *path, nnbool screens
 
 
 
-	pthread_create(&nounours->ping_thread, NULL, nnnounours_ping_thread,
-			nounours);
 	pthread_mutex_init(&nounours->animation_mutex, 0);
 	pthread_cond_init(&nounours->animation_cond, 0);
+	pthread_create(&nounours->ping_thread, NULL, nnnounours_ping_thread,
+			nounours);
 
 	// Mark the last activity as happening now.
 	nnnounours_reset_idle(nounours);
@@ -65,7 +66,7 @@ static void *nnnounours_animation_thread(void *data) {
 	NNAnimation *animation = (NNAnimation*) data;
 	NNNounours *nounours = animation->nounours;
 	if (nounours->state.is_doing_animation)
-		return;
+		return NULL;
 	nounours->state.cur_animation = animation;
 	nounours->state.is_doing_animation = NNTRUE;
 	nnanimation_start(animation);
