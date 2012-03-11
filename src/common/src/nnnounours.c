@@ -69,6 +69,8 @@ static void *nnnounours_animation_thread(void *data) {
 	if (nounours->state.is_doing_animation)
 		return NULL;
 	NNAnimation *animation = nounours->state.cur_animation;
+	if(animation == NULL)
+		return NULL;
 	nounours->state.is_doing_animation = NNTRUE;
 	nnanimation_start(nounours, animation);
 	nounours->state.is_doing_animation = NNFALSE;

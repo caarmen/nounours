@@ -26,6 +26,8 @@ void help(char *prog_name) {
 	printf("  -window-id <window id>\n");
 	printf("  -sleep-after <time in seconds>\n");
 	printf("  -stretch\n");
+	printf("  -rows <rows>\n");
+	printf("  -cols <cols>\n");
 	printf("  -scale <scale factor>\n");
 	printf("<theme> may be:\n");
 	printf("  /path/to/theme\n");
@@ -43,6 +45,8 @@ int main(int argc, char **argv) {
 	struct timeval now_tv;
 	gettimeofday(&now_tv, NULL);
 	long now_us = now_tv.tv_sec * 1000000 + now_tv.tv_usec;
+	int rows = 1;
+	int cols = 1;
 	srandom(now_us);
 
 	openlog("nounours", LOG_CONS | LOG_PID, 0);
@@ -87,13 +91,25 @@ int main(int argc, char **argv) {
 				help(argv[0]);
 			}
 			scale = strtof(argv[++i], NULL);
+		} else if (!strcmp(argv[i], "-rows")) {
+			if (i == argc) {
+				printf("Missing number of rows.\n");
+				help(argv[0]);
+			}
+			rows = atoi(argv[++i]);
+		} else if (!strcmp(argv[i], "-cols")) {
+			if (i == argc) {
+				printf("Missing number of cols.\n");
+				help(argv[0]);
+			}
+			cols = atoi(argv[++i]);
 		} else {
 			printf("Unknown option %s\n", argv[i]);
 			help(argv[0]);
 		}
 	}
 
-	NNNounoursApp *app = nnnounoursapp_new(2, 2, theme_path, screensaver_mode,
+	NNNounoursApp *app = nnnounoursapp_new(cols, rows, theme_path, screensaver_mode,
 			window_id);
 	app->config.do_stretch = do_stretch;
 	if (sleep_time > 0)
