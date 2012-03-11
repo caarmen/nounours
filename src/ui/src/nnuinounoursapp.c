@@ -210,6 +210,7 @@ void nnuinounoursapp_stretch(NNUINounoursApp *uiapp) {
 			&window_attributes);
 	int display_width, display_height;
 	nnuinounoursapp_get_display_size(uiapp, &display_width, &display_height);
+	printf("display %dx%d\n", display_width, display_height);
 	nnuinounoursapp_resize(uiapp, display_width, display_height);
 }
 static void nnuinounoursapp_set_background_color(NNUINounoursApp *uiapp) {
@@ -229,27 +230,43 @@ static void nnuinounoursapp_set_background_color(NNUINounoursApp *uiapp) {
 
 	}
 }
-static void nnuinounoursapp_resize_images(NNUINounoursApp *uiapp, int width,
-		int height) {
+static void nnuinounoursapp_resize_images(NNUINounoursApp *uiapp, int window_width,
+		int window_height) {
+	printf("resize images window %dx%d\n", window_width, window_height);
 	NNTheme *theme = uiapp->app->config.theme;
+	NNNounoursGrid *grid = uiapp->app->grid;
 
-	float width_ratio = (float) width / theme->width;
-	float height_ratio = (float) height / theme->height;
+	int images_width = theme->width * grid->width;
+	int images_height = theme->height * grid->height;
+
+	printf("resize images images size %dx%d\n", images_width, images_height);
+
+	float width_ratio = (float) window_width / images_width;
+	float height_ratio = (float) window_height / images_height;
 	float ratio_to_use =
 			width_ratio > height_ratio ? height_ratio : width_ratio;
 	int image_dest_height = ratio_to_use * theme->height;
 	int image_dest_width = ratio_to_use * theme->width;
+	printf("resize images dest size %dx%d\n", image_dest_width, image_dest_height);
 
-	nnbool size_changed = width != theme->width || height != theme->height;
+	int offset_x = 0;
+	int offset_y = 0;
+	if (height_ratio > width_ratio) {
+		offset_y = (int) ((window_height - ratio_to_use * images_height) / 2);
+	} else {
+		offset_x = (int) ((window_width - ratio_to_use * images_width) / 2);
+	}
+	printf("ratio %f, offset %dx%d\n", ratio_to_use, offset_x, offset_y);
+
+	nnbool size_changed = image_dest_width != theme->width || image_dest_height != theme->height;
 	int i, j, k;
-	NNNounoursGrid *grid = uiapp->app->grid;
 	for (i = 0; i < grid->width; i++) {
 		for (j = 0; j < grid->height; j++) {
 			NNUINounours *uinounours = grid->nounoursen[i][j]->uinounours;
-			uinounours->window_x = i * width;
-			uinounours->window_y = j * height;
-			uinounours->window_width = width;
-			uinounours->window_height = height;
+			uinounours->window_x = i * image_dest_width + offset_x;
+			uinounours->window_y = j * image_dest_height + offset_y;
+			uinounours->window_width = image_dest_width;
+			uinounours->window_height = image_dest_height;
 			if (size_changed) {
 				for (k = 0; k < theme->num_images; k++) {
 					nnuiimage_resize(uiapp, theme->images[k]->uiimage,

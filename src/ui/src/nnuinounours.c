@@ -28,11 +28,12 @@ NNUINounours *nnuinounours_new(NNUINounoursApp *uiapp, NNNounours *nounours,
 void nnuinounours_translate(NNUINounours *uinounours, int window_x,
 		int window_y, int *image_x, int *image_y) {
 	NNTheme *theme = uinounours->nounours->app->config.theme;
-	nnmath_translate(window_x, window_y, uinounours->window_width,
-			uinounours->window_height, theme->width, theme->height, image_x,
+	nnmath_translate(window_x, window_y, uinounours->uiapp->window_width,
+			uinounours->uiapp->window_height, theme->width, theme->height, image_x,
 			image_y);
-	*image_x = *image_x - uinounours->window_x;
-	*image_y = *image_y - uinounours->window_y;
+	printf("window %dx%d, image %dx%d, offset %dx%d\n", window_x, window_y, *image_x, *image_y, uinounours->window_x, uinounours->window_y);
+	*image_x = *image_x;
+	*image_y = *image_y;
 }
 void nnuinounours_free(NNUINounours *uinounours) {
 	free(uinounours);

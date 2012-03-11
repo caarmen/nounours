@@ -41,5 +41,7 @@ void nnmath_translate(int window_x, int window_y, int window_width,
 	}
 	*image_x = (int) ((window_x - offset_x) / ratio_to_use);
 	*image_y = (int) ((window_y - offset_y) / ratio_to_use);
+	printf("translate: window %dx%d @ %dx%d, image %dx%d @ %dx%d, result=%dx%d\n",
+			window_width, window_height, window_x, window_y, image_width, image_height, offset_x, offset_y, *image_x, *image_y);
 }
 
