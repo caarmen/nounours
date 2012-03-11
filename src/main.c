@@ -93,7 +93,7 @@ int main(int argc, char **argv) {
 		}
 	}
 
-	NNNounoursApp *app = nnnounoursapp_new(1, 1, theme_path, screensaver_mode,
+	NNNounoursApp *app = nnnounoursapp_new(2, 2, theme_path, screensaver_mode,
 			window_id);
 	app->config.do_stretch = do_stretch;
 	NNNounours *nounours = app->grid->nounoursen[0][0];

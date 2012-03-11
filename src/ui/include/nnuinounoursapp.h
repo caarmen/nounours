@@ -38,6 +38,8 @@ typedef struct NNUINounoursApp {
 NNUINounoursApp *nnuinounoursapp_new(struct NNNounoursApp *app, int window_id);
 void nnuinounoursapp_stretch(NNUINounoursApp *uiapp);
 void nnuinounoursapp_resize(NNUINounoursApp *uiapp, int width, int height);
+void nnuinounoursapp_get_dimensions(NNUINounoursApp *uiapp, int *offset_x,
+		int *offset_y, int *image_width, int *image_height);
 
 void nnuinounoursapp_send_client_message_event(XClientMessageEvent *event,
 		NNUINounoursApp *uiapp);

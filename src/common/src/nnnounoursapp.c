@@ -46,10 +46,11 @@ NNNounoursApp * nnnounoursapp_new(int width, int height, const char *path, nnboo
 
 void nnnounoursapp_use_theme_scaled(NNNounoursApp *app, NNTheme *theme, float scale) {
 	app->config.theme = theme;
+
 	if (app->config.do_stretch)
 		nnuinounoursapp_stretch(app->ui);
 	else
-		nnuinounoursapp_resize(app->ui, scale*theme->width, scale*theme->height);
+		nnuinounoursapp_resize(app->ui, scale*theme->width*app->grid->width, scale*theme->height*app->grid->height);
 	int i, j;
 	for(i=0; i < app->grid->width; i++) {
 		for(j=0; j < app->grid->height; j++) {

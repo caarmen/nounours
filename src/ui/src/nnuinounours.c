@@ -10,6 +10,7 @@
 #include <pthread.h>
 #include <syslog.h>
 #include <stdio.h>
+#include <sys/types.h>
 #include "nnuinounours.h"
 #include "nntheme.h"
 #include "nncommon.h"
@@ -28,12 +29,14 @@ NNUINounours *nnuinounours_new(NNUINounoursApp *uiapp, NNNounours *nounours,
 void nnuinounours_translate(NNUINounours *uinounours, int window_x,
 		int window_y, int *image_x, int *image_y) {
 	NNTheme *theme = uinounours->nounours->app->config.theme;
-	nnmath_translate(window_x, window_y, uinounours->uiapp->window_width,
-			uinounours->uiapp->window_height, theme->width, theme->height, image_x,
+	int offset_x, offset_y, image_width, image_height;
+	nnuinounoursapp_get_dimensions(uinounours->uiapp, &offset_x, &offset_y, &image_width, &image_height);
+	int pane_x = (window_x - offset_x) % image_width;
+	int pane_y = (window_y - offset_y) % image_height;
+	nnmath_translate(pane_x, pane_y, image_width,
+			image_height, theme->width, theme->height, image_x,
 			image_y);
 	printf("window %dx%d, image %dx%d, offset %dx%d\n", window_x, window_y, *image_x, *image_y, uinounours->window_x, uinounours->window_y);
-	*image_x = *image_x;
-	*image_y = *image_y;
 }
 void nnuinounours_free(NNUINounours *uinounours) {
 	free(uinounours);

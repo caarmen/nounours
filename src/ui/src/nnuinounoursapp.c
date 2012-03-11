@@ -15,8 +15,7 @@ static int nnuinounoursapp_error_handler(Display *display,
 		XErrorEvent *error_event) {
 	char error_message[128];
 	XGetErrorText(display, error_event->error_code, error_message, 128);
-	syslog(
-			LOG_ERR,
+	syslog(LOG_ERR,
 			"Error on display %p: type=%d, resourceid=%lx, serial=%lu, error_code=%d (%s), request_code=%d, minor_code=%d\n",
 			display, error_event->type, error_event->resourceid,
 			error_event->serial, error_event->error_code, error_message,
@@ -27,7 +26,7 @@ NNUINounoursApp *nnuinounoursapp_new(struct NNNounoursApp *app, int window_id) {
 	NNUINounoursApp *uiapp = malloc(sizeof(NNUINounoursApp));
 	uiapp->app = app;
 	uiapp->background_display = XOpenDisplay(0);
-	if(uiapp->background_display == 0) {
+	if (uiapp->background_display == 0) {
 		fprintf(stderr, "Cannot open display\n");
 		exit(-1);
 	}
@@ -234,8 +233,8 @@ static void nnuinounoursapp_set_background_color(NNUINounoursApp *uiapp) {
 
 	}
 }
-static void nnuinounoursapp_resize_images(NNUINounoursApp *uiapp, int window_width,
-		int window_height) {
+static void nnuinounoursapp_resize_images(NNUINounoursApp *uiapp,
+		int window_width, int window_height) {
 	printf("resize images window %dx%d\n", window_width, window_height);
 	NNTheme *theme = uiapp->app->config.theme;
 	NNNounoursGrid *grid = uiapp->app->grid;
@@ -251,7 +250,8 @@ static void nnuinounoursapp_resize_images(NNUINounoursApp *uiapp, int window_wid
 			width_ratio > height_ratio ? height_ratio : width_ratio;
 	int image_dest_height = ratio_to_use * theme->height;
 	int image_dest_width = ratio_to_use * theme->width;
-	printf("resize images dest size %dx%d\n", image_dest_width, image_dest_height);
+	printf("resize images dest size %dx%d\n", image_dest_width,
+			image_dest_height);
 
 	int offset_x = 0;
 	int offset_y = 0;
@@ -262,7 +262,8 @@ static void nnuinounoursapp_resize_images(NNUINounoursApp *uiapp, int window_wid
 	}
 	printf("ratio %f, offset %dx%d\n", ratio_to_use, offset_x, offset_y);
 
-	nnbool size_changed = image_dest_width != theme->width || image_dest_height != theme->height;
+	nnbool size_changed = image_dest_width != theme->width
+			|| image_dest_height != theme->height;
 	int i, j, k;
 	for (i = 0; i < grid->width; i++) {
 		for (j = 0; j < grid->height; j++) {
@@ -271,6 +272,8 @@ static void nnuinounoursapp_resize_images(NNUINounoursApp *uiapp, int window_wid
 			uinounours->window_y = j * image_dest_height + offset_y;
 			uinounours->window_width = image_dest_width;
 			uinounours->window_height = image_dest_height;
+			printf("nounours @ %dx%d\n", uinounours->window_x,
+					uinounours->window_y);
 			if (size_changed) {
 				for (k = 0; k < theme->num_images; k++) {
 					nnuiimage_resize(uiapp, theme->images[k]->uiimage,
@@ -315,9 +318,31 @@ void nnuinounoursapp_resize(NNUINounoursApp *uiapp, int width, int height) {
 	nnuinounoursapp_resize_images(uiapp, width, height);
 }
 
+void nnuinounoursapp_get_dimensions(NNUINounoursApp *uiapp, int *offset_x, int *offset_y, int *image_width, int *image_height) {
+	NNNounoursGrid *grid = uiapp->app->grid;
+	NNImage *image = uiapp->app->config.theme->images[0];
+	*image_width = image->uiimage->ximage->width;
+	*image_height = image->uiimage->ximage->height;
+	*offset_x = (uiapp->window_width - grid->width * (*image_width)) / 2;
+	*offset_y = (uiapp->window_height - grid->height * (*image_height)) / 2;
+}
+
 static NNNounours * nnuinounoursapp_find_nounours(NNUINounoursApp *uiapp,
 		int window_x, int window_y) {
-	return uiapp->app->grid->nounoursen[0][0];
+	NNNounoursGrid *grid = uiapp->app->grid;
+	int offset_x, offset_y, image_width, image_height;
+	nnuinounoursapp_get_dimensions(uiapp, &offset_x, &offset_y, &image_width, &image_height);
+	if(window_x < offset_x || window_y < offset_y)
+		return 0;
+	int index_x = (window_x - offset_x) / image_width;
+	int index_y = (window_y - offset_y) / image_height;
+	printf("offsetx %d, windowx %d,index %dx%d\n", offset_x, window_x,index_x, index_y);
+	if(index_x < 0 || index_y < 0 || index_x >= grid->width || index_y >= grid->height) {
+		printf("no nounours\n");
+		return 0;
+	}
+	NNNounours *nounours = uiapp->app->grid->nounoursen[index_x][index_y];
+	return nounours;
 }
 
 static nnbool nnuinounoursapp_is_my_nounours(NNUINounoursApp *uiapp,
@@ -337,6 +362,8 @@ static void nnuinounoursapp_pointer_event(NNUINounoursApp *uiapp, int type,
 		int window_x, int window_y) {
 	NNNounours *nounours = nnuinounoursapp_find_nounours(uiapp, window_x,
 			window_y);
+	if(nounours == 0)
+		return;
 	int local_x, local_y;
 	nnuinounours_translate(nounours->uinounours, window_x, window_y, &local_x,
 			&local_y);
