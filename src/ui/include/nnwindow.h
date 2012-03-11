@@ -12,10 +12,21 @@
  * Find or create a window in which nounours will run.
  */
 void nnwindow_setup(NNUINounoursApp *uiapp);
+
+/**
+ * The window we're drawing to is in use.  Find another
+ * window to draw to.
+ */
 void nnwindow_switch(NNUINounoursApp *uiapp);
 
-
+/**
+ * Stretch the images to fill the screen horizontally or vertically.
+ */
 void nnwindow_stretch(NNUINounoursApp *uiapp);
+
+/**
+ * Resize the window to the given size.  Also resize the theme images accordingly.
+ */
 void nnwindow_resize(NNUINounoursApp *uiapp, int width, int height);
 
 /**

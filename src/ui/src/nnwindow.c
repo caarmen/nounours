@@ -12,7 +12,7 @@
  * Search the child windows of the given window for the given property.
  * @return the child windows having the given property.
  */
-static Window * nnuinounoursapp_find_child_windows_for_property(
+static Window * nnwindow_find_child_windows_for_property(
 		Display *display, Window window, const char *property_name,
 		int *num_results) {
 	*num_results = 0;
@@ -78,7 +78,7 @@ void nnwindow_setup(NNUINounoursApp *uiapp) {
 			// has a property "__SWM_VROOT" or "_NET_VIRTUAL_ROOTS".  During
 			// tests only __SWM_VROOT was found.
 			int num_windows;
-			Window *windows = nnuinounoursapp_find_child_windows_for_property(
+			Window *windows = nnwindow_find_child_windows_for_property(
 					uiapp->ui_display, uiapp->root_window, "__SWM_VROOT",
 					&num_windows);
 			if (num_windows > 0) {
@@ -106,7 +106,7 @@ void nnwindow_setup(NNUINounoursApp *uiapp) {
 
 void nnwindow_switch(NNUINounoursApp *uiapp) {
 	int num_windows;
-	Window *windows = nnuinounoursapp_find_child_windows_for_property(
+	Window *windows = nnwindow_find_child_windows_for_property(
 			uiapp->ui_display, uiapp->root_window, "__SWM_VROOT", &num_windows);
 	int i;
 	for (i = 0; i < num_windows; i++) {
@@ -118,7 +118,7 @@ void nnwindow_switch(NNUINounoursApp *uiapp) {
 	}
 }
 
-static void nnuinounoursapp_get_display_size(NNUINounoursApp *uiapp, int *width,
+static void nnwindow_get_display_size(NNUINounoursApp *uiapp, int *width,
 		int *height) {
 	if (uiapp->app->config.is_in_screensaver_mode) {
 		XWindowAttributes window_attributes;
@@ -137,10 +137,11 @@ void nnwindow_stretch(NNUINounoursApp *uiapp) {
 	XGetWindowAttributes(uiapp->background_display, uiapp->window,
 			&window_attributes);
 	int display_width, display_height;
-	nnuinounoursapp_get_display_size(uiapp, &display_width, &display_height);
+	nnwindow_get_display_size(uiapp, &display_width, &display_height);
 	nnwindow_resize(uiapp, display_width, display_height);
 }
-static void nnuinounoursapp_set_background_color(NNUINounoursApp *uiapp) {
+
+static void nnwindow_set_background_color(NNUINounoursApp *uiapp) {
 	char *background_color = uiapp->app->config.theme->background_color;
 	if (background_color != 0) {
 		unsigned long color_pixel = 0;
@@ -157,7 +158,8 @@ static void nnuinounoursapp_set_background_color(NNUINounoursApp *uiapp) {
 
 	}
 }
-static void nnuinounoursapp_resize_images(NNUINounoursApp *uiapp,
+
+static void nnwindow_resize_images(NNUINounoursApp *uiapp,
 		int window_width, int window_height) {
 	NNTheme *theme = uiapp->app->config.theme;
 	NNNounoursGrid *grid = uiapp->app->grid;
@@ -200,7 +202,7 @@ static void nnuinounoursapp_resize_images(NNUINounoursApp *uiapp,
 		}
 	}
 }
-static void nnuinounoursapp_fix_window(NNUINounoursApp *uiapp, int width,
+static void nnwindow_fix(NNUINounoursApp *uiapp, int width,
 		int height) {
 	XSizeHints* size_hints = XAllocSizeHints();
 	size_hints->flags = PMinSize | PMaxSize;
@@ -216,7 +218,7 @@ static void nnuinounoursapp_fix_window(NNUINounoursApp *uiapp, int width,
 
 void nnwindow_resize(NNUINounoursApp *uiapp, int width, int height) {
 	int display_width, display_height;
-	nnuinounoursapp_get_display_size(uiapp, &display_width, &display_height);
+	nnwindow_get_display_size(uiapp, &display_width, &display_height);
 
 	int offset_x = 0;
 	int offset_y = 0;
@@ -230,9 +232,9 @@ void nnwindow_resize(NNUINounoursApp *uiapp, int width, int height) {
 	XMoveResizeWindow(uiapp->background_display, uiapp->window,
 			offset_x + ((display_width - width) / 2),
 			offset_y + ((display_height - height) / 2), width, height);
-	nnuinounoursapp_set_background_color(uiapp);
-	nnuinounoursapp_fix_window(uiapp, width, height);
-	nnuinounoursapp_resize_images(uiapp, width, height);
+	nnwindow_set_background_color(uiapp);
+	nnwindow_fix(uiapp, width, height);
+	nnwindow_resize_images(uiapp, width, height);
 }
 
 
