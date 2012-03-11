@@ -54,7 +54,7 @@ static void nnuinounours_init_client_message_event(XClientMessageEvent *event, N
 
 static void nnuinounours_send_client_message_event(XClientMessageEvent *event, NNUINounours *uinounours) {
 	long event_mask = NoEventMask;
-	if (uinounours->nounours->config.is_in_screensaver_mode)
+	if (uinounours->nounours->app->config.is_in_screensaver_mode)
 		event_mask = ExposureMask; // TODO other applications may receive this event!
 	XSendEvent(uinounours->background_display, uinounours->window, 0,
 			event_mask, (XEvent*) event);
@@ -151,7 +151,7 @@ static void nnuinounours_setup_window(NNUINounours *uinounours) {
 	// on the command line.
 	if (uinounours->window == 0) {
 		// In screensaver mode, we need to draw to the "root" window.
-		if (uinounours->nounours->config.is_in_screensaver_mode) {
+		if (uinounours->nounours->app->config.is_in_screensaver_mode) {
 			// If we want to draw directly to the root window (the case of
 			// the screensaver mode), we need to
 			// make sure we use the right window.
@@ -188,7 +188,7 @@ static void nnuinounours_setup_window(NNUINounours *uinounours) {
 
 static void nnuinounours_get_display_size(NNUINounours *uinounours, int *width,
 		int *height) {
-	if (uinounours->nounours->config.is_in_screensaver_mode) {
+	if (uinounours->nounours->app->config.is_in_screensaver_mode) {
 		XWindowAttributes window_attributes;
 		XGetWindowAttributes(uinounours->background_display, uinounours->window,
 				&window_attributes);
@@ -216,7 +216,7 @@ void nnuinounours_resize(NNUINounours *uinounours, int width, int height) {
 
 	int offset_x = 0;
 	int offset_y = 0;
-	if (uinounours->nounours->config.is_in_screensaver_mode) {
+	if (uinounours->nounours->app->config.is_in_screensaver_mode) {
 		XWindowAttributes window_attributes;
 		XGetWindowAttributes(uinounours->background_display, uinounours->window,
 				&window_attributes);
@@ -303,7 +303,7 @@ static void *nnuinounours_loop(void *data) {
 
 	long event_mask = StructureNotifyMask;
 	XEvent xevent;
-	if (!uinounours->nounours->config.is_in_screensaver_mode) {
+	if (!uinounours->nounours->app->config.is_in_screensaver_mode) {
 		// wait for the notify event.
 		XSelectInput(uinounours->ui_display, uinounours->window, event_mask);
 		do {
@@ -314,7 +314,7 @@ static void *nnuinounours_loop(void *data) {
 			NULL);
 
 	event_mask = ExposureMask | StructureNotifyMask;
-	if (!uinounours->nounours->config.is_in_screensaver_mode)
+	if (!uinounours->nounours->app->config.is_in_screensaver_mode)
 		event_mask |= ButtonPressMask | ButtonReleaseMask | ButtonMotionMask;
 	XSelectInput(uinounours->ui_display, uinounours->window, event_mask);
 	uinounours->is_running = 1;
@@ -379,7 +379,7 @@ static void *nnuinounours_loop(void *data) {
 				long distance = nnmath_get_distance(conf_event.x, conf_event.y,
 						uinounours->last_window_x, uinounours->last_window_y);
 				long speed = (distance * 1000000) / time_diff;
-				if (speed > uinounours->nounours->config.shake_factor)
+				if (speed > uinounours->nounours->app->config.shake_factor)
 					nnnounours_on_shake(uinounours->nounours);
 			}
 			uinounours->last_window_move_time_us = now_us;

@@ -15,7 +15,7 @@ static void nnnounours_ping(NNNounours *nounours);
 static void * nnnounours_ping_thread(void *data) {
 	NNNounours * nounours = (NNNounours*) data;
 	while (1) {
-		sleep(nounours->config.idle_time_for_auto_move_ms / 1000);
+		sleep(nounours->app->config.idle_time_for_auto_move_ms / 1000);
 		nnnounours_ping(nounours);
 	}
 }
@@ -27,15 +27,10 @@ static void nnnounours_reset_idle(NNNounours *nounours) {
 			+ now_tv.tv_usec;
 }
 
-NNNounours * nnnounours_new(const char *path, nnbool screensaver_mode,
+NNNounours * nnnounours_new(NNNounoursApp *app, const char *path, nnbool screensaver_mode,
 		int window_id) {
 	NNNounours *nounours = malloc(sizeof(NNNounours));
-
-	nounours->config.is_in_screensaver_mode = screensaver_mode;
-	nounours->config.do_stretch = NNFALSE;
-	nounours->config.shake_factor = 0;
-	nounours->config.idle_time_for_sleep_ms = 0;
-	nounours->config.idle_time_for_auto_move_ms = 0;
+	nounours->app = app;
 
 	nounours->state.is_doing_animation = NNFALSE;
 	nounours->state.cur_theme = 0;
@@ -48,8 +43,7 @@ NNNounours * nnnounours_new(const char *path, nnbool screensaver_mode,
 
 	nounours->uinounours = nnuinounours_new(nounours, window_id);
 
-	// Read in our config
-	nnread_nounours_properties_file(nounours, path);
+
 
 	// Start the nounours UI loop in a separate thread
 	nnuinounours_start_loop(nounours->uinounours);
@@ -69,7 +63,7 @@ void nnnounours_use_theme(NNNounours *nounours, NNTheme *theme) {
 
 void nnnounours_use_theme_scaled(NNNounours *nounours, NNTheme *theme, float scale) {
 	nounours->state.cur_theme = theme;
-	if (nounours->config.do_stretch)
+	if (nounours->app->config.do_stretch)
 		nnuinounours_stretch(nounours->uinounours);
 	else
 		nnuinounours_resize(nounours->uinounours, scale*theme->width, scale*theme->height);
@@ -216,13 +210,13 @@ static void nnnounours_ping(NNNounours *nounours) {
 	long now_us = now_tv.tv_sec * 1000000 + now_tv.tv_usec;
 	long time_diff = now_us - nounours->state.last_action_time_us;
 	// Check if we've been idle long enough to fall asleep
-	if (time_diff > nounours->config.idle_time_for_sleep_ms * 1000) {
+	if (time_diff > nounours->app->config.idle_time_for_sleep_ms * 1000) {
 		nnnounours_stop_animation(nounours);
 		nnnounours_start_animation(nounours,
 				nounours->state.cur_theme->animation_idle);
 	}
 	// Check if we've been idle long enough to start moving on our own.
-	else if (time_diff > nounours->config.idle_time_for_auto_move_ms * 1000) {
+	else if (time_diff > nounours->app->config.idle_time_for_auto_move_ms * 1000) {
 		NNAnimation *animation = nnanimation_create_random(nounours);
 		nnnounours_start_animation(nounours, animation);
 	}

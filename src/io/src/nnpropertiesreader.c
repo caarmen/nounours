@@ -57,18 +57,18 @@ void nnread_theme_properties_file(NNTheme *theme) {
 	fclose(file);
 }
 
-void nnread_nounours_properties_file(NNNounours *nounours, const char *path) {
+void nnread_nounours_properties_file(NNNounoursConfig *nounours_config, const char *path) {
 	FILE *file = nnio_open_file(path, "nounours.properties", "r");
 	char *key, *val;
 	while (nnproperties_read_line(file, &key, &val)) {
 		if (key[0] == '#')
 			continue;
 		if (!strcmp(key, "shake.factor")) {
-			nounours->config.shake_factor = atoi(val);
+			nounours_config->shake_factor = atoi(val);
 		} else if (!strcmp(key, "idle.time")) {
-			nounours->config.idle_time_for_sleep_ms = atoi(val);
+			nounours_config->idle_time_for_sleep_ms = atoi(val);
 		} else if (!strcmp(key, "idle.ping.interval")) {
-			nounours->config.idle_time_for_auto_move_ms = atoi(val);
+			nounours_config->idle_time_for_auto_move_ms = atoi(val);
 		}
 	}
 	fclose(file);

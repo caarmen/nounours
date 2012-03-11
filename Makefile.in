@@ -54,6 +54,7 @@ PROGRAMS = $(bin_PROGRAMS)
 am__dirstamp = $(am__leading_dot)dirstamp
 am_nounours_OBJECTS = src/main.$(OBJEXT) \
 	src/common/src/nnnounours.$(OBJEXT) \
+	src/common/src/nnnounoursapp.$(OBJEXT) \
 	src/common/src/nncommon.$(OBJEXT) \
 	src/common/src/nnmath.$(OBJEXT) src/data/src/nnimage.$(OBJEXT) \
 	src/data/src/nnfeature.$(OBJEXT) \
@@ -208,7 +209,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_CFLAGS = $(JPEG_CFLAGS) -Isrc/data/include -Isrc/io/include -Isrc/common/include -Isrc/ui/include -D__DATAROOT_DIR__=\"$(datarootdir)\"
 nounours_LDADD = $(X11_LIBS) $(JPEG_LIBS) -lpthread -lm
-nounours_SOURCES = src/main.c src/common/src/nnnounours.c src/common/src/nncommon.c src/common/src/nnmath.c src/data/src/nnimage.c src/data/src/nnfeature.c src/data/src/nnanimation.c src/data/src/nntheme.c src/io/src/nnio.c src/io/src/nncsvreader.c src/io/src/nnpropertiesreader.c src/ui/src/nnuinounours.c src/ui/src/nnuiimage.c
+nounours_SOURCES = src/main.c src/common/src/nnnounours.c src/common/src/nnnounoursapp.c src/common/src/nncommon.c src/common/src/nnmath.c src/data/src/nnimage.c src/data/src/nnfeature.c src/data/src/nnanimation.c src/data/src/nntheme.c src/io/src/nnio.c src/io/src/nncsvreader.c src/io/src/nnpropertiesreader.c src/ui/src/nnuinounours.c src/ui/src/nnuiimage.c
 nounoursdir = $(datarootdir)/nounours
 nobase_nounours_DATA = data/nounours.xml data/themes/default/*.* data/themes/default/images/*.* data/themes/rainbow/*.* data/themes/rainbow/images/*.* data/themes/robot/*.* data/themes/robot/images/*.* data/themes/college/*.* data/themes/college/images/*.*
 all: all-am
@@ -318,6 +319,9 @@ src/common/src/$(DEPDIR)/$(am__dirstamp):
 	@: > src/common/src/$(DEPDIR)/$(am__dirstamp)
 src/common/src/nnnounours.$(OBJEXT): src/common/src/$(am__dirstamp) \
 	src/common/src/$(DEPDIR)/$(am__dirstamp)
+src/common/src/nnnounoursapp.$(OBJEXT):  \
+	src/common/src/$(am__dirstamp) \
+	src/common/src/$(DEPDIR)/$(am__dirstamp)
 src/common/src/nncommon.$(OBJEXT): src/common/src/$(am__dirstamp) \
 	src/common/src/$(DEPDIR)/$(am__dirstamp)
 src/common/src/nnmath.$(OBJEXT): src/common/src/$(am__dirstamp) \
@@ -367,6 +371,7 @@ mostlyclean-compile:
 	-rm -f src/common/src/nncommon.$(OBJEXT)
 	-rm -f src/common/src/nnmath.$(OBJEXT)
 	-rm -f src/common/src/nnnounours.$(OBJEXT)
+	-rm -f src/common/src/nnnounoursapp.$(OBJEXT)
 	-rm -f src/data/src/nnanimation.$(OBJEXT)
 	-rm -f src/data/src/nnfeature.$(OBJEXT)
 	-rm -f src/data/src/nnimage.$(OBJEXT)
@@ -385,6 +390,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@src/common/src/$(DEPDIR)/nncommon.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/common/src/$(DEPDIR)/nnmath.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/common/src/$(DEPDIR)/nnnounours.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/common/src/$(DEPDIR)/nnnounoursapp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/data/src/$(DEPDIR)/nnanimation.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/data/src/$(DEPDIR)/nnfeature.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/data/src/$(DEPDIR)/nnimage.Po@am__quote@

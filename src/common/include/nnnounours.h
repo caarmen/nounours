@@ -8,6 +8,7 @@
 
 #include <sys/time.h>
 #include <sys/types.h>
+#include "nnnounoursapp.h"
 #include "nncommon.h"
 #include "nnuinounours.h"
 #include "nnimage.h"
@@ -15,14 +16,7 @@
 
 struct NNTheme;
 struct NNAnimation;
-
-typedef struct NNNounoursConfig {
-	int shake_factor; // The speed in pixels/second which will trigger the shake animation
-	int idle_time_for_sleep_ms;
-	int idle_time_for_auto_move_ms;
-	nnbool is_in_screensaver_mode;
-	nnbool do_stretch;
-} NNNounoursConfig;
+struct NNNounoursApp;
 
 typedef struct NNNounoursState {
 	nnbool is_doing_animation;
@@ -37,7 +31,7 @@ typedef struct NNNounoursState {
 } NNNounoursState;
 
 typedef struct NNNounours {
-	NNNounoursConfig config;
+	struct NNNounoursApp *app;
 	NNNounoursState state;
 	struct NNUINounours *uinounours;
 	pthread_t animation_thread;
@@ -49,7 +43,7 @@ typedef struct NNNounours {
 /**
  * Create a new NNNounours, read in the properties file, and start the UI thread.
  */
-NNNounours * nnnounours_new(const char *path, nnbool screensaver_mode,
+NNNounours * nnnounours_new(struct NNNounoursApp *app, const char *path, nnbool screensaver_mode,
 		int window_id);
 
 /**

@@ -15,12 +15,11 @@
 #include "nntheme.h"
 #include "nncsvreader.h"
 #include "nnpropertiesreader.h"
+#include "nnnounoursapp.h"
 
 void help(char *prog_name) {
 	printf("Usage:\n");
-	printf(
-			"%s [OPTIONS]\n",
-			prog_name);
+	printf("%s [OPTIONS]\n", prog_name);
 	printf("The following options are supported:\n");
 	printf("  -theme <theme>\n");
 	printf("  -screensaver\n");
@@ -83,7 +82,7 @@ int main(int argc, char **argv) {
 			}
 			sleep_time = atoi(argv[++i]) * 1000;
 		} else if (!strcmp(argv[i], "-scale")) {
-			if(i== argc) {
+			if (i == argc) {
 				printf("Missing scale factor.\n");
 				help(argv[0]);
 			}
@@ -94,11 +93,12 @@ int main(int argc, char **argv) {
 		}
 	}
 
-	NNNounours *nounours = nnnounours_new(theme_path, screensaver_mode,
+	NNNounoursApp *app = nnnounoursapp_new(1, 1, theme_path, screensaver_mode,
 			window_id);
+	app->config.do_stretch = do_stretch;
+	NNNounours *nounours = app->grid->nounoursen[0][0];
 	if (sleep_time > 0)
-		nounours->config.idle_time_for_sleep_ms = sleep_time;
-	nounours->config.do_stretch = do_stretch;
+		app->config.idle_time_for_sleep_ms = sleep_time;
 	NNTheme *theme = nntheme_new(nounours, strdup(theme_path));
 	nnnounours_use_theme_scaled(nounours, theme, scale);
 	while (1) {
