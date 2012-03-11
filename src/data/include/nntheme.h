@@ -8,15 +8,15 @@
 #include "nnfeature.h"
 #include "nnimage.h"
 #include "nnanimation.h"
-#include "nnnounours.h"
+#include "nnnounoursapp.h"
 
 struct NNNounours;
 struct NNImage;
 struct NNAnimation;
 struct NNAnimationFling;
+struct NNNounoursApp;
 
 typedef struct NNTheme {
-	struct NNNounours *nounours;
 	char *path;
 	int num_images;
 	struct NNImage **images;
@@ -37,7 +37,7 @@ typedef struct NNTheme {
 	char *background_color;
 } NNTheme;
 
-NNTheme * nntheme_new(struct NNNounours *nounours, char *path);
+NNTheme * nntheme_new(struct NNNounoursApp *app, char *path);
 void nntheme_add_feature(NNTheme *theme, NNFeature *feature);
 void nntheme_add_animation(NNTheme *theme, struct NNAnimation *animation);
 void nntheme_add_animation_fling(NNTheme *theme,

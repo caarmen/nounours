@@ -9,6 +9,8 @@
 #include "nnnounours.h"
 #include "nncommon.h"
 
+struct NNNounours;
+
 /**
  * One frame in the animation.
  */
@@ -18,7 +20,6 @@ typedef struct NNAnimationImage {
 } NNAnimationImage;
 
 typedef struct NNAnimation {
-	struct NNNounours *nounours;
 	char *id;
 	char *label; // Not used yet.  Maybe for version 2 :)
 	int num_images;
@@ -38,12 +39,12 @@ typedef struct NNAnimationFling {
 	NNAnimation *animation;
 } NNAnimationFling;
 
-NNAnimation * nnanimation_new(struct NNNounours *nounours, char *id, char *label, int interval, int repeat);
+NNAnimation * nnanimation_new(char *id, char *label, int interval, int repeat);
 NNAnimationImage * nnanimation_image_new(struct NNImage *image, float duration);
 NNAnimationFling * nnanimation_fling_new(int x, int y, int width, int height, float min_vel_x, float min_vel_y, NNAnimation *animation);
 NNAnimation * nnanimation_create_random(struct NNNounours *nounours);
 void nnanimation_add_image(NNAnimation *animation, struct NNImage *image, float duration);
-void nnanimation_start(NNAnimation *animation);
+void nnanimation_start(struct NNNounours *nounours, NNAnimation *animation);
 void nnanimation_stop(NNAnimation *animation);
 void nnanimation_free(NNAnimation *animation);
 

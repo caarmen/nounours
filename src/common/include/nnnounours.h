@@ -8,6 +8,7 @@
 
 #include <sys/time.h>
 #include <sys/types.h>
+#include <unistd.h>
 #include "nnnounoursapp.h"
 #include "nncommon.h"
 #include "nnuinounours.h"
@@ -25,11 +26,12 @@ typedef struct NNNounoursState {
 	struct NNAnimation *cur_animation;
 	int last_x;
 	int last_y;
-	long last_motion_event_time_us;
-	long last_action_time_us;
+	u_int64_t last_motion_event_time_us;
+	u_int64_t last_action_time_us;
 } NNNounoursState;
 
 typedef struct NNNounours {
+	char *id;
 	struct NNNounoursApp *app;
 	NNNounoursState state;
 	struct NNUINounours *uinounours;
@@ -42,7 +44,7 @@ typedef struct NNNounours {
 /**
  * Create a new NNNounours, read in the properties file, and start the UI thread.
  */
-NNNounours * nnnounours_new(struct NNNounoursApp *app, const char *path, nnbool screensaver_mode,
+NNNounours * nnnounours_new(char *id, struct NNNounoursApp *app, const char *path, nnbool screensaver_mode,
 		int window_id);
 
 /**

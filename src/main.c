@@ -96,10 +96,9 @@ int main(int argc, char **argv) {
 	NNNounoursApp *app = nnnounoursapp_new(2, 2, theme_path, screensaver_mode,
 			window_id);
 	app->config.do_stretch = do_stretch;
-	NNNounours *nounours = app->grid->nounoursen[0][0];
 	if (sleep_time > 0)
 		app->config.idle_time_for_sleep_ms = sleep_time;
-	NNTheme *theme = nntheme_new(nounours, strdup(theme_path));
+	NNTheme *theme = nntheme_new(app, strdup(theme_path));
 	nnnounoursapp_use_theme_scaled(app, theme, scale);
 	while (1) {
 		sleep(1000000);

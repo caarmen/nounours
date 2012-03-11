@@ -13,10 +13,9 @@
 #include "nncommon.h"
 #include "nntheme.h"
 
-NNAnimation * nnanimation_new(NNNounours *nounours, char *id, char *label,
+NNAnimation * nnanimation_new(char *id, char *label,
 		int interval, int repeat) {
 	NNAnimation *animation = malloc(sizeof(NNAnimation));
-	animation->nounours = nounours;
 	animation->images = malloc(
 			sizeof(NNAnimationImage*) * NN_INITIAL_LIST_CAPACITY);
 	animation->id = strdup(id);
@@ -45,7 +44,7 @@ NNAnimation * nnanimation_create_random(NNNounours *nounours) {
 	char *id = strdup("random");
 	char *label = strdup("label");
 
-	NNAnimation * animation = nnanimation_new(nounours, id, label, interval,
+	NNAnimation * animation = nnanimation_new(id, label, interval,
 			repeat);
 	animation->is_preset = NNFALSE;
 	NNImage *image = nounours->state.cur_image;
@@ -60,8 +59,7 @@ NNAnimation * nnanimation_create_random(NNNounours *nounours) {
 	return animation;
 }
 
-void nnanimation_start(NNAnimation *animation) {
-	NNNounours *nounours = animation->nounours;
+void nnanimation_start(NNNounours *nounours, NNAnimation *animation) {
 	int i;
 	for (i = 0; i < animation->repeat && nounours->state.is_doing_animation;
 			i++) {
@@ -98,8 +96,8 @@ void nnanimation_start(NNAnimation *animation) {
 	}
 	pthread_mutex_unlock(&nounours->animation_mutex);
 
-	nnnounours_show_image(animation->nounours,
-			animation->nounours->app->config.theme->default_image);
+	nnnounours_show_image(nounours,
+			nounours->app->config.theme->default_image);
 	if (!animation->is_preset)
 		nnanimation_free(animation);
 }

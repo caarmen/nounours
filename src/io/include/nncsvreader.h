@@ -7,9 +7,9 @@
 #define NNCSVREADER_H_
 #include <stdio.h>
 #include "nntheme.h"
-#include "nnnounours.h"
+#include "nnnounoursapp.h"
 
-void nnread_image_file(NNTheme *theme);
+void nnread_image_file(NNNounoursApp *app, NNTheme *theme);
 void nnread_animation_file(NNTheme *theme);
 void nnread_feature_file(NNTheme *theme);
 void nnread_image_feature_file(NNTheme *theme);

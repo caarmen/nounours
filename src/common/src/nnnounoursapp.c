@@ -18,7 +18,9 @@ static NNNounoursGrid* nnnounoursgrid_new(NNNounoursApp *app,int width, int heig
 	for (i = 0; i < width; i++) {
 		grid->nounoursen[i] = malloc(height * sizeof(NNNounours*));
 		for (j = 0; j < height; j++) {
-			grid->nounoursen[i][j] = nnnounours_new(app, path,
+			char id[16];
+			sprintf(id, "(%03d,%03d)", i, j);
+			grid->nounoursen[i][j] = nnnounours_new(strdup(id), app, path,
 					is_screensaver_mode, window_id);
 		}
 	}

@@ -8,11 +8,12 @@
 
 #include "nnfeature.h"
 #include "nnuiimage.h"
-#include "nnnounours.h"
+#include "nnnounoursapp.h"
 
 struct NNImage;
 struct NNNounours;
 struct NNUIImage;
+struct NNNounoursApp;
 
 typedef struct NNImageFeature {
 	NNFeature *feature;
@@ -39,7 +40,7 @@ typedef struct NNImage {
 	struct NNUIImage *uiimage;
 } NNImage;
 
-NNImage * nnimage_new(struct NNNounours *nounours, char *id, char *filename);
+NNImage * nnimage_new(struct NNNounoursApp *app, char *id, char *filename);
 
 void nnimage_add_adjacent_image(NNImage *image, NNFeature *feature,
 		NNImage *adjacent_image);

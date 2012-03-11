@@ -78,7 +78,7 @@ static void nncsv_post_read_file(FILE *file, NNCSVLine *header, NNCSVLine *line)
 	fclose(file);
 }
 
-void nnread_image_file(NNTheme *theme) {
+void nnread_image_file(NNNounoursApp *app, NNTheme *theme) {
 	NNCSVLine *header, *line;
 	FILE *file = nncsv_pre_read_file(theme, "image.csv", &header, &line);
 	while (nncsv_read_line(file, line)) {
@@ -88,7 +88,7 @@ void nnread_image_file(NNTheme *theme) {
 		sprintf(location,
 				"%s/images/%s", theme->path, image_filename);
 
-		NNImage *image = nnimage_new(theme->nounours, id, strdup(location));
+		NNImage *image = nnimage_new(app, id, strdup(location));
 		char *release_image_id = nncsv_get_value(header, line, "OnRelease");
 		NNImage *release = nntheme_find_image(theme, release_image_id);
 		image->release = release;
@@ -106,7 +106,7 @@ void nnread_animation_file(NNTheme *theme) {
 		char *label = nncsv_get_value(header, line, "Label");
 		char *interval = nncsv_get_value(header, line, "Interval");
 		char *repeat = nncsv_get_value(header, line, "Repeat");
-		NNAnimation *animation = nnanimation_new(theme->nounours, id, label, atoi(interval),
+		NNAnimation *animation = nnanimation_new(id, label, atoi(interval),
 				atoi(repeat));
 		animation->is_preset = NNTRUE;
 		char *sequence = nncsv_get_value(header, line, "Sequence");
@@ -183,6 +183,8 @@ void nnread_fling_animation_file(NNTheme *theme) {
 		char *min_vel_x = nncsv_get_value(header, line, "MinVelX");
 		char *min_vel_y = nncsv_get_value(header, line, "MinVelY");
 		char *animation_id = nncsv_get_value(header, line, "AnimationId");
+		printf("fling %s min_vel_x %s (%f) min_vel_y %s (%f)\n", id, min_vel_x, strtof(min_vel_x, NULL),
+				min_vel_y, strtof(min_vel_y, NULL));
 		NNAnimation *animation = nntheme_find_animation(theme, animation_id);
 		NNAnimationFling *fling = nnanimation_fling_new(atoi(x), atoi(y),
 				atoi(width), atoi(height), strtof(min_vel_x, NULL),

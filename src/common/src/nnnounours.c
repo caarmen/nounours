@@ -5,6 +5,9 @@
 
 #include <stdlib.h>
 #include <pthread.h>
+#include <unistd.h>
+#include <errno.h>
+#include <string.h>
 #include "nnnounours.h"
 #include "nntheme.h"
 #include "nnpropertiesreader.h"
@@ -28,10 +31,11 @@ static void nnnounours_reset_idle(NNNounours *nounours) {
 			+ now_tv.tv_usec;
 }
 
-NNNounours * nnnounours_new(NNNounoursApp *app, const char *path, nnbool screensaver_mode,
-		int window_id) {
+NNNounours * nnnounours_new(char *id, NNNounoursApp *app, const char *path,
+		nnbool screensaver_mode, int window_id) {
 	NNNounours *nounours = malloc(sizeof(NNNounours));
 	nounours->app = app;
+	nounours->id = id;
 
 	nounours->state.is_doing_animation = NNFALSE;
 	nounours->state.cur_image = 0;
@@ -42,8 +46,6 @@ NNNounours * nnnounours_new(NNNounoursApp *app, const char *path, nnbool screens
 	nounours->state.last_motion_event_time_us = 0;
 
 	nounours->uinounours = nnuinounours_new(app->ui, nounours, window_id);
-
-
 
 	pthread_mutex_init(&nounours->animation_mutex, 0);
 	pthread_cond_init(&nounours->animation_cond, 0);
@@ -63,13 +65,12 @@ void nnnounours_show_image(NNNounours *nounours, NNImage *image) {
 }
 
 static void *nnnounours_animation_thread(void *data) {
-	NNAnimation *animation = (NNAnimation*) data;
-	NNNounours *nounours = animation->nounours;
+	NNNounours *nounours = (NNNounours*) data;
 	if (nounours->state.is_doing_animation)
 		return NULL;
-	nounours->state.cur_animation = animation;
+	NNAnimation *animation = nounours->state.cur_animation;
 	nounours->state.is_doing_animation = NNTRUE;
-	nnanimation_start(animation);
+	nnanimation_start(nounours, animation);
 	nounours->state.is_doing_animation = NNFALSE;
 	nounours->state.cur_animation = 0;
 	// Special case if this is the "sleep" animation:
@@ -86,8 +87,9 @@ void nnnounours_start_animation(NNNounours *nounours, NNAnimation *animation) {
 		return;
 	if (nounours->state.is_doing_animation)
 		nnnounours_stop_animation(nounours);
+	nounours->state.cur_animation = animation;
 	pthread_create(&nounours->animation_thread, NULL,
-			nnnounours_animation_thread, animation);
+			nnnounours_animation_thread, nounours);
 }
 
 void nnnounours_stop_animation(NNNounours *nounours) {
@@ -127,21 +129,27 @@ void nnnounours_on_move(NNNounours *nounours, int x, int y) {
 
 	// Check if we've moved one of nounours' features far
 	// enough that we should change the image.
-	NNImage *image = nnimage_find_adjacent_image(nounours->state.cur_image,
-			nounours->state.cur_feature, x, y);
-	nnnounours_show_image(nounours, image);
+	if (nounours->state.cur_feature != 0) {
+		NNImage *image = nnimage_find_adjacent_image(nounours->state.cur_image,
+				nounours->state.cur_feature, x, y);
+		nnnounours_show_image(nounours, image);
+	}
 	struct timeval now_tv;
-	gettimeofday(&now_tv, NULL);
-	long now_us = now_tv.tv_sec * 1000000 + now_tv.tv_usec;
+	errno = 0;
+	int res = gettimeofday(&now_tv, NULL);
+	u_int64_t now_us = now_tv.tv_sec * 1000000 + now_tv.tv_usec;
 
 	// Check if we've moved fast enough to consider it a fling gesture.
 	if (nounours->state.last_x >= 0) {
-		long time_diff = now_us - nounours->state.last_motion_event_time_us;
-		if (time_diff == 0)
-			time_diff = 1;
-		float vel_x = 1000000 * (x - nounours->state.last_x) / time_diff;
-		float vel_y = 1000000 * (y - nounours->state.last_y) / time_diff;
-		nnnounours_on_fling(nounours, x, y, vel_x, vel_y);
+		u_int64_t time_diff = now_us
+				- nounours->state.last_motion_event_time_us;
+		if (time_diff > 0) {
+			float vel_x = (float) 1000000 * (x - nounours->state.last_x)
+					/ time_diff;
+			float vel_y = (float) 1000000 * (y - nounours->state.last_y)
+					/ time_diff;
+			nnnounours_on_fling(nounours, x, y, vel_x, vel_y);
+		}
 	}
 	nounours->state.last_motion_event_time_us = now_us;
 	nounours->state.last_x = x;
@@ -160,6 +168,7 @@ void nnnounours_on_release(NNNounours *nounours, int x, int y) {
 
 void nnnounours_on_fling(NNNounours *nounours, int x, int y, float vel_x,
 		float vel_y) {
+
 	int i;
 	NNTheme *theme = nounours->app->config.theme;
 	// Find an animation that matches this fling:
@@ -194,7 +203,7 @@ static void nnnounours_ping(NNNounours *nounours) {
 	struct timeval now_tv;
 	gettimeofday(&now_tv, NULL);
 	long now_us = now_tv.tv_sec * 1000000 + now_tv.tv_usec;
-	long time_diff = now_us - nounours->state.last_action_time_us;
+	u_int64_t time_diff = now_us - nounours->state.last_action_time_us;
 	// Check if we've been idle long enough to fall asleep
 	if (time_diff > nounours->app->config.idle_time_for_sleep_ms * 1000) {
 		nnnounours_stop_animation(nounours);
@@ -202,12 +211,14 @@ static void nnnounours_ping(NNNounours *nounours) {
 				nounours->app->config.theme->animation_idle);
 	}
 	// Check if we've been idle long enough to start moving on our own.
-	else if (time_diff > nounours->app->config.idle_time_for_auto_move_ms * 1000) {
+	else if (time_diff
+			> nounours->app->config.idle_time_for_auto_move_ms * 1000) {
 		NNAnimation *animation = nnanimation_create_random(nounours);
 		nnnounours_start_animation(nounours, animation);
 	}
 }
 
 void nnnounours_free(NNNounours *nounours) {
+	free(nounours->id);
 	free(nounours);
 }

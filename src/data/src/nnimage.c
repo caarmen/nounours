@@ -10,7 +10,7 @@
 #include "nncommon.h"
 #include "nnmath.h"
 
-NNImage * nnimage_new(NNNounours *nounours, char *id, char *filename) {
+NNImage * nnimage_new(NNNounoursApp *app, char *id, char *filename) {
 	NNImage *result = malloc(sizeof(NNImage));
 	result->adjacent_images = malloc(
 			sizeof(NNImage*) * NN_INITIAL_LIST_CAPACITY);
@@ -22,7 +22,7 @@ NNImage * nnimage_new(NNNounours *nounours, char *id, char *filename) {
 	result->num_features = 0;
 	result->num_adjacent_images = 0;
 	result->num_image_features = 0;
-	result->uiimage = nnuiimage_new(nounours->app->ui, filename);
+	result->uiimage = nnuiimage_new(app->ui, filename);
 
 	return result;
 }

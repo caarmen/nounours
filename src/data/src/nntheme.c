@@ -11,10 +11,10 @@
 #include "nnimage.h"
 #include "nncommon.h"
 #include "nncsvreader.h"
+#include "nnnounoursapp.h"
 
-NNTheme * nntheme_new(NNNounours *nounours, char *path) {
+NNTheme * nntheme_new(NNNounoursApp *app, char *path) {
 	NNTheme *theme = malloc(sizeof(NNTheme));
-	theme->nounours = nounours;
 	theme->path = strdup(path);
 	theme->num_features = 0;
 	theme->features = malloc(sizeof(NNFeature*) * NN_INITIAL_LIST_CAPACITY);
@@ -34,7 +34,7 @@ NNTheme * nntheme_new(NNNounours *nounours, char *path) {
 	theme->width = 0;
 	theme->background_color = 0;
 	nnread_feature_file(theme);
-	nnread_image_file(theme);
+	nnread_image_file(app, theme);
 	nnread_animation_file(theme);
 	nnread_image_feature_file(theme);
 	nnread_adjacent_image_file(theme);
