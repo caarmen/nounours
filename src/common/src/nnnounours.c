@@ -27,7 +27,7 @@ static void nnnounours_reset_idle(NNNounours *nounours) {
 			+ now_tv.tv_usec;
 }
 
-NNNounours * nnnounours_new(const char *path, int screensaver_mode,
+NNNounours * nnnounours_new(const char *path, nnbool screensaver_mode,
 		int window_id) {
 	NNNounours *nounours = malloc(sizeof(NNNounours));
 
@@ -226,5 +226,6 @@ static void nnnounours_ping(NNNounours *nounours) {
 }
 
 void nnnounours_free(NNNounours *nounours) {
+	nnuinounours_stop_loop(nounours->uinounours);
 	free(nounours);
 }

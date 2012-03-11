@@ -14,13 +14,13 @@
 int nnmath_get_distance(int x1, int y1, int x2, int y2);
 
 /**
- * @return 1 if v1 has the same sign as v2 and abs(v1) > abs(v2). Return 0 otherwise.
+ * @return true if v1 has the same sign as v2 and abs(v1) > abs(v2). Return false otherwise.
  */
 nnbool nnmath_is_faster(float v1, float v2);
 
 /**
- * @return 1 if the point at point_x,point_y is inside the square with origin square_x,
- * square_y, and with the given size. Return 0 if the point is outside the square.
+ * @return true if the point at point_x,point_y is inside the square with origin square_x,
+ * square_y, and with the given size. Return false if the point is outside the square.
  */
 nnbool nnmath_point_is_in_square(int point_x, int point_y, int square_x,
 		int square_y, int square_width, int square_height);

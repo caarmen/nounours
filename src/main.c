@@ -1,14 +1,13 @@
 /*
- * main.c
- *
  *  Created on: Feb 19, 2012
- *      Author: calvarez
+ *      Author: Carmen Alvarez
  */
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <syslog.h>
 #include <time.h>
+#include "nncommon.h"
 #include "nnnounours.h"
 #include "nnimage.h"
 #include "nnfeature.h"
@@ -31,7 +30,7 @@ int main(int argc, char **argv) {
 	const char *theme_path = "default";
 	int screensaver_mode = 0;
 	unsigned long window_id = 0;
-	int do_stretch = 0;
+	nnbool do_stretch = NNFALSE;
 	int i;
 	int sleep_time = -1;
 
@@ -69,7 +68,7 @@ int main(int argc, char **argv) {
 				window_id = strtol(window_id_str, NULL, 16);
 			}
 		} else if (!strcmp(argv[i], "-stretch")) {
-			do_stretch = 1;
+			do_stretch = NNTRUE;
 		} else if (!strcmp(argv[i], "-sleep-after")) {
 			if (i == argc) {
 				printf("Missing sleep time.\n");

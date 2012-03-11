@@ -49,7 +49,7 @@ typedef struct NNNounours {
 /**
  * Create a new NNNounours, read in the properties file, and start the UI thread.
  */
-NNNounours * nnnounours_new(const char *path, int screensaver_mode,
+NNNounours * nnnounours_new(const char *path, nnbool screensaver_mode,
 		int window_id);
 
 /**
