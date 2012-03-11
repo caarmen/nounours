@@ -27,6 +27,10 @@ NNUINounoursApp *nnuinounoursapp_new(struct NNNounoursApp *app, int window_id) {
 	NNUINounoursApp *uiapp = malloc(sizeof(NNUINounoursApp));
 	uiapp->app = app;
 	uiapp->background_display = XOpenDisplay(0);
+	if(uiapp->background_display == 0) {
+		fprintf(stderr, "Cannot open display\n");
+		exit(-1);
+	}
 	uiapp->window = window_id;
 	uiapp->is_running = 0;
 	XSetErrorHandler(nnuinounoursapp_error_handler);
