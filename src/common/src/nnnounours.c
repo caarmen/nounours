@@ -33,7 +33,6 @@ NNNounours * nnnounours_new(NNNounoursApp *app, const char *path, nnbool screens
 	nounours->app = app;
 
 	nounours->state.is_doing_animation = NNFALSE;
-	nounours->state.cur_theme = 0;
 	nounours->state.cur_image = 0;
 	nounours->state.cur_feature = 0;
 	nounours->state.cur_animation = 0;
@@ -41,12 +40,10 @@ NNNounours * nnnounours_new(NNNounoursApp *app, const char *path, nnbool screens
 	nounours->state.last_y = -1;
 	nounours->state.last_motion_event_time_us = 0;
 
-	nounours->uinounours = nnuinounours_new(nounours, window_id);
+	nounours->uinounours = nnuinounours_new(app->ui, nounours, window_id);
 
 
 
-	// Start the nounours UI loop in a separate thread
-	nnuinounours_start_loop(nounours->uinounours);
 	pthread_create(&nounours->ping_thread, NULL, nnnounours_ping_thread,
 			nounours);
 	pthread_mutex_init(&nounours->animation_mutex, 0);
@@ -57,18 +54,6 @@ NNNounours * nnnounours_new(NNNounoursApp *app, const char *path, nnbool screens
 	return nounours;
 }
 
-void nnnounours_use_theme(NNNounours *nounours, NNTheme *theme) {
-	nnnounours_use_theme_scaled(nounours, theme, 1.0f);
-}
-
-void nnnounours_use_theme_scaled(NNNounours *nounours, NNTheme *theme, float scale) {
-	nounours->state.cur_theme = theme;
-	if (nounours->app->config.do_stretch)
-		nnuinounours_stretch(nounours->uinounours);
-	else
-		nnuinounours_resize(nounours->uinounours, scale*theme->width, scale*theme->height);
-	nnnounours_show_image(nounours, theme->default_image);
-}
 void nnnounours_show_image(NNNounours *nounours, NNImage *image) {
 	if (nounours->state.cur_image == image)
 		return;
@@ -90,7 +75,7 @@ static void *nnnounours_animation_thread(void *data) {
 	// If we don't mark the end of this animation as
 	// an action (resetting the idle timeout), then
 	// nounours will sleep forever.
-	if (animation == nounours->state.cur_theme->animation_idle)
+	if (animation == nounours->app->config.theme->animation_idle)
 		nnnounours_reset_idle(nounours);
 	return (void*) NULL;
 }
@@ -115,12 +100,12 @@ void nnnounours_stop_animation(NNNounours *nounours) {
 void nnnounours_on_press(NNNounours *nounours, int x, int y) {
 	nnbool was_idle = nounours->state.is_doing_animation
 			&& nounours->state.cur_animation
-					== nounours->state.cur_theme->animation_idle;
+					== nounours->app->config.theme->animation_idle;
 	nnnounours_stop_animation(nounours);
 	nnnounours_reset_idle(nounours);
 	if (was_idle) {
 		nnnounours_start_animation(nounours,
-				nounours->state.cur_theme->animation_idle_end);
+				nounours->app->config.theme->animation_idle_end);
 	} else {
 		nounours->state.cur_feature = nnimage_find_closest_feature(
 				nounours->state.cur_image, x, y);
@@ -129,7 +114,7 @@ void nnnounours_on_press(NNNounours *nounours, int x, int y) {
 					nounours->state.cur_image, nounours->state.cur_feature);
 			if (adjacent_images == 0) {
 				nounours->state.cur_image =
-						nounours->state.cur_theme->default_image;
+						nounours->app->config.theme->default_image;
 			}
 		}
 	}
@@ -175,7 +160,7 @@ void nnnounours_on_release(NNNounours *nounours, int x, int y) {
 void nnnounours_on_fling(NNNounours *nounours, int x, int y, float vel_x,
 		float vel_y) {
 	int i;
-	NNTheme *theme = nounours->state.cur_theme;
+	NNTheme *theme = nounours->app->config.theme;
 	// Find an animation that matches this fling:
 	// Check the speed in the x and y directions, and check
 	// if the pointer was in the right zone.
@@ -196,13 +181,13 @@ void nnnounours_on_fling(NNNounours *nounours, int x, int y, float vel_x,
 void nnnounours_on_shake(NNNounours *nounours) {
 	nnnounours_reset_idle(nounours);
 	nnnounours_start_animation(nounours,
-			nounours->state.cur_theme->shake_animation);
+			nounours->app->config.theme->shake_animation);
 }
 
 static void nnnounours_ping(NNNounours *nounours) {
 	// Don't do anything if we're not done loading
 	// or if we're in the middle of an animation.
-	if (nounours->state.cur_theme == 0 || nounours->state.is_doing_animation
+	if (nounours->app->config.theme == 0 || nounours->state.is_doing_animation
 			|| nounours->state.cur_image == 0)
 		return;
 	struct timeval now_tv;
@@ -213,7 +198,7 @@ static void nnnounours_ping(NNNounours *nounours) {
 	if (time_diff > nounours->app->config.idle_time_for_sleep_ms * 1000) {
 		nnnounours_stop_animation(nounours);
 		nnnounours_start_animation(nounours,
-				nounours->state.cur_theme->animation_idle);
+				nounours->app->config.theme->animation_idle);
 	}
 	// Check if we've been idle long enough to start moving on our own.
 	else if (time_diff > nounours->app->config.idle_time_for_auto_move_ms * 1000) {
@@ -223,6 +208,5 @@ static void nnnounours_ping(NNNounours *nounours) {
 }
 
 void nnnounours_free(NNNounours *nounours) {
-	nnuinounours_stop_loop(nounours->uinounours);
 	free(nounours);
 }

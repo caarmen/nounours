@@ -9,9 +9,11 @@
 #include "nnnounours.h"
 #include "nntheme.h"
 #include "nncommon.h"
+#include "nnuinounoursapp.h"
 
 struct NNNounours;
 struct NNTheme;
+struct NNUINounoursApp;
 
 typedef struct NNNounoursConfig {
 	int shake_factor; // The speed in pixels/second which will trigger the shake animation
@@ -31,9 +33,12 @@ typedef struct NNNounoursGrid {
 typedef struct NNNounoursApp {
 	NNNounoursConfig config;
 	NNNounoursGrid *grid;
+	struct NNUINounoursApp *ui;
 } NNNounoursApp;
 
 NNNounoursApp * nnnounoursapp_new(int width, int height, const char *path, nnbool is_screensaver_mode, int window_id);
+void nnnounoursapp_use_theme_scaled(NNNounoursApp *app, struct NNTheme *theme, float scale);
+void nnnounoursgrid_on_shake(NNNounoursGrid *grid);
 void nnnounoursapp_free(NNNounoursApp *app);
 
 #endif /* NNNOUNOURSAPP_H_ */

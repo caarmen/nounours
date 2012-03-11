@@ -20,7 +20,6 @@ struct NNNounoursApp;
 
 typedef struct NNNounoursState {
 	nnbool is_doing_animation;
-	struct NNTheme *cur_theme;
 	struct NNImage *cur_image;
 	struct NNFeature *cur_feature;
 	struct NNAnimation *cur_animation;

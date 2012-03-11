@@ -100,7 +100,7 @@ int main(int argc, char **argv) {
 	if (sleep_time > 0)
 		app->config.idle_time_for_sleep_ms = sleep_time;
 	NNTheme *theme = nntheme_new(nounours, strdup(theme_path));
-	nnnounours_use_theme_scaled(nounours, theme, scale);
+	nnnounoursapp_use_theme_scaled(app, theme, scale);
 	while (1) {
 		sleep(1000000);
 	}

@@ -33,8 +33,8 @@ NNAnimation * nnanimation_create_random(NNNounours *nounours) {
 	int r = random() % 5;
 	if (r == 0) {
 		int preset_animation_number = random()
-				% nounours->state.cur_theme->num_animations;
-		return nounours->state.cur_theme->animations[preset_animation_number];
+				% nounours->app->config.theme->num_animations;
+		return nounours->app->config.theme->animations[preset_animation_number];
 	}
 	// Random base duration for each frame, from 100 to 500ms
 	int interval = 100 + (random() % 400);
@@ -99,7 +99,7 @@ void nnanimation_start(NNAnimation *animation) {
 	}
 
 	nnnounours_show_image(animation->nounours,
-			animation->nounours->state.cur_theme->default_image);
+			animation->nounours->app->config.theme->default_image);
 	if (!animation->is_preset)
 		nnanimation_free(animation);
 }

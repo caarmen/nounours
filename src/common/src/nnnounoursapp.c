@@ -8,7 +8,7 @@
 #include "nncommon.h"
 #include "nnnounours.h"
 
-static NNNounoursGrid* nnnounoursgrid_new(NNNounoursApp *app,int width, int height, char *path,
+static NNNounoursGrid* nnnounoursgrid_new(NNNounoursApp *app,int width, int height, const char *path,
 		nnbool is_screensaver_mode, int window_id) {
 	NNNounoursGrid * grid = malloc(sizeof(NNNounoursGrid));
 	grid->width = width;
@@ -36,10 +36,34 @@ NNNounoursApp * nnnounoursapp_new(int width, int height, const char *path, nnboo
 	nnread_nounours_properties_file(&app->config, path);
 
 	app->grid = nnnounoursgrid_new(app, width, height, path, is_screensaver_mode, window_id);
+	app->ui = nnuinounoursapp_new(app, window_id);
+	// Start the nounours UI loop in a separate thread
+	nnuinounoursapp_start_loop(app->ui);
 
 	return app;
 }
 
+void nnnounoursapp_use_theme_scaled(NNNounoursApp *app, NNTheme *theme, float scale) {
+	app->config.theme = theme;
+	if (app->config.do_stretch)
+		nnuinounoursapp_stretch(app->ui);
+	else
+		nnuinounoursapp_resize(app->ui, scale*theme->width, scale*theme->height);
+	int i, j;
+	for(i=0; i < app->grid->width; i++) {
+		for(j=0; j < app->grid->height; j++) {
+			nnnounours_show_image(app->grid->nounoursen[i][j], theme->default_image);
+		}
+	}
+}
+void nnnounoursgrid_on_shake(NNNounoursGrid *grid) {
+	int i, j;
+	for(i=0; i < grid->width; i++) {
+		for(j=0; j < grid->height; j++) {
+			nnnounours_on_shake(grid->nounoursen[i][j]);
+		}
+	}
+}
 static void nnnounoursgrid_free(NNNounoursGrid *grid) {
 	int i, j;
 	for (i = 0; i < grid->width; i++) {
@@ -52,6 +76,7 @@ static void nnnounoursgrid_free(NNNounoursGrid *grid) {
 }
 
 void nnnounoursapp_free(NNNounoursApp *app) {
+	nnuinounoursapp_stop_loop(app->ui);
 	nnnounoursgrid_free(app->grid);
 	free(app);
 }

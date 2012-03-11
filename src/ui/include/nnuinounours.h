@@ -10,37 +10,27 @@
 
 #include "nnnounours.h"
 #include "nnuiimage.h"
+#include "nnuinounoursapp.h"
 
 struct NNNounours;
 struct NNUIImage;
+struct NNUINounoursApp;
 
 typedef struct NNUINounours {
-	Display *ui_display;
-	Display *background_display;
-	int screen_number;
-	Window window;
-	Window root_window;
-	GC gc;
 	struct NNNounours *nounours;
-	int is_running;
-	pthread_t ui_thread;
-	pthread_mutex_t mutex;
-	pthread_cond_t cond;
-	int last_window_x;
-	int last_window_y;
-	long last_window_move_time_us;
+	struct NNUINounoursApp *uiapp;
 	int window_width;
 	int window_height;
-	Atom atom_set_image;
-	Atom atom_my_window;
+	int window_x;
+	int window_y;
 
 } NNUINounours;
 
-NNUINounours *nnuinounours_new(struct NNNounours *nounours, int window_id);
-void nnuinounours_resize(NNUINounours *nounours, int width, int height);
+NNUINounours *nnuinounours_new(struct NNUINounoursApp *app,
+		struct NNNounours *nounours, int window_id);
+void nnuinounours_translate(NNUINounours *uinounours, int window_x,
+		int window_y, int *image_x, int *image_y);
 void nnuinounours_free(NNUINounours *nounours);
 void nnuinounours_show_image(NNUINounours *nounours, struct NNUIImage *image);
-void nnuinounours_start_loop(NNUINounours *uinounours);
-void nnuinounours_stop_loop(NNUINounours *uinounours);
 
 #endif /* NNUINOUNOURS_H_ */

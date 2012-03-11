@@ -22,7 +22,7 @@ NNImage * nnimage_new(NNNounours *nounours, char *id, char *filename) {
 	result->num_features = 0;
 	result->num_adjacent_images = 0;
 	result->num_image_features = 0;
-	result->uiimage = nnuiimage_new(nounours->uinounours, filename);
+	result->uiimage = nnuiimage_new(nounours->app->ui, filename);
 
 	return result;
 }

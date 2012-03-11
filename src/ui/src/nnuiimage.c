@@ -16,10 +16,10 @@ static XImage * nnuiimage_jpeg_to_Ximage(Display *display, int window,
 static XImage * scale_image(Display *display, Visual *visual, XImage *in_image,
 		int dest_width, int dest_height);
 
-NNUIImage *nnuiimage_new(NNUINounours *uinounours, const char *filename) {
+NNUIImage *nnuiimage_new(NNUINounoursApp *uiapp, const char *filename) {
 	NNUIImage *uiimage = malloc(sizeof(NNUIImage));
-	uiimage->ximage = nnuiimage_jpeg_to_Ximage(uinounours->background_display,
-			uinounours->window, filename);
+	uiimage->ximage = nnuiimage_jpeg_to_Ximage(uiapp->background_display,
+			uiapp->window, filename);
 	return uiimage;
 }
 
@@ -164,15 +164,15 @@ static XImage * nnuiimage_jpeg_to_Ximage(Display *display, int window,
 	fclose(file);
 	return image;
 }
-void nnuiimage_resize(struct NNUINounours *uinounours, NNUIImage *uiimage,
+void nnuiimage_resize(struct NNUINounoursApp *uiapp, NNUIImage *uiimage,
 		int dest_width, int dest_height) {
 	if(uiimage->ximage->width == dest_width && uiimage->ximage->height == dest_height)
 		return;
 
 	XWindowAttributes window_attributes;
-	XGetWindowAttributes(uinounours->background_display, uinounours->window,
+	XGetWindowAttributes(uiapp->background_display, uiapp->window,
 			&window_attributes);
-	XImage *scaled_image = scale_image(uinounours->background_display,
+	XImage *scaled_image = scale_image(uiapp->background_display,
 			window_attributes.visual, uiimage->ximage, dest_width, dest_height);
 	XDestroyImage(uiimage->ximage);
 	uiimage->ximage = scaled_image;
@@ -182,10 +182,10 @@ void nnuiimage_show(NNUINounours *uinounours, NNUIImage *uiimage) {
 
 	int dest_origin_x = (uinounours->window_width - uiimage->ximage->width)/2;
 	int dest_origin_y = (uinounours->window_height - uiimage->ximage->height)/2;
-	XPutImage(uinounours->ui_display, uinounours->window, uinounours->gc,
+	XPutImage(uinounours->uiapp->ui_display, uinounours->uiapp->window, uinounours->uiapp->gc,
 			uiimage->ximage, 0, 0, dest_origin_x, dest_origin_y, uiimage->ximage->width,
 			uiimage->ximage->height);
-	XFlush(uinounours->ui_display);
+	XFlush(uinounours->uiapp->ui_display);
 }
 
 void nnuiimage_free(NNUIImage *uiimage) {
