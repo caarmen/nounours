@@ -13,9 +13,10 @@ static NNNounoursGrid* nnnounoursgrid_new(NNNounoursApp *app,int width, int heig
 	NNNounoursGrid * grid = malloc(sizeof(NNNounoursGrid));
 	grid->width = width;
 	grid->height = height;
-	grid->nounoursen = malloc(width * height * sizeof(NNNounours**));
+	grid->nounoursen = malloc(width * sizeof(NNNounours**));
 	int i, j;
 	for (i = 0; i < width; i++) {
+		grid->nounoursen[i] = malloc(height * sizeof(NNNounours*));
 		for (j = 0; j < height; j++) {
 			grid->nounoursen[i][j] = nnnounours_new(app, path,
 					is_screensaver_mode, window_id);
@@ -34,9 +35,9 @@ NNNounoursApp * nnnounoursapp_new(int width, int height, const char *path, nnboo
 	app->config.theme = 0;
 	// Read in our config
 	nnread_nounours_properties_file(&app->config, path);
+	app->ui = nnuinounoursapp_new(app, window_id);
 
 	app->grid = nnnounoursgrid_new(app, width, height, path, is_screensaver_mode, window_id);
-	app->ui = nnuinounoursapp_new(app, window_id);
 	// Start the nounours UI loop in a separate thread
 	nnuinounoursapp_start_loop(app->ui);
 
@@ -71,7 +72,9 @@ static void nnnounoursgrid_free(NNNounoursGrid *grid) {
 		for (j = 0; j < grid->height; j++) {
 			nnnounours_free(grid->nounoursen[i][j]);
 		}
+		free(grid->nounoursen[i]);
 	}
+	free(grid->nounoursen);
 	free(grid);
 }
 
