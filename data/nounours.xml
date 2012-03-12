@@ -21,9 +21,9 @@
 
 
 	<number id="rows" type="spinbutton" arg="-rows %" _label="Rows"
-		low="1" high="25" default="1" />
-	<number id="cols" type="spinbutton" arg="-cols %" _label="Columns"
 		low="1" high="10" default="1" />
+	<number id="cols" type="spinbutton" arg="-cols %" _label="Columns"
+		low="1" high="20" default="1" />
 	<_description>
 
 		Written by Carmen Alvarez, 2012
