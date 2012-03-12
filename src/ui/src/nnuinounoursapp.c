@@ -97,6 +97,7 @@ static void *nnuinounoursapp_loop(void *data) {
 	NNUINounoursApp *uiapp = (NNUINounoursApp*) data;
 
 	nnwindow_setup(uiapp);
+	nnclientmessage_setup();
 
 	long event_mask = StructureNotifyMask;
 	XEvent xevent;

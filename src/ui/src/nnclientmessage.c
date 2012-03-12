@@ -2,9 +2,15 @@
  *  Created on: Mar 12, 2012
  *      Author: Carmen Alvarez
  */
+#include <pthread.h>
 #include <string.h>
 #include "nnclientmessage.h"
 
+pthread_mutex_t nnclientmessage_mutex;
+
+void nnclientmessage_setup() {
+	pthread_mutex_init(&nnclientmessage_mutex, 0);
+}
 void nnclientmessage_init(XClientMessageEvent *event, NNUINounoursApp *uiapp,
 		Atom atom, int format) {
 	memset(event, 0, sizeof(XClientMessageEvent));
@@ -17,10 +23,11 @@ void nnclientmessage_send(XClientMessageEvent *event, NNUINounoursApp *uiapp) {
 	long event_mask = NoEventMask;
 	if (uiapp->app->config.is_in_screensaver_mode)
 		event_mask = ExposureMask; // TODO other applications may receive this event!
+	pthread_mutex_lock(&nnclientmessage_mutex);
 	XSendEvent(uiapp->background_display, uiapp->window, 0, event_mask,
 			(XEvent*) event);
 	XFlush(uiapp->background_display);
-
+	pthread_mutex_unlock(&nnclientmessage_mutex);
 }
 
 void nnclientmessage_write(XClientMessageEvent *event, NNNounours *nounours,

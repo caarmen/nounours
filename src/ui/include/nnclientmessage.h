@@ -11,6 +11,7 @@
 #include "nnnounours.h"
 #include "nnuiimage.h"
 
+void nnclientmessage_setup();
 void nnclientmessage_init(XClientMessageEvent *event,
 		NNUINounoursApp *uiapp, Atom atom, int format);
 void nnclientmessage_send(XClientMessageEvent *event,
