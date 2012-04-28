@@ -10,18 +10,5 @@ aclocal $aclocal_flags &&
 automake -a &&
 autoconf &&
 ./configure $configure_flags &&
-make 
-if [ $? -eq 0 ]
-then
-  if [ $# = 1 ]
-  then 
-    if [ $1 = "dist" ]
-    then
-     cd debian
-     debuild
-    fi
-  else 
-    ./nounours
-  fi
-fi
-
+make &&
+nounours

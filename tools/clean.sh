@@ -5,5 +5,5 @@ rm config.status
 rm config/config.h
 rm config/stamp-h1
 make clean
-rm -rf .deps  **/.deps **/**/.deps **/**/**/.deps
+rm -rf .deps  **/.deps **/**/.deps **/**/**/.deps dist repo
 rm **/.dirstamp **/**/**/.dirstamp
