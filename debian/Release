@@ -1,0 +1,8 @@
+Origin: Carmen's Linux apps
+Label: Carmen Alvarez
+Suite: stable
+Version: 1.0.0
+Codename: ca.rmen.linux
+Architectures: i386
+Components: main
+Description: Carmen's Linux apps
