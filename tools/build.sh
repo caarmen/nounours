@@ -11,4 +11,4 @@ automake -a &&
 autoconf &&
 ./configure $configure_flags &&
 make &&
-nounours
+./nounours
