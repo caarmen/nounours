@@ -32,6 +32,10 @@ void help(char *prog_name) {
 	printf("<theme> may be:\n");
 	printf("  /path/to/theme\n");
 	printf("  default|rainbow|college|robot|random\n");
+	printf("\n");
+	printf("To use nounours as a screensaver, add the following line to your ~/.xscreensaver file, in the 'programs:' section:\n");
+	printf("nounours -screensaver -stretch \\n\\\n");
+	printf("If you don't have a ~/.xscreensaver file, run xscreensaver-demo which will create the file.  Then add the above line.\n");
 	exit(1);
 }
 int main(int argc, char **argv) {
