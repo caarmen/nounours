@@ -16,8 +16,14 @@ cp -pr debian $dist_dir/.
 cd $dist_dir
 debuild
 dpkg-scanpackages . > Packages
+dpkg-scansources . > Sources
 cd $top
-mkdir -p repo/dists/stable/main/binary-i386
+repo_dir=repo/dists/stable/main
+repo_bin_dir=$repo_dir/binary-i386
+repo_src_dir=$repo_dir/source
+mkdir -p $repo_bin_dir
+mkdir -p $repo_src_dir
 cp dist/*.deb repo/.
-cp $dist_dir/Packages debian/Release repo/dists/stable/main/binary-i386/.
+cp $dist_dir/Packages debian/Release $repo_bin_dir/.
+cp $dist_dir/Sources $repo_src_dir/.
 tar czvf repo.tar.gz repo
