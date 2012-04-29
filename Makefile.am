@@ -1,3 +1,4 @@
+SUBDIRS=data/icons
 AM_CFLAGS = $(JPEG_CFLAGS) -Isrc/data/include -Isrc/io/include -Isrc/common/include -Isrc/ui/include -D__DATAROOT_DIR__=\"$(datarootdir)\"
 # CFLAGS =  
 bin_PROGRAMS=nounours
@@ -9,9 +10,6 @@ nobase_nounours_DATA = data/nounours.xml data/themes/default/*.* data/themes/def
 desktopdir=$(datadir)/applications
 desktop_DATA=nounours.desktop
 
-#the application icon
-appicondir=$(datadir)/icons/hicolor/48x48/apps
-appicon_DATA=nounours.png
 
 install-exec-hook: 
 	sh deployscreensaver.sh $(XSCREENSAVER_CONFIG_PATH)

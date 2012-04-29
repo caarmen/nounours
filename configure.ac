@@ -48,5 +48,5 @@ AC_SUBST([XSCREENSAVER_CONFIG_PATH])
 
 # Checks for library functions.
 
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile data/icons/Makefile])
 AC_OUTPUT
