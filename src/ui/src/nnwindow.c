@@ -4,6 +4,7 @@
  */
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
+#include <X11/xpm.h>
 #include <stdlib.h>
 #include <syslog.h>
 #include "nnwindow.h"
@@ -12,9 +13,8 @@
  * Search the child windows of the given window for the given property.
  * @return the child windows having the given property.
  */
-static Window * nnwindow_find_child_windows_for_property(
-		Display *display, Window window, const char *property_name,
-		int *num_results) {
+static Window * nnwindow_find_child_windows_for_property(Display *display,
+		Window window, const char *property_name, int *num_results) {
 	*num_results = 0;
 	Window *windows = (Window*) malloc(
 			NN_INITIAL_LIST_CAPACITY * sizeof(Window));
@@ -53,7 +53,6 @@ static Window * nnwindow_find_child_windows_for_property(
 	return windows;
 }
 
-
 void nnwindow_setup(NNUINounoursApp *uiapp) {
 
 	// We need to be able to open the display.
@@ -84,8 +83,7 @@ void nnwindow_setup(NNUINounoursApp *uiapp) {
 			if (num_windows > 0) {
 				uiapp->window = windows[0];
 				XClientMessageEvent event;
-				nnclientmessage_init(&event, uiapp,
-						uiapp->atom_my_window, 32);
+				nnclientmessage_init(&event, uiapp, uiapp->atom_my_window, 32);
 				event.data.l[0] = (long) uiapp->window;
 				nnclientmessage_send(&event, uiapp);
 			} else {
@@ -100,6 +98,23 @@ void nnwindow_setup(NNUINounoursApp *uiapp) {
 					uiapp->root_window, 0, 0, 1, 1, 0, black_color,
 					black_color);
 			XStoreName(uiapp->ui_display, uiapp->window, "Nounours");
+			Atom icon_property = XInternAtom(uiapp->ui_display, "_NET_WM_ICON",
+					0);
+			XpmAttributes attributes;
+			XImage *icon_image;
+			XImage *icon_shape_image;
+			char icon_filename[1024];
+			sprintf(icon_filename,
+					"%s/nounours/data/icons/nounours.xpm",
+					__DATAROOT_DIR__);
+
+			XpmReadFileToImage(uiapp->ui_display, icon_filename, &icon_image,
+					&icon_shape_image, &attributes);
+			int nelements = (icon_image->width * icon_image->height) + 2;
+			XChangeProperty(uiapp->ui_display, uiapp->window, icon_property,
+					XA_CARDINAL, 32, PropModeReplace, icon_image->data,
+					nelements);
+
 			XMapWindow(uiapp->ui_display, uiapp->window);
 		}
 	}
@@ -160,8 +175,8 @@ static void nnwindow_set_background_color(NNUINounoursApp *uiapp) {
 	}
 }
 
-static void nnwindow_resize_images(NNUINounoursApp *uiapp,
-		int window_width, int window_height) {
+static void nnwindow_resize_images(NNUINounoursApp *uiapp, int window_width,
+		int window_height) {
 	NNTheme *theme = uiapp->app->config.theme;
 	NNNounoursGrid *grid = uiapp->app->grid;
 
@@ -203,8 +218,7 @@ static void nnwindow_resize_images(NNUINounoursApp *uiapp,
 		}
 	}
 }
-static void nnwindow_fix(NNUINounoursApp *uiapp, int width,
-		int height) {
+static void nnwindow_fix(NNUINounoursApp *uiapp, int width, int height) {
 	XSizeHints* size_hints = XAllocSizeHints();
 	size_hints->flags = PMinSize | PMaxSize;
 	size_hints->min_width = width;
@@ -238,8 +252,8 @@ void nnwindow_resize(NNUINounoursApp *uiapp, int width, int height) {
 	nnwindow_resize_images(uiapp, width, height);
 }
 
-
-void nnwindow_get_dimensions(NNUINounoursApp *uiapp, int *offset_x, int *offset_y, int *image_width, int *image_height) {
+void nnwindow_get_dimensions(NNUINounoursApp *uiapp, int *offset_x,
+		int *offset_y, int *image_width, int *image_height) {
 	NNNounoursGrid *grid = uiapp->app->grid;
 	NNImage *image = uiapp->app->config.theme->images[0];
 	*image_width = image->uiimage->ximage->width;
