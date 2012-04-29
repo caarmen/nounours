@@ -6,6 +6,12 @@ nounours_SOURCES=src/main.c src/common/src/nnnounours.c src/common/src/nnnounour
 nounoursdir=$(datarootdir)/nounours
 nobase_nounours_DATA = data/nounours.xml data/themes/default/*.* data/themes/default/images/*.* data/themes/rainbow/*.* data/themes/rainbow/images/*.* data/themes/robot/*.* data/themes/robot/images/*.* data/themes/college/*.* data/themes/college/images/*.*
 
+desktopdir=$(datadir)/applications
+desktop_DATA=nounours.desktop
+
+#the application icon
+appicondir=$(datadir)/icons/hicolor/48x48/apps
+appicon_DATA=nounours.png
 
 install-exec-hook: 
 	sh deployscreensaver.sh $(XSCREENSAVER_CONFIG_PATH)
