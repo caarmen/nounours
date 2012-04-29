@@ -7,6 +7,6 @@ Exec=nounours
 Icon=nounours.png
 Terminal=false
 Type=Application
-StartupNotify=true
+#StartupNotify=true
 Categories=Game;KidsGame;
 
