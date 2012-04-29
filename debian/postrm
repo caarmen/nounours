@@ -26,7 +26,7 @@ case "$1" in
 	#nounours_xml=`grep nounours.xml $here/${DPKG_MAINTSCRIPT_PACKAGE}.list`
 	prefix=/usr/share #todo how to determine this?
 	xscreensaver_config_path=$prefix/xscreensaver/config
-	rm $xscreensaver_config_path/nounours.xml
+	rm -f $xscreensaver_config_path/nounours.xml
     ;;
     *)
         echo "postrm called with unknown argument \`$1'" >&2
