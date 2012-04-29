@@ -99,6 +99,7 @@ void nnwindow_setup(NNUINounoursApp *uiapp) {
 			uiapp->window = XCreateSimpleWindow(uiapp->ui_display,
 					uiapp->root_window, 0, 0, 1, 1, 0, black_color,
 					black_color);
+			XStoreName(uiapp->ui_display, uiapp->window, "Nounours");
 			XMapWindow(uiapp->ui_display, uiapp->window);
 		}
 	}
