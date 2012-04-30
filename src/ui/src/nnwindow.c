@@ -111,9 +111,14 @@ void nnwindow_setup(NNUINounoursApp *uiapp) {
 			XpmReadFileToImage(uiapp->ui_display, icon_filename, &icon_image,
 					&icon_shape_image, &attributes);
 			int nelements = (icon_image->width * icon_image->height) + 2;
-			XChangeProperty(uiapp->ui_display, uiapp->window, icon_property,
+			XChangeProperty(uiapp->ui_display, uiapp->root_window, icon_property,
 					XA_CARDINAL, 32, PropModeReplace, icon_image->data,
 					nelements);
+			XClassHint *class_hint = XAllocClassHint();
+			class_hint->res_class = "Nounours";
+			class_hint->res_name = "Nounours";
+			XSetClassHint(uiapp->ui_display, uiapp->window, class_hint);
+
 
 			XMapWindow(uiapp->ui_display, uiapp->window);
 		}
