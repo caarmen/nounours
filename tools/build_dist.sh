@@ -15,9 +15,9 @@ mkdir -p $dist_dir/debian
 cp -pr debian $dist_dir/.
 cd $dist_dir
 debuild
-repo_dir=$top/repo/dists/stable/main
-repo_bin_dir=$repo_dir/binary-i386
-repo_src_dir=$repo_dir/source
+repo_dir=$top/repo/dists/stable/
+repo_bin_dir=$repo_dir/main/binary-i386
+repo_src_dir=$repo_dir/main/source
 cd $top
 mkdir -p $repo_bin_dir
 mkdir -p $repo_src_dir
@@ -26,5 +26,6 @@ dpkg-scanpackages . > $repo_bin_dir/Packages
 dpkg-scansources . > $repo_src_dir/Sources
 cd $top
 cp dist/*.deb repo/.
-cp debian/Release $repo_bin_dir/.
+cp debian/Release $repo_dir/.
+gpg --output $repo_dir/Release.gpg -ba $repo_dir/Release
 tar czvf repo.tar.gz repo
