@@ -15,17 +15,11 @@ mkdir -p $dist_dir/debian
 cp -pr debian $dist_dir/.
 cd $dist_dir
 debuild
-repo_dir=$top/repo/dists/stable/
-repo_bin_dir=$repo_dir/main/binary-i386
-repo_src_dir=$repo_dir/main/source
+repo_dir=$top/repo/
 cd $top
-mkdir -p $repo_bin_dir
-mkdir -p $repo_src_dir
-cd $top/dist
-dpkg-scanpackages . > $repo_bin_dir/Packages
-dpkg-scansources . > $repo_src_dir/Sources
+mkdir -p $repo_dir/conf
+cp debian/Release $repo_dir/conf/distributions
+cd $repo_dir
+reprepro --ask-passphrase -Vb . includedeb stable $top/dist/nounours_1.0-1_i386.deb
 cd $top
-cp dist/*.deb repo/.
-cp debian/Release $repo_dir/.
-gpg --output $repo_dir/Release.gpg -ba $repo_dir/Release
 tar czvf repo.tar.gz repo
