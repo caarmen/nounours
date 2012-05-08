@@ -1,5 +1,5 @@
 Source: nounours
-Section: misc
+Section: x11
 Priority: extra
 Maintainer: Carmen Alvarez <c@rmen.ca>
 Build-Depends: debhelper (>= 8.0.0), autotools-dev, libjpeg8-dev, libxpm-dev
