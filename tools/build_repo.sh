@@ -22,6 +22,8 @@ dpkg-scanpackages . > Packages
 cat Packages |sed -e 's/Filename: \./Filename: '${REPO_PATH}'/g' > Packages.tmp
 mv Packages.tmp Packages
 gzip -c Packages > Packages.gz
+dpkg-scansources . > Sources
+gzip -c Sources > Sources.gz
 rm -f Release.gpg
 cat Release | sed -e 's/Codename: .*$/Codename: '${REPO_PATH}'/g' > Release.tmp
 mv Release.tmp Release

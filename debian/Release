@@ -3,8 +3,8 @@ Label: Carmen Alvarez
 Suite: stable
 Version: 1.0.0
 Codename: stable
-Architectures: i386 source
-Components: main
+Architecture: i386
+Component: main
 Description: Carmen's Linux apps
  To verify the signature of Carmen's apps, add the public key:
  wget -O - http://rmen.ca/rmen_static/carmen.key.pub |sudo apt-key add -
