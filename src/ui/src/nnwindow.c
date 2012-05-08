@@ -7,6 +7,7 @@
 #include <X11/xpm.h>
 #include <stdlib.h>
 #include <syslog.h>
+#include <stdio.h>
 #include "nnwindow.h"
 
 /**
@@ -98,26 +99,28 @@ void nnwindow_setup(NNUINounoursApp *uiapp) {
 					uiapp->root_window, 0, 0, 1, 1, 0, black_color,
 					black_color);
 			XStoreName(uiapp->ui_display, uiapp->window, "Nounours");
-			Atom icon_property = XInternAtom(uiapp->ui_display, "_NET_WM_ICON",
-					0);
-			XpmAttributes attributes;
-			XImage *icon_image;
-			XImage *icon_shape_image;
+
 			char icon_filename[1024];
 			sprintf(icon_filename,
 					"%s/nounours/data/icons/nounours.xpm",
 					__DATAROOT_DIR__);
 
-			XpmReadFileToImage(uiapp->ui_display, icon_filename, &icon_image,
-					&icon_shape_image, &attributes);
-			int nelements = (icon_image->width * icon_image->height) + 2;
-			XChangeProperty(uiapp->ui_display, uiapp->root_window, icon_property,
-					XA_CARDINAL, 32, PropModeReplace, icon_image->data,
-					nelements);
+			XWMHints *icon_hints = XAllocWMHints();
+			Pixmap icon_pixmap;
+			Pixmap icon_shape_pixmap;
+			XpmAttributes xpm_attributes;
+			XpmReadFileToPixmap(uiapp->ui_display, uiapp->window, icon_filename, &icon_pixmap, &icon_shape_pixmap, &xpm_attributes);
+			icon_hints->flags = IconPixmapHint;
+			icon_hints->icon_pixmap = icon_pixmap;
+			XSetWMHints(uiapp->ui_display, uiapp->window, icon_hints);
+
+
 			XClassHint *class_hint = XAllocClassHint();
 			class_hint->res_class = "Nounours";
 			class_hint->res_name = "Nounours";
 			XSetClassHint(uiapp->ui_display, uiapp->window, class_hint);
+
+
 
 
 			XMapWindow(uiapp->ui_display, uiapp->window);
