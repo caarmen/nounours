@@ -1,3 +1,4 @@
+VERSION=1.0-1_i386
 me="Carmen Alvarez"
 here=`dirname $0`
 cd $here
@@ -15,11 +16,3 @@ mkdir -p $dist_dir/debian
 cp -pr debian $dist_dir/.
 cd $dist_dir
 debuild
-repo_dir=$top/repo/
-cd $top
-mkdir -p $repo_dir/conf
-cp debian/Release $repo_dir/conf/distributions
-cd $repo_dir
-reprepro --ask-passphrase -Vb . includedeb stable $top/dist/nounours_1.0-1_i386.deb
-cd $top
-tar czvf repo.tar.gz repo
