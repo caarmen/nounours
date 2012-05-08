@@ -62,11 +62,11 @@ static void nnwindow_set_icon(NNUINounoursApp *uiapp) {
 
 	XWMHints *icon_hints = XAllocWMHints();
 	Pixmap icon_pixmap;
-	Pixmap icon_shape_pixmap;
-	XpmAttributes xpm_attributes;
-	XpmReadFileToPixmap(uiapp->ui_display, uiapp->window, icon_filename, &icon_pixmap, &icon_shape_pixmap, &xpm_attributes);
-	icon_hints->flags = IconPixmapHint;
+	Pixmap icon_shapemask;
+	XpmReadFileToPixmap(uiapp->ui_display, uiapp->window, icon_filename, &icon_pixmap, &icon_shapemask, NULL);
+	icon_hints->flags = IconPixmapHint | IconMaskHint;
 	icon_hints->icon_pixmap = icon_pixmap;
+	icon_hints->icon_mask = icon_shapemask;
 	XSetWMHints(uiapp->ui_display, uiapp->window, icon_hints);
 }
 
