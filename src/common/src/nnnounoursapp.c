@@ -56,6 +56,14 @@ void nnnounoursapp_use_theme_scaled(NNNounoursApp *app, NNTheme *theme, float sc
 		nnwindow_stretch(app->ui);
 	else
 		nnwindow_resize(app->ui, (int) (scale*theme->width*app->grid->width), (int) (scale*theme->height*app->grid->height));
+
+	if(!app->config.is_in_screensaver_mode) {
+		char icon_filename[1024];
+		sprintf(icon_filename,
+				"%s/nounours/data/icons/nounours.xpm",
+				__DATAROOT_DIR__);
+		nnwindow_set_icon(app->ui, icon_filename);
+	}
 	int i, j;
 	for(i=0; i < app->grid->width; i++) {
 		for(j=0; j < app->grid->height; j++) {

@@ -14,6 +14,11 @@
 void nnwindow_setup(NNUINounoursApp *uiapp);
 
 /**
+ * Set the icon for the window.
+ */
+void nnwindow_set_icon(NNUINounoursApp *uiapp, char *icon_filename);
+
+/**
  * The window we're drawing to is in use.  Find another
  * window to draw to.
  */

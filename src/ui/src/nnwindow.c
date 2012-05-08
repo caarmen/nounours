@@ -54,16 +54,11 @@ static Window * nnwindow_find_child_windows_for_property(Display *display,
 	return windows;
 }
 
-static void nnwindow_set_icon(NNUINounoursApp *uiapp) {
-	char icon_filename[1024];
-	sprintf(icon_filename,
-			"%s/nounours/data/icons/nounours.xpm",
-			__DATAROOT_DIR__);
-
+void nnwindow_set_icon(NNUINounoursApp *uiapp, char *icon_filename) {
 	XWMHints *icon_hints = XAllocWMHints();
 	Pixmap icon_pixmap;
 	Pixmap icon_shapemask;
-	XpmReadFileToPixmap(uiapp->ui_display, uiapp->window, icon_filename, &icon_pixmap, &icon_shapemask, NULL);
+	XpmReadFileToPixmap(uiapp->background_display, uiapp->window, icon_filename, &icon_pixmap, &icon_shapemask, NULL);
 	icon_hints->flags = IconPixmapHint | IconMaskHint;
 	icon_hints->icon_pixmap = icon_pixmap;
 	icon_hints->icon_mask = icon_shapemask;
@@ -116,9 +111,6 @@ void nnwindow_setup(NNUINounoursApp *uiapp) {
 					black_color);
 			// Set the title of the window
 			XStoreName(uiapp->ui_display, uiapp->window, "Nounours");
-
-			// Set the icon
-			nnwindow_set_icon(uiapp);
 
 			// In Ubuntu, the class hint referenced in the desktop file.
 			// This impacts how the launcher displays the icon for
