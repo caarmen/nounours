@@ -1,8 +1,8 @@
 Origin: Carmen's Linux apps
 Label: Carmen Alvarez
-Suite: stable
+Suite: carmen
 Version: 1.0.0
-Codename: stable
+Codename: carmen
 Architecture: i386
 Component: main
 Description: Carmen's Linux apps
@@ -10,4 +10,3 @@ Description: Carmen's Linux apps
  wget -O - http://rmen.ca/rmen_static/carmen.key.pub |sudo apt-key add -
  .
 SignWith: yes
-Pull: stable
