@@ -54,6 +54,22 @@ static Window * nnwindow_find_child_windows_for_property(Display *display,
 	return windows;
 }
 
+static void nnwindow_set_icon(NNUINounoursApp *uiapp) {
+	char icon_filename[1024];
+	sprintf(icon_filename,
+			"%s/nounours/data/icons/nounours.xpm",
+			__DATAROOT_DIR__);
+
+	XWMHints *icon_hints = XAllocWMHints();
+	Pixmap icon_pixmap;
+	Pixmap icon_shape_pixmap;
+	XpmAttributes xpm_attributes;
+	XpmReadFileToPixmap(uiapp->ui_display, uiapp->window, icon_filename, &icon_pixmap, &icon_shape_pixmap, &xpm_attributes);
+	icon_hints->flags = IconPixmapHint;
+	icon_hints->icon_pixmap = icon_pixmap;
+	XSetWMHints(uiapp->ui_display, uiapp->window, icon_hints);
+}
+
 void nnwindow_setup(NNUINounoursApp *uiapp) {
 
 	// We need to be able to open the display.
@@ -98,31 +114,19 @@ void nnwindow_setup(NNUINounoursApp *uiapp) {
 			uiapp->window = XCreateSimpleWindow(uiapp->ui_display,
 					uiapp->root_window, 0, 0, 1, 1, 0, black_color,
 					black_color);
+			// Set the title of the window
 			XStoreName(uiapp->ui_display, uiapp->window, "Nounours");
 
-			char icon_filename[1024];
-			sprintf(icon_filename,
-					"%s/nounours/data/icons/nounours.xpm",
-					__DATAROOT_DIR__);
+			// Set the icon
+			nnwindow_set_icon(uiapp);
 
-			XWMHints *icon_hints = XAllocWMHints();
-			Pixmap icon_pixmap;
-			Pixmap icon_shape_pixmap;
-			XpmAttributes xpm_attributes;
-			XpmReadFileToPixmap(uiapp->ui_display, uiapp->window, icon_filename, &icon_pixmap, &icon_shape_pixmap, &xpm_attributes);
-			icon_hints->flags = IconPixmapHint;
-			icon_hints->icon_pixmap = icon_pixmap;
-			XSetWMHints(uiapp->ui_display, uiapp->window, icon_hints);
-
-
+			// In Ubuntu, the class hint referenced in the desktop file.
+			// This impacts how the launcher displays the icon for
+			// the app when launched.
 			XClassHint *class_hint = XAllocClassHint();
 			class_hint->res_class = "Nounours";
 			class_hint->res_name = "Nounours";
 			XSetClassHint(uiapp->ui_display, uiapp->window, class_hint);
-
-
-
-
 			XMapWindow(uiapp->ui_display, uiapp->window);
 		}
 	}
