@@ -60,7 +60,7 @@ void nnnounoursapp_use_theme_scaled(NNNounoursApp *app, NNTheme *theme, float sc
 	if(!app->config.is_in_screensaver_mode) {
 		char icon_filename[1024];
 		sprintf(icon_filename,
-				"%s/nounours/%s/images/nounours.xpm",
+				"%s/nounours/data/themes/%s/images/nounours.xpm",
 				__DATAROOT_DIR__,
 				theme->path);
 		nnwindow_set_icon(app->ui, icon_filename);
