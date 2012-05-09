@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Nounours College
+Comment=Your Linux teddy bear
+Exec=nounours -theme college
+Icon=nounours-college
+Terminal=false
+Type=Application
+StartupNotify=true
+Categories=GTK;GNOME;Game;KidsGame;
+StartupWMClass=Nounours

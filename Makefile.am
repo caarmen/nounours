@@ -8,7 +8,7 @@ nounoursdir=$(datarootdir)/nounours
 nobase_nounours_DATA = data/nounours.xml data/themes/default/*.* data/themes/default/images/*.* data/themes/rainbow/*.* data/themes/rainbow/images/*.* data/themes/robot/*.* data/themes/robot/images/*.* data/themes/college/*.* data/themes/college/images/*.*
 
 desktopdir=$(datadir)/applications
-desktop_DATA=nounours.desktop
+desktop_DATA=nounours.desktop nounours-college.desktop nounours-rainbow.desktop nounours-robot.desktop
 
 
 install-exec-hook: 
