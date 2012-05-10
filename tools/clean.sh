@@ -2,6 +2,8 @@ make clean
 rm -f Makefile
 rm -f data/Makefile
 rm -f data/icons/Makefile
+rm -f data/nounours-xscreensaver.desktop
+rm -f data/deployscreensaverconfig.sh
 rm -rf autom4te.cache
 rm -f config.log
 rm -f config.status
