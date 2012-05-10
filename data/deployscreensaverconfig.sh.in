@@ -1,0 +1,20 @@
+#!/bin/sh
+
+xscreensaver_local_config_file="$HOME/.xscreensaver" 
+
+if [ -e "$xscreensaver_local_config_file" ] 
+then 
+	nounourspresent=`grep -c nounours $xscreensaver_local_config_file`
+	if [ $nounourspresent -eq 0 ]
+	then
+		echo "updating $xscreensaver_local_config_file"
+		cp $xscreensaver_local_config_file "$HOME/.xscreensaver.save.`date +'%s'`" 
+		echo "backed up file"
+		cat "$xscreensaver_local_config_file" |sed -e "s/\(programs:.*\$\)/\1 nounours -screensaver -stretch -theme rainbow -sleep-after 300 -rows 3 -cols 6/g" > $HOME/.xscreensaver.tmp;
+		mv $HOME/.xscreensaver.tmp $xscreensaver_local_config_file
+	fi 
+else 
+	cp @datarootdir@/nounours/data/nounours.xscreensaver $xscreensaver_local_config_file
+fi
+
+xscreensaver-demo

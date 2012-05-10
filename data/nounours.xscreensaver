@@ -1,0 +1,6 @@
+mode:		one
+selected:	0
+
+programs:								      \
+				nounours -screensaver -stretch -theme	      \
+				  rainbow -sleep-after 300 -rows 3 -cols 6   \n\

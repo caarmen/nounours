@@ -164,7 +164,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 appicondir = $(datadir)/icons/
-nobase_appicon_DATA = hicolor/**/apps/nounours.png
+nobase_appicon_DATA = hicolor/**/apps/nounours*.png
 all: all-am
 
 .SUFFIXES:
