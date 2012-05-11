@@ -1,6 +1,20 @@
 /*
- *  Created on: Mar 12, 2012
- *      Author: Carmen Alvarez
+ * Copyright 2012 Carmen Alvarez
+ *
+ * This file is part of Nounours.
+ *
+ * Nounours is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Nounours is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Nounours.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
@@ -58,7 +72,8 @@ void nnwindow_set_icon(NNUINounoursApp *uiapp, char *icon_filename) {
 	XWMHints *icon_hints = XAllocWMHints();
 	Pixmap icon_pixmap;
 	Pixmap icon_shapemask;
-	XpmReadFileToPixmap(uiapp->background_display, uiapp->window, icon_filename, &icon_pixmap, &icon_shapemask, NULL);
+	XpmReadFileToPixmap(uiapp->background_display, uiapp->window, icon_filename,
+			&icon_pixmap, &icon_shapemask, NULL);
 	icon_hints->flags = IconPixmapHint | IconMaskHint;
 	icon_hints->icon_pixmap = icon_pixmap;
 	icon_hints->icon_mask = icon_shapemask;

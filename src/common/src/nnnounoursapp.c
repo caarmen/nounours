@@ -1,6 +1,20 @@
 /*
- *  Created on: Mar 11, 2012
- *      Author: Carmen Alvarez
+ * Copyright 2012 Carmen Alvarez
+ *
+ * This file is part of Nounours.
+ *
+ * Nounours is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Nounours is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Nounours.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include <stdlib.h>
@@ -11,8 +25,8 @@
 #include "nnnounours.h"
 #include "nntheme.h"
 
-static NNNounoursGrid* nnnounoursgrid_new(NNNounoursApp *app,int width, int height, const char *path,
-		nnbool is_screensaver_mode, int window_id) {
+static NNNounoursGrid* nnnounoursgrid_new(NNNounoursApp *app, int width,
+		int height, const char *path, nnbool is_screensaver_mode, int window_id) {
 	NNNounoursGrid * grid = malloc(sizeof(NNNounoursGrid));
 	grid->width = width;
 	grid->height = height;
@@ -30,7 +44,8 @@ static NNNounoursGrid* nnnounoursgrid_new(NNNounoursApp *app,int width, int heig
 	return grid;
 }
 
-NNNounoursApp * nnnounoursapp_new(int width, int height, const char *path, nnbool is_screensaver_mode, int window_id) {
+NNNounoursApp * nnnounoursapp_new(int width, int height, const char *path,
+		nnbool is_screensaver_mode, int window_id) {
 	NNNounoursApp *app = malloc(sizeof(NNNounoursApp));
 	app->config.is_in_screensaver_mode = is_screensaver_mode;
 	app->config.do_stretch = NNFALSE;
@@ -42,40 +57,44 @@ NNNounoursApp * nnnounoursapp_new(int width, int height, const char *path, nnboo
 	nnread_nounours_properties_file(&app->config, path);
 	app->ui = nnuinounoursapp_new(app, window_id);
 
-	app->grid = nnnounoursgrid_new(app, width, height, path, is_screensaver_mode, window_id);
+	app->grid = nnnounoursgrid_new(app, width, height, path,
+			is_screensaver_mode, window_id);
 	// Start the nounours UI loop in a separate thread
 	nnuinounoursapp_start_loop(app->ui);
 
 	return app;
 }
 
-void nnnounoursapp_use_theme_scaled(NNNounoursApp *app, NNTheme *theme, float scale) {
+void nnnounoursapp_use_theme_scaled(NNNounoursApp *app, NNTheme *theme,
+		float scale) {
 	app->config.theme = theme;
 
 	if (app->config.do_stretch)
 		nnwindow_stretch(app->ui);
 	else
-		nnwindow_resize(app->ui, (int) (scale*theme->width*app->grid->width), (int) (scale*theme->height*app->grid->height));
+		nnwindow_resize(app->ui,
+				(int) (scale * theme->width * app->grid->width),
+				(int) (scale * theme->height * app->grid->height));
 
-	if(!app->config.is_in_screensaver_mode) {
+	if (!app->config.is_in_screensaver_mode) {
 		char icon_filename[1024];
-		sprintf(icon_filename,
-				"%s/nounours/data/themes/%s/images/nounours.xpm",
-				__DATAROOT_DIR__,
-				theme->path);
+		sprintf(
+				icon_filename,
+				"%s/nounours/data/themes/%s/images/nounours.xpm", __DATAROOT_DIR__, theme->path);
 		nnwindow_set_icon(app->ui, icon_filename);
 	}
 	int i, j;
-	for(i=0; i < app->grid->width; i++) {
-		for(j=0; j < app->grid->height; j++) {
-			nnnounours_show_image(app->grid->nounoursen[i][j], theme->default_image);
+	for (i = 0; i < app->grid->width; i++) {
+		for (j = 0; j < app->grid->height; j++) {
+			nnnounours_show_image(app->grid->nounoursen[i][j],
+					theme->default_image);
 		}
 	}
 }
 void nnnounoursgrid_on_shake(NNNounoursGrid *grid) {
 	int i, j;
-	for(i=0; i < grid->width; i++) {
-		for(j=0; j < grid->height; j++) {
+	for (i = 0; i < grid->width; i++) {
+		for (j = 0; j < grid->height; j++) {
 			nnnounours_on_shake(grid->nounoursen[i][j]);
 		}
 	}

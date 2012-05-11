@@ -1,6 +1,20 @@
 /*
- *  Created on: Feb 19, 2012
- *      Author: Carmen Alvarez
+ * Copyright 2012 Carmen Alvarez
+ *
+ * This file is part of Nounours.
+ *
+ * Nounours is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Nounours is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Nounours.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <stdio.h>
 #include <string.h>
@@ -33,9 +47,11 @@ void help(char *prog_name) {
 	printf("  /path/to/theme\n");
 	printf("  default|rainbow|college|robot|random\n");
 	printf("\n");
-	printf("To use nounours as a screensaver, add the following line to your ~/.xscreensaver file, in the 'programs:' section:\n");
+	printf(
+			"To use nounours as a screensaver, add the following line to your ~/.xscreensaver file, in the 'programs:' section:\n");
 	printf("nounours -screensaver -stretch \\n\\\n");
-	printf("If you don't have a ~/.xscreensaver file, run xscreensaver-demo which will create the file.  Then add the above line.\n");
+	printf(
+			"If you don't have a ~/.xscreensaver file, run xscreensaver-demo which will create the file.  Then add the above line.\n");
 	exit(1);
 }
 int main(int argc, char **argv) {
@@ -113,8 +129,8 @@ int main(int argc, char **argv) {
 		}
 	}
 
-	NNNounoursApp *app = nnnounoursapp_new(cols, rows, theme_path, screensaver_mode,
-			window_id);
+	NNNounoursApp *app = nnnounoursapp_new(cols, rows, theme_path,
+			screensaver_mode, window_id);
 	app->config.do_stretch = do_stretch;
 	if (sleep_time > 0)
 		app->config.idle_time_for_sleep_ms = sleep_time;

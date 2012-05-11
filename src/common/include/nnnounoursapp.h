@@ -1,6 +1,20 @@
 /*
- *  Created on: Mar 11, 2012
- *      Author: Carmen Alvarez
+ * Copyright 2012 Carmen Alvarez
+ *
+ * This file is part of Nounours.
+ *
+ * Nounours is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Nounours is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Nounours.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #ifndef NNNOUNOURSAPP_H_
@@ -36,8 +50,10 @@ typedef struct NNNounoursApp {
 	struct NNUINounoursApp *ui;
 } NNNounoursApp;
 
-NNNounoursApp * nnnounoursapp_new(int width, int height, const char *path, nnbool is_screensaver_mode, int window_id);
-void nnnounoursapp_use_theme_scaled(NNNounoursApp *app, struct NNTheme *theme, float scale);
+NNNounoursApp * nnnounoursapp_new(int width, int height, const char *path,
+		nnbool is_screensaver_mode, int window_id);
+void nnnounoursapp_use_theme_scaled(NNNounoursApp *app, struct NNTheme *theme,
+		float scale);
 void nnnounoursgrid_on_shake(NNNounoursGrid *grid);
 void nnnounoursapp_free(NNNounoursApp *app);
 

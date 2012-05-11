@@ -1,6 +1,20 @@
 /*
- *  Created on: Feb 20, 2012
- *      Author: Carmen Alvarez
+ * Copyright 2012 Carmen Alvarez
+ *
+ * This file is part of Nounours.
+ *
+ * Nounours is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Nounours is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Nounours.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include <stdlib.h>
@@ -69,7 +83,7 @@ static void *nnnounours_animation_thread(void *data) {
 	if (nounours->state.is_doing_animation)
 		return NULL;
 	NNAnimation *animation = nounours->state.cur_animation;
-	if(animation == NULL)
+	if (animation == NULL)
 		return NULL;
 	nounours->state.is_doing_animation = NNTRUE;
 	nnanimation_start(nounours, animation);
