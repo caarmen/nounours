@@ -24,7 +24,6 @@
 		low="1" high="10" default="1" />
 	<number id="cols" type="spinbutton" arg="-cols %" _label="Columns"
 		low="1" high="20" default="1" />
-	<_description>Written by Carmen Alvarez, 2012. 
-The Android(TM) Robot is created and shared by Google and used according to terms described in the Creative Commons 3.0 Attribution License.		
+	<_description>Written by Carmen Alvarez, 2012.&#10;&#13;&#10;&#13;The Android(TM) Robot is created and shared by Google and used according to terms described in the Creative Commons 3.0 Attribution License.		
 	</_description>
 </screensaver>
