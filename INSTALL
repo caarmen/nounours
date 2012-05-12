@@ -21,3 +21,11 @@ make
 3) Run make install:
 make install
 
+4) You will need to add a line to your ~/.xscreensaver file
+to be able to choose Nounours as a screensaver.  If this file
+does not exist, run xscreensaver-demo, which will create it.
+Then add the following line, after the line which says "programs:" :
+
+nounours -screensaver -stretch -theme rainbow -sleep-after 300 -rows 3 -cols 6   \n\
+
+Then restart xscreensaver-demo.

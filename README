@@ -1,1 +1,32 @@
-Version 1
+Nounours is a teddy bear with which you can either interact
+as a standalone X11 app, or use as a screensaver, integrated
+with xscreensaver.
+
+-----------------------------------------------------------
+Standalone app:
+-----------------------------------------------------------
+Run nounours from the command line (or in Ubuntu Unity, 
+from the task panel).
+
+Run nounours -help for options on choosing the theme, the 
+size and number of bears.
+
+You can drag his paws, move him by the ears, paws, or tummy,
+and shake the window to make him shake.  After a while
+of inactivity, he will start to move by himself.  After
+more inactivity, he will take a nap.
+
+-----------------------------------------------------------
+Screensaver:
+-----------------------------------------------------------
+The screensaver options include:
+* the number of bears to show
+* the theme
+* the time before a bear falls asleep
+
+
+-----------------------------------------------------------
+The Android(TM) Robot is created and shared by Google and used 
+according to terms described in the Creative Commons 3.0 Attribution License.		
+-----------------------------------------------------------
+Created by Carmen Alvarez, 2012.
