@@ -15,21 +15,31 @@
 # You should have received a copy of the GNU General Public License
 # along with Nounours.  If not, see <http://www.gnu.org/licenses/>.
 
-VERSION=1.0-1_i386
+
+# This script builds the debian package.
+
 me="Carmen Alvarez"
+# Go to the root directory of the project
 here=`dirname $0`
 cd $here
 here=`pwd`
 top=$here/..
 cd $top
 version=`cat VERSION` 
-dist_dir=dist/nounours-$version
+
+# Copy all the files we want to include in the debian package, to a dist directory
+dist_dir=$top/dist/nounours-$version
 mkdir -p $dist_dir
 find . -type f |grep -v "dist\|.git\|debian\|tools\|repo" |xargs cp --parents -t $dist_dir
 cd $dist_dir
+
+# Convert our sources to the Debian format
 echo -e "\n" | env LOGNAME="$me" DEBFULLNAME="$me" |dh_make -e c@rmen.ca -s --createorig
-cd $top
 mkdir -p $dist_dir/debian
-cp -pr debian $dist_dir/.
-cd $dist_dir
+
+# Overwrite some of the debian files
+cp -pr $top/debian $dist_dir/.
+
+# Let debuild do all the magic to build the debian package
 debuild
+cd $top

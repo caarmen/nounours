@@ -15,34 +15,61 @@
 # You should have received a copy of the GNU General Public License
 # along with Nounours.  If not, see <http://www.gnu.org/licenses/>.
 
+
+# This script creates a tarball of a debian repository
+# which will host the nounours debian package.
+# This should be run after build_dist.sh
+
 if [ $# -ne 1 ]
 then
  echo "usage: $0 <path to repository>"
+ echo "<path to repository> is the part of the URI after the"
+ echo "domain name where the repo will be hosted."
+ echo "For example, if the repo will be at"
+ echo "http://www.mysite.com/mystuff/repo, then the path"
+ echo "is mystuff/repo"
  exit 1
 fi
-VERSION=1.0-1_i386
-REPO_PATH=$1
-REPO_PATH=`echo $REPO_PATH | sed -e 's|/|\\\/|g'`
-echo "repo: ${REPO_PATH}"
+# Go to the root directory of the project
 here=`dirname $0`
 cd $here
 here=`pwd`
 top=$here/..
-repo_dir=$top/repo/
 cd $top
+
+# Set the version of this package
+version=`cat VERSION` 
+arch=i386
+version=$version-1_$arch
+
+# Escape slashes in the repo location
+repo_uri_path=$1
+repo_uri_path=`echo $repo_uri_path | sed -e 's|/|\\\/|g'`
+repo_dir=$top/repo/
+
+# Recreate a blank repository
 rm -rf $repo_dir
 mkdir -p $repo_dir
-cp debian/Release $top/dist/nounours_$VERSION.deb $repo_dir/
-cp debian/changelog $repo_dir/nounours_$VERSION.changelog
+
+# Copy the debian package and other debian files into the repo
+cp debian/Release $top/dist/nounours_$version.deb $repo_dir/
+cp debian/changelog $repo_dir/nounours_$version.changelog
+
+# Generate the Packages file, with the proper Filename
+# for the deb file, based on the repository directory
 cd $repo_dir
 dpkg-scanpackages . > Packages
-cat Packages |sed -e 's/Filename: \./Filename: '${REPO_PATH}'/g' > Packages.tmp
+cat Packages |sed -e 's/Filename: \./Filename: '${repo_uri_path}'/g' > Packages.tmp
 mv Packages.tmp Packages
 gzip -c Packages > Packages.gz
+
+# Generate the Sources file
 dpkg-scansources . > Sources
 gzip -c Sources > Sources.gz
 rm -f Release.gpg
-cat Release | sed -e 's/Codename: .*$/Codename: '${REPO_PATH}'/g' > Release.tmp
+
+# Sign the Release file
+cat Release | sed -e 's/Codename: .*$/Codename: '${repo_uri_path}'/g' > Release.tmp
 mv Release.tmp Release
 apt-ftparchive release . >> Release
 gpg -abs -o Release.gpg Release
