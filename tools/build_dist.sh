@@ -26,7 +26,7 @@ here=`pwd`
 top=$here/..
 cd $top
 version=`cat VERSION` 
-arch=`uname -i`
+arch=`dpkg-architecture -qDEB_BUILD_ARCH`
 
 # Copy all the files we want to include in the debian package, to a dist directory
 dist_dir=$top/dist/nounours-$version

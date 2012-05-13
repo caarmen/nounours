@@ -39,7 +39,7 @@ cd $top
 
 # Set the version of this package
 version=`cat VERSION` 
-arch=`uname -i`
+arch=`dpkg-architecture -qDEB_BUILD_ARCH`
 full_version=$version-1_$arch
 
 # Escape slashes in the repo location
