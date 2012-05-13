@@ -39,12 +39,10 @@ cd $top
 
 # Set the version of this package
 version=`cat VERSION` 
-arch=`dpkg-architecture -qDEB_BUILD_ARCH`
-full_version=$version-1_$arch
 
 # Escape slashes in the repo location
 repo_uri_path=$1
-repo_uri_path=`echo $repo_uri_path | sed -e 's|/|\\\/|g'`
+repo_uri_path_esc=`echo $repo_uri_path | sed -e 's|/|\\\/|g'`
 repo_dir=$top/repo/
 
 # Recreate a blank repository
@@ -52,15 +50,17 @@ rm -rf $repo_dir
 mkdir -p $repo_dir
 
 # Copy the debian package and other debian files into the repo
-cp $top/dist/nounours-$version/debian/Release $top/dist/nounours_${full_version}.deb $repo_dir/
-cp debian/changelog $repo_dir/nounours_${full_version}.changelog
+cp $top/dist/nounours-$version/debian/Release $top/dist/nounours_*.deb $repo_dir/
+for file in $repo_dir/nounours*.deb
+do 
+ bname=`basename $file .deb`
+ cp debian/changelog $repo_dir/$bname.changelog
+done
 
 # Generate the Packages file, with the proper Filename
 # for the deb file, based on the repository directory
 cd $repo_dir
-dpkg-scanpackages . > Packages
-cat Packages |sed -e 's/Filename: \./Filename: '${repo_uri_path}'/g' > Packages.tmp
-mv Packages.tmp Packages
+dpkg-scanpackages -m . $top/debian/override ${repo_uri_path}/ > Packages
 gzip -c Packages > Packages.gz
 
 # Generate the Sources file
@@ -69,9 +69,9 @@ gzip -c Sources > Sources.gz
 rm -f Release.gpg
 
 # Sign the Release file
-cat Release | sed -e 's/Codename: .*$/Codename: '${repo_uri_path}'/g' > Release.tmp
+cat Release | sed -e 's/Codename: .*$/Codename: '${repo_uri_path_esc}'/g' > Release.tmp
 mv Release.tmp Release
 apt-ftparchive release . >> Release
 gpg -abs -o Release.gpg Release
-tar czvf repo-$arch.tar.gz *
+tar czvf repo.tar.gz *
 cd $top

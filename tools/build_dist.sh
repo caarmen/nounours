@@ -26,7 +26,6 @@ here=`pwd`
 top=$here/..
 cd $top
 version=`cat VERSION` 
-arch=`dpkg-architecture -qDEB_BUILD_ARCH`
 
 # Copy all the files we want to include in the debian package, to a dist directory
 dist_dir=$top/dist/nounours-$version
@@ -40,12 +39,6 @@ mkdir -p $dist_dir/debian
 
 # Overwrite some of the debian files
 cp -pr $top/debian $dist_dir/.
-
-# Use our architecture
-cat $dist_dir/debian/control |sed -e 's|@arch@|'${arch}'|g' > $dist_dir/debian/control.tmp
-mv $dist_dir/debian/control.tmp $dist_dir/debian/control
-cat $dist_dir/debian/Release |sed -e 's|@arch@|'${arch}'|g' > $dist_dir/debian/Release.tmp
-mv $dist_dir/debian/Release.tmp $dist_dir/debian/Release
 
 # Let debuild do all the magic to build the debian package
 debuild
