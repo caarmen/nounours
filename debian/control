@@ -7,7 +7,7 @@ Standards-Version: 3.9.2
 Homepage: http://rmen.ca/index.php?q=node/622
 
 Package: nounours
-Architecture: all
+Architecture: @arch@
 Depends: ${shlibs:Depends}, ${misc:Depends}, xscreensaver, xscreensaver-data, libjpeg8
 Description: Nounours - your Linux teddy bear
  This cute teddy bear is a fun friend for children of all ages. Move him around by moving his head, paws, tummy, and ears. Use him as your screensaver. Including Nounours' friend the Android robot.

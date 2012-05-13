@@ -39,8 +39,8 @@ cd $top
 
 # Set the version of this package
 version=`cat VERSION` 
-arch=all
-version=$version-1_$arch
+arch=`uname -i`
+full_version=$version-1_$arch
 
 # Escape slashes in the repo location
 repo_uri_path=$1
@@ -52,8 +52,8 @@ rm -rf $repo_dir
 mkdir -p $repo_dir
 
 # Copy the debian package and other debian files into the repo
-cp debian/Release $top/dist/nounours_$version.deb $repo_dir/
-cp debian/changelog $repo_dir/nounours_$version.changelog
+cp $top/dist/nounours-$version/debian/Release $top/dist/nounours_${full_version}.deb $repo_dir/
+cp debian/changelog $repo_dir/nounours_${full_version}.changelog
 
 # Generate the Packages file, with the proper Filename
 # for the deb file, based on the repository directory

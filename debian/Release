@@ -3,7 +3,7 @@ Label: Carmen Alvarez
 Suite: carmen
 Version: 1.0.0
 Codename: carmen
-Architecture: all
+Architecture: @arch@
 Component: main
 Description: Carmen's Linux apps
  To verify the signature of Carmen's apps, add the public key:
