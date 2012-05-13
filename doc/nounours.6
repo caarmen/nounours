@@ -46,6 +46,13 @@ To run 6 nounoursen, in a 3x2 grid, scaled to 25% size, using the rainbow theme:
 .TP
 To run one nounours in full screen, who will fall asleep after 5 minutes:
 .B nounours\ -stretch -sleep-after 300
+.SH SCREENSAVER
+.P
+You will need to add a line to your ~/.xscreensaver file to be able to choose Nounours as a screensaver.  If this file does not exist, run xscreensaver-demo, which will create it.  Then add the following line, after the line which says "programs:"
+.P
+.B nounours -screensaver -stretch -theme rainbow -sleep-after 300 -rows 3 -cols 6   \en\e
+.P
+Then restart xscreensaver-demo.
 .SH SEE ALSO
 xscreensaver-demo(1)
 .SH BUGS
