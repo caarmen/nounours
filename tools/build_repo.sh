@@ -39,7 +39,7 @@ cd $top
 
 # Set the version of this package
 version=`cat VERSION` 
-arch=i386
+arch=all
 version=$version-1_$arch
 
 # Escape slashes in the repo location
