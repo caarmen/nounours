@@ -1,0 +1,54 @@
+.\" Manpage for nounours.
+.\" Carmen Alvarez <c@rmen.ca>
+.TH man 6 "13 May 2012" "1.0" "nounours man page"
+.SH NAME
+nounours \- your Linux teddy bear
+.SH SYNOPSIS
+nounours [OPTIONS]
+.SH DESCRIPTION
+Nounours is a teddy bear with which you can either interact
+as a standalone X11 app, or use as a screensaver, integrated
+with xscreensaver.
+.SH OPTIONS
+The following options are supported:
+.TP 8
+.B \-help
+Prints the possible options
+.TP 8
+.B \-theme \fP\fItheme\fP
+Use the specified theme.  The theme may be
+  default|rainbow|college|robot|random
+.TP 8
+.B \-screensaver
+Used internally by xscreensaver
+.TP 8
+.B \-window-id \fP\fIwindow-id\fP
+Draw to the specified window.  Used by xscreensaver.
+.TP
+.B \-sleep-after \fP\fItime-in-seconds\fP
+After \fItime-in-seconds\fP, nounours will fall asleep.
+.TP
+.B \-stretch
+Stretch the window to fit the screen.
+.TP
+.B \-rows \fP\fIrows\fP
+The window will have \fIrows\fP rows of nounoursen.
+.TP
+.B \-cols \fP\fIcols\fP
+The window will have \fIcols\fP columns of nounoursen.
+.TP
+.B \-scale \fP\fIscale-factor\fP
+Resize the window by \fIscale-factor\fP.  A \fIscale-factor\fP of 1 does nothing.
+.SH EXAMPLES
+.TP 3
+To run 6 nounoursen, in a 3x2 grid, scaled to 25% size, using the rainbow theme:
+.B nounours\ -theme rainbow -cols 3 -rows 2 -scale 0.25
+.TP
+To run one nounours in full screen, who will fall asleep after 5 minutes:
+.B nounours\ -stretch -sleep-after 300
+.SH SEE ALSO
+xscreensaver-demo(1)
+.SH BUGS
+No known bugs.
+.SH AUTHOR
+Carmen Alvarez (c@rmen.ca)
