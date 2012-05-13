@@ -73,5 +73,5 @@ cat Release | sed -e 's/Codename: .*$/Codename: '${repo_uri_path}'/g' > Release.
 mv Release.tmp Release
 apt-ftparchive release . >> Release
 gpg -abs -o Release.gpg Release
-tar czvf repo.tar.gz *
+tar czvf repo-$arch.tar.gz *
 cd $top
