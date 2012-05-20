@@ -2,12 +2,12 @@ Source: nounours
 Section: x11
 Priority: extra
 Maintainer: Carmen Alvarez <c@rmen.ca>
-Build-Depends: debhelper (>= 8.0.0), autotools-dev, libjpeg8-dev, libxpm-dev
+Build-Depends: debhelper, autotools-dev, libjpeg62-dev, libxpm-dev
 Standards-Version: 3.9.2
 Homepage: http://rmen.ca/index.php?q=node/622
 
 Package: nounours
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, xscreensaver, xscreensaver-data, libjpeg8
+Depends: ${shlibs:Depends}, ${misc:Depends}, xscreensaver, xscreensaver-data, libjpeg62
 Description: Nounours - your Linux teddy bear
  This cute teddy bear is a fun friend for children of all ages. Move him around by moving his head, paws, tummy, and ears. Use him as your screensaver. Including Nounours' friend the Android robot.

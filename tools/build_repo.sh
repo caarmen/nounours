@@ -69,7 +69,7 @@ gzip -c Sources > Sources.gz
 rm -f Release.gpg
 
 # Sign the Release file
-cat Release | sed -e 's/Codename: .*$/Codename: '${repo_uri_path_esc}'/g' > Release.tmp
+cat Release | sed -e 's|Codename: .*$|Codename: '${repo_uri_path_esc}'|g' > Release.tmp
 mv Release.tmp Release
 apt-ftparchive release . >> Release
 gpg -abs -o Release.gpg Release
