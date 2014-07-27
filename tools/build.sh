@@ -20,7 +20,10 @@ aclocal_flags=
 if [ `uname` = "Darwin" ]
 then
   configure_flags="--with-jpeg-include-path=/opt/local/include --with-jpeg-lib-path=/opt/local/lib --with-xscreensaver-config-path=/opt/local/share/xscreensaver/config"
-  aclocal_flags="-I /opt/local/share/aclocal"
+# http://xquartz.macosforge.org/trac/wiki/DeveloperInfo:
+  export PKG_CONFIG="/usr/local/bin/pkg-config"
+  export PKG_CONFIG_PATH="/opt/X11/share/pkgconfig:/opt/X11/lib/pkgconfig:/usr/share/pkgconfig:/usr/lib/pkgconfig:${PKG_CONFIG_PATH}"
+  export ACLOCAL="aclocal -I /opt/X11/share/aclocal -I /usr/local/share/aclocal -I/opt/local/share/aclocal"
 fi
 
 aclocal $aclocal_flags &&

@@ -1,5 +1,5 @@
 SUBDIRS=data .
-AM_CFLAGS = $(JPEG_CFLAGS) -Isrc/data/include -Isrc/io/include -Isrc/common/include -Isrc/ui/include -D__DATAROOT_DIR__=\"$(datarootdir)\"
+AM_CFLAGS = $(X11_CFLAGS) $(JPEG_CFLAGS) -Isrc/data/include -Isrc/io/include -Isrc/common/include -Isrc/ui/include -D__DATAROOT_DIR__=\"$(datarootdir)\"
 #CFLAGS = -g -O0  
 bin_PROGRAMS=nounours
 nounours_LDADD = $(X11_LIBS) $(JPEG_LIBS) -lpthread -lm -lXpm
